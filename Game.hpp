@@ -3,10 +3,7 @@
 
 #include <SDL.h>
 #include <SDL_image.h>
-#include <stdio.h>
-#include <math.h>
-#include <cstdlib>
-#include <iostream>
+#include <fstream>
 #include "CurrentDirectory.hpp"
 #include "GameMap.hpp"
 

@@ -1,7 +1,8 @@
 #pragma once
 
-#include <fstream>
-#include <iostream>
+#include <vector>
+#include <boost/archive/binary_oarchive.hpp>
+#include <boost/archive/binary_iarchive.hpp>
 #include <boost/serialization/vector.hpp>
 #include "Tile.hpp"
 

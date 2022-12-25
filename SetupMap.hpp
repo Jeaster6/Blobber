@@ -1,9 +1,8 @@
 #pragma once
 
-#include <cstdlib>
-#include <string>
+#include <iostream>
+#include <vector>
 #include <boost/filesystem.hpp>
-#include "CurrentDirectory.hpp"
 #include "Editor.hpp"
 
 const int MAX_MAP_SIZE=100;

@@ -1,6 +1,5 @@
 #include "Item.hpp"
 
-
 void Item::loadItemData() {
 
     std::ifstream itemsFile(getDataDirectory() + "Items.csv");
