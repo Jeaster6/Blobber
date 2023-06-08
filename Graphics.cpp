@@ -9,8 +9,7 @@ Graphics::Graphics() {
 	surface = NULL;
 	texture = NULL;
 	SDL_Init(SDL_INIT_VIDEO);
-	gameWindow = SDL_CreateWindow("Blobber", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, screenWidth, screenHeight, SDL_WINDOW_SHOWN);
-	gameRenderer = SDL_CreateRenderer(gameWindow, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+	refreshSettings();
 }
 
 Graphics::~Graphics() {
@@ -31,7 +30,7 @@ void Graphics::renderSettings() {
 	renderMenuScreen("Settings.png");
 }
 
-void Graphics::renderMenuScreen(std::string textureFileName) {
+void Graphics::renderMenuScreen(const std::string& textureFileName) {
 	surface = IMG_Load((getTexturesDirectory() + textureFileName).c_str());
 	texture = SDL_CreateTextureFromSurface(gameRenderer, surface);
 
@@ -42,6 +41,12 @@ void Graphics::renderMenuScreen(std::string textureFileName) {
 	surface = NULL;
 	SDL_DestroyTexture(texture);
 	texture = NULL;
+}
+
+void Graphics::refreshSettings() {
+	loadConfigFileData(screenWidth, screenHeight, fieldOfView);
+	gameWindow = SDL_CreateWindow("Blobber", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, screenWidth, screenHeight, SDL_WINDOW_SHOWN);
+	gameRenderer = SDL_CreateRenderer(gameWindow, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
 }
 
 SDL_Renderer* Graphics::getRenderer() {
