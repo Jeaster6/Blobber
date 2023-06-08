@@ -1,8 +1,7 @@
-#include "Game.hpp"
+#include "MainMenu.hpp"
 
 int main() 
 {
-	SDL_SetMainReady();
-	gameplay();
+	openMainMenu();
 	return 0;
 }

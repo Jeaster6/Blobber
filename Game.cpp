@@ -9,8 +9,7 @@ void gameplay() {
     boost::archive::binary_iarchive ia(ifs);
     ia >> gameMap;
 
-    SDL_Window* gWindow=NULL;
-    SDL_Renderer* gRenderer=NULL;
+    SDL_Renderer* gRenderer = Graphics::getInstance().getRenderer();
     SDL_Surface* sideWallSurface=NULL;
     SDL_Surface* frontWallSurface=NULL;
     SDL_Surface* floorSurface=NULL;
@@ -20,6 +19,7 @@ void gameplay() {
     SDL_Texture* frontTexture=NULL;
     SDL_Texture* objectTexture=NULL;
     SDL_Event e;
+    SDL_Rect DestR;
 
     int color;
     int tileWidth;
@@ -27,13 +27,13 @@ void gameplay() {
     int playerX=0;
     int playerY=0;
     int playerDirection=0;
-
+    int gameWidth = 0;
+    int screenWidth = 0;
+    int screenHeight = 0;
+    double fov = 0;
     bool quit=false;
 
-    SDL_Init(SDL_INIT_VIDEO);
-    gWindow=SDL_CreateWindow("Blobber", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
-    gRenderer=SDL_CreateRenderer(gWindow, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
-    SDL_Rect DestR;
+    SDL_RenderClear(gRenderer);
 
 	frontWallSurface=IMG_Load((getTexturesDirectory() + "Front.png").c_str());
 	frontTexture=SDL_CreateTextureFromSurface(gRenderer, frontWallSurface);
@@ -45,15 +45,19 @@ void gameplay() {
 	objectTexture=SDL_CreateTextureFromSurface(gRenderer, objectSurface);
 
     SDL_QueryTexture(frontTexture, NULL, NULL, &tileWidth, &tileHeight);
-    tileWidth=(int)(tileWidth*GAME_WIDTH/2880);
-    tileHeight=(int)(1.3*tileHeight*SCREEN_HEIGHT/2160);
+    screenWidth = Graphics::getInstance().getScreenWidth();
+    screenHeight = Graphics::getInstance().getScreenHeight();
+    fov = Graphics::getInstance().getFOV();
+    gameWidth = (int)(3 * screenWidth / 4);
+    tileWidth=(int)(tileWidth*gameWidth/2880);
+    tileHeight=(int)(1.3*tileHeight*screenHeight/2160);
 
     while (!quit) {
 
         while (SDL_PollEvent(&e)!=0) {
 
             if (e.type==SDL_QUIT) {
-                quit=true;
+                exit(0);
             }
 
             switch (playerDirection) {
@@ -199,13 +203,13 @@ void gameplay() {
             }
 
             SDL_SetRenderDrawColor(gRenderer, 0, 0, 0, 0xFF);
-            SDL_Rect tileRect={0, 0, GAME_WIDTH, SCREEN_HEIGHT};
+            SDL_Rect tileRect={0, 0, gameWidth, screenHeight};
             SDL_RenderFillRect(gRenderer, &tileRect);
 
-            DestR.w=GAME_WIDTH;
-            DestR.h=(int)((SCREEN_HEIGHT-tileHeight*pow(FOV, 7))/2);
+            DestR.w=gameWidth;
+            DestR.h=(int)((screenHeight-tileHeight*pow(fov, 7))/2);
             DestR.x=0;
-            DestR.y=(int)((SCREEN_HEIGHT+tileHeight*pow(FOV, 7))/2);
+            DestR.y=(int)((screenHeight+tileHeight*pow(fov, 7))/2);
             SDL_RenderCopyEx(gRenderer, floorTexture, NULL, &DestR, 0.0, NULL, SDL_FLIP_NONE);
 
             DestR.y=0;
@@ -223,26 +227,26 @@ void gameplay() {
                         for (int i=-j-1; i<=0; i++) {
 
                             if (visibleArea->getTile(i+7, j)->isWalled('W')) {
-                                DestR.x=(int)((GAME_WIDTH-tileWidth*pow(FOV, j))/2+i*tileWidth*pow(FOV, j));
-                                DestR.w=(int)(abs(i)*(tileWidth*pow(FOV, j)-tileWidth*pow(FOV, j+1))+(tileWidth*pow(FOV, j)-tileWidth*pow(FOV, j+1))/2+1);
-                                DestR.h=(int)(tileHeight*pow(FOV, j));
-                                DestR.y=(int)((SCREEN_HEIGHT-tileHeight*pow(FOV, j))/2);
+                                DestR.x=(int)((gameWidth-tileWidth*pow(fov, j))/2+i*tileWidth*pow(fov, j));
+                                DestR.w=(int)(abs(i)*(tileWidth*pow(fov, j)-tileWidth*pow(fov, j+1))+(tileWidth*pow(fov, j)-tileWidth*pow(fov, j+1))/2+1);
+                                DestR.h=(int)(tileHeight*pow(fov, j));
+                                DestR.y=(int)((screenHeight-tileHeight*pow(fov, j))/2);
                                 SDL_RenderCopyEx(gRenderer, wallTexture, NULL, &DestR, 0.0, NULL, SDL_FLIP_NONE);
                             }
 
                             if (visibleArea->getTile(i+7, j)->isWalled('N')) {
-                                DestR.x=(int)((GAME_WIDTH-tileWidth*pow(FOV, j+1))/2+i*tileWidth*pow(FOV, j+1));
-                                DestR.w=(int)(tileWidth*pow(FOV, j+1));
-                                DestR.h=(int)(tileHeight*pow(FOV, j+1));
-                                DestR.y=(int)((SCREEN_HEIGHT-tileHeight*pow(FOV, j+1))/2);
+                                DestR.x=(int)((gameWidth-tileWidth*pow(fov, j+1))/2+i*tileWidth*pow(fov, j+1));
+                                DestR.w=(int)(tileWidth*pow(fov, j+1));
+                                DestR.h=(int)(tileHeight*pow(fov, j+1));
+                                DestR.y=(int)((screenHeight-tileHeight*pow(fov, j+1))/2);
                                 SDL_RenderCopyEx(gRenderer, frontTexture, NULL, &DestR, 0.0, NULL, SDL_FLIP_NONE);
                             }
 
                             if (visibleArea->getTile(i+7, j)->containsObject()) {
-                                DestR.x=(int)((GAME_WIDTH-tileWidth*pow(FOV, j+1))/2+i*tileWidth*pow(FOV, j+1));
-                                DestR.w=(int)(tileWidth*pow(FOV, j+1));
-                                DestR.h=(int)(tileHeight*pow(FOV, j+1));
-                                DestR.y=(int)((SCREEN_HEIGHT-tileHeight*pow(FOV, j+1))/2);
+                                DestR.x=(int)((gameWidth-tileWidth*pow(fov, j+1))/2+i*tileWidth*pow(fov, j+1));
+                                DestR.w=(int)(tileWidth*pow(fov, j+1));
+                                DestR.h=(int)(tileHeight*pow(fov, j+1));
+                                DestR.y=(int)((screenHeight-tileHeight*pow(fov, j+1))/2);
                                 SDL_RenderCopyEx(gRenderer, objectTexture, NULL, &DestR, 0.0, NULL, SDL_FLIP_NONE);
                             }
                         }
@@ -250,26 +254,26 @@ void gameplay() {
                         for (int i=j+1; i>=0; i--) {
 
                             if (visibleArea->getTile(i+7, j)->isWalled('N')) {
-                                DestR.x=(int)((GAME_WIDTH-tileWidth*pow(FOV, j+1))/2+i*tileWidth*pow(FOV, j+1));
-                                DestR.w=(int)(tileWidth*pow(FOV, j+1));
-                                DestR.h=(int)(tileHeight*pow(FOV, j+1));
-                                DestR.y=(int)((SCREEN_HEIGHT-tileHeight*pow(FOV, j+1))/2);
+                                DestR.x=(int)((gameWidth-tileWidth*pow(fov, j+1))/2+i*tileWidth*pow(fov, j+1));
+                                DestR.w=(int)(tileWidth*pow(fov, j+1));
+                                DestR.h=(int)(tileHeight*pow(fov, j+1));
+                                DestR.y=(int)((screenHeight-tileHeight*pow(fov, j+1))/2);
                                 SDL_RenderCopyEx(gRenderer, frontTexture, NULL, &DestR, 0.0, NULL, SDL_FLIP_NONE);
                             }
 
                             if (visibleArea->getTile(i+7, j)->isWalled('E')) {
-                                DestR.x=(int)((GAME_WIDTH+tileWidth*pow(FOV, j+1))/2+i*tileWidth*pow(FOV, j+1));
-                                DestR.w=(int)(abs(i)*(tileWidth*pow(FOV, j)-tileWidth*pow(FOV, j+1))+(tileWidth*pow(FOV, j)-tileWidth*pow(FOV, j+1))/2+1);
-                                DestR.h=(int)(tileHeight*pow(FOV, j));
-                                DestR.y=(int)((SCREEN_HEIGHT-tileHeight*pow(FOV, j))/2);
+                                DestR.x=(int)((gameWidth+tileWidth*pow(fov, j+1))/2+i*tileWidth*pow(fov, j+1));
+                                DestR.w=(int)(abs(i)*(tileWidth*pow(fov, j)-tileWidth*pow(fov, j+1))+(tileWidth*pow(fov, j)-tileWidth*pow(fov, j+1))/2+1);
+                                DestR.h=(int)(tileHeight*pow(fov, j));
+                                DestR.y=(int)((screenHeight-tileHeight*pow(fov, j))/2);
                                 SDL_RenderCopyEx(gRenderer, wallTexture, NULL, &DestR, 0.0, NULL, SDL_FLIP_HORIZONTAL);
                             }
 
                             if (visibleArea->getTile(i+7, j)->containsObject()) {
-                                DestR.x=(int)((GAME_WIDTH-tileWidth*pow(FOV, j+1))/2+i*tileWidth*pow(FOV, j+1));
-                                DestR.w=(int)(tileWidth*pow(FOV, j+1));
-                                DestR.h=(int)(tileHeight*pow(FOV, j+1));
-                                DestR.y=(int)((SCREEN_HEIGHT-tileHeight*pow(FOV, j+1))/2);
+                                DestR.x=(int)((gameWidth-tileWidth*pow(fov, j+1))/2+i*tileWidth*pow(fov, j+1));
+                                DestR.w=(int)(tileWidth*pow(fov, j+1));
+                                DestR.h=(int)(tileHeight*pow(fov, j+1));
+                                DestR.y=(int)((screenHeight-tileHeight*pow(fov, j+1))/2);
                                 SDL_RenderCopyEx(gRenderer, objectTexture, NULL, &DestR, 0.0, NULL, SDL_FLIP_NONE);
                             }
                         }
@@ -280,26 +284,26 @@ void gameplay() {
                         for (int i=-j-1; i<=0; i++) {
 
                             if (visibleArea->getTile(i+7, j)->isWalled('N')) {
-                                DestR.x=(int)((GAME_WIDTH-tileWidth*pow(FOV, j))/2+i*tileWidth*pow(FOV, j));
-                                DestR.w=(int)(abs(i)*(tileWidth*pow(FOV, j)-tileWidth*pow(FOV, j+1))+(tileWidth*pow(FOV, j)-tileWidth*pow(FOV, j+1))/2+1);
-                                DestR.h=(int)(tileHeight*pow(FOV, j));
-                                DestR.y=(int)((SCREEN_HEIGHT-tileHeight*pow(FOV, j))/2);
+                                DestR.x=(int)((gameWidth-tileWidth*pow(fov, j))/2+i*tileWidth*pow(fov, j));
+                                DestR.w=(int)(abs(i)*(tileWidth*pow(fov, j)-tileWidth*pow(fov, j+1))+(tileWidth*pow(fov, j)-tileWidth*pow(fov, j+1))/2+1);
+                                DestR.h=(int)(tileHeight*pow(fov, j));
+                                DestR.y=(int)((screenHeight-tileHeight*pow(fov, j))/2);
                                 SDL_RenderCopyEx(gRenderer, wallTexture, NULL, &DestR, 0.0, NULL, SDL_FLIP_NONE);
                             }
 
                             if (visibleArea->getTile(i+7, j)->isWalled('E')) {
-                                DestR.x=(int)((GAME_WIDTH-tileWidth*pow(FOV, j+1))/2+i*tileWidth*pow(FOV, j+1));
-                                DestR.w=(int)(tileWidth*pow(FOV, j+1));
-                                DestR.h=(int)(tileHeight*pow(FOV, j+1));
-                                DestR.y=(int)((SCREEN_HEIGHT-tileHeight*pow(FOV, j+1))/2);
+                                DestR.x=(int)((gameWidth-tileWidth*pow(fov, j+1))/2+i*tileWidth*pow(fov, j+1));
+                                DestR.w=(int)(tileWidth*pow(fov, j+1));
+                                DestR.h=(int)(tileHeight*pow(fov, j+1));
+                                DestR.y=(int)((screenHeight-tileHeight*pow(fov, j+1))/2);
                                 SDL_RenderCopyEx(gRenderer, frontTexture, NULL, &DestR, 0.0, NULL, SDL_FLIP_NONE);
                             }
 
                             if (visibleArea->getTile(i+7, j)->containsObject()) {
-                                DestR.x=(int)((GAME_WIDTH-tileWidth*pow(FOV, j+1))/2+i*tileWidth*pow(FOV, j+1));
-                                DestR.w=(int)(tileWidth*pow(FOV, j+1));
-                                DestR.h=(int)(tileHeight*pow(FOV, j+1));
-                                DestR.y=(int)((SCREEN_HEIGHT-tileHeight*pow(FOV, j+1))/2);
+                                DestR.x=(int)((gameWidth-tileWidth*pow(fov, j+1))/2+i*tileWidth*pow(fov, j+1));
+                                DestR.w=(int)(tileWidth*pow(fov, j+1));
+                                DestR.h=(int)(tileHeight*pow(fov, j+1));
+                                DestR.y=(int)((screenHeight-tileHeight*pow(fov, j+1))/2);
                                 SDL_RenderCopyEx(gRenderer, objectTexture, NULL, &DestR, 0.0, NULL, SDL_FLIP_NONE);
                             }
                         }
@@ -307,26 +311,26 @@ void gameplay() {
                         for (int i=j+1; i>=0; i--) {
 
                             if (visibleArea->getTile(i+7, j)->isWalled('E')) {
-                                DestR.x=(int)((GAME_WIDTH-tileWidth*pow(FOV, j+1))/2+i*tileWidth*pow(FOV, j+1));
-                                DestR.w=(int)(tileWidth*pow(FOV, j+1));
-                                DestR.h=(int)(tileHeight*pow(FOV, j+1));
-                                DestR.y=(int)((SCREEN_HEIGHT-tileHeight*pow(FOV, j+1))/2);
+                                DestR.x=(int)((gameWidth-tileWidth*pow(fov, j+1))/2+i*tileWidth*pow(fov, j+1));
+                                DestR.w=(int)(tileWidth*pow(fov, j+1));
+                                DestR.h=(int)(tileHeight*pow(fov, j+1));
+                                DestR.y=(int)((screenHeight-tileHeight*pow(fov, j+1))/2);
                                 SDL_RenderCopyEx(gRenderer, frontTexture, NULL, &DestR, 0.0, NULL, SDL_FLIP_NONE);
                             }
 
                             if (visibleArea->getTile(i+7, j)->isWalled('S')) {
-                                DestR.x=(int)((GAME_WIDTH+tileWidth*pow(FOV, j+1))/2+i*tileWidth*pow(FOV, j+1));
-                                DestR.w=(int)(abs(i)*(tileWidth*pow(FOV, j)-tileWidth*pow(FOV, j+1))+(tileWidth*pow(FOV, j)-tileWidth*pow(FOV, j+1))/2+1);
-                                DestR.h=(int)(tileHeight*pow(FOV, j));
-                                DestR.y=(int)((SCREEN_HEIGHT-tileHeight*pow(FOV, j))/2);
+                                DestR.x=(int)((gameWidth+tileWidth*pow(fov, j+1))/2+i*tileWidth*pow(fov, j+1));
+                                DestR.w=(int)(abs(i)*(tileWidth*pow(fov, j)-tileWidth*pow(fov, j+1))+(tileWidth*pow(fov, j)-tileWidth*pow(fov, j+1))/2+1);
+                                DestR.h=(int)(tileHeight*pow(fov, j));
+                                DestR.y=(int)((screenHeight-tileHeight*pow(fov, j))/2);
                                 SDL_RenderCopyEx(gRenderer, wallTexture, NULL, &DestR, 0.0, NULL, SDL_FLIP_HORIZONTAL);
                             }
 
                             if (visibleArea->getTile(i+7, j)->containsObject()) {
-                                DestR.x=(int)((GAME_WIDTH-tileWidth*pow(FOV, j+1))/2+i*tileWidth*pow(FOV, j+1));
-                                DestR.w=(int)(tileWidth*pow(FOV, j+1));
-                                DestR.h=(int)(tileHeight*pow(FOV, j+1));
-                                DestR.y=(int)((SCREEN_HEIGHT-tileHeight*pow(FOV, j+1))/2);
+                                DestR.x=(int)((gameWidth-tileWidth*pow(fov, j+1))/2+i*tileWidth*pow(fov, j+1));
+                                DestR.w=(int)(tileWidth*pow(fov, j+1));
+                                DestR.h=(int)(tileHeight*pow(fov, j+1));
+                                DestR.y=(int)((screenHeight-tileHeight*pow(fov, j+1))/2);
                                 SDL_RenderCopyEx(gRenderer, objectTexture, NULL, &DestR, 0.0, NULL, SDL_FLIP_NONE);
                             }
                         }
@@ -337,26 +341,26 @@ void gameplay() {
                         for (int i=-j-1; i<=0; i++) {
 
                             if (visibleArea->getTile(i+7, j)->isWalled('E')) {
-                                DestR.x=(int)((GAME_WIDTH-tileWidth*pow(FOV, j))/2+i*tileWidth*pow(FOV, j));
-                                DestR.w=(int)(abs(i)*(tileWidth*pow(FOV, j)-tileWidth*pow(FOV, j+1))+(tileWidth*pow(FOV, j)-tileWidth*pow(FOV, j+1))/2+1);
-                                DestR.h=(int)(tileHeight*pow(FOV, j));
-                                DestR.y=(int)((SCREEN_HEIGHT-tileHeight*pow(FOV, j))/2);
+                                DestR.x=(int)((gameWidth-tileWidth*pow(fov, j))/2+i*tileWidth*pow(fov, j));
+                                DestR.w=(int)(abs(i)*(tileWidth*pow(fov, j)-tileWidth*pow(fov, j+1))+(tileWidth*pow(fov, j)-tileWidth*pow(fov, j+1))/2+1);
+                                DestR.h=(int)(tileHeight*pow(fov, j));
+                                DestR.y=(int)((screenHeight-tileHeight*pow(fov, j))/2);
                                 SDL_RenderCopyEx(gRenderer, wallTexture, NULL, &DestR, 0.0, NULL, SDL_FLIP_NONE);
                             }
 
                             if (visibleArea->getTile(i+7, j)->isWalled('S')) {
-                                DestR.x=(int)((GAME_WIDTH-tileWidth*pow(FOV, j+1))/2+i*tileWidth*pow(FOV, j+1));
-                                DestR.w=(int)(tileWidth*pow(FOV, j+1));
-                                DestR.h=(int)(tileHeight*pow(FOV, j+1));
-                                DestR.y=(int)((SCREEN_HEIGHT-tileHeight*pow(FOV, j+1))/2);
+                                DestR.x=(int)((gameWidth-tileWidth*pow(fov, j+1))/2+i*tileWidth*pow(fov, j+1));
+                                DestR.w=(int)(tileWidth*pow(fov, j+1));
+                                DestR.h=(int)(tileHeight*pow(fov, j+1));
+                                DestR.y=(int)((screenHeight-tileHeight*pow(fov, j+1))/2);
                                 SDL_RenderCopyEx(gRenderer, frontTexture, NULL, &DestR, 0.0, NULL, SDL_FLIP_NONE);
                             }
 
                             if (visibleArea->getTile(i+7, j)->containsObject()) {
-                                DestR.x=(int)((GAME_WIDTH-tileWidth*pow(FOV, j+1))/2+i*tileWidth*pow(FOV, j+1));
-                                DestR.w=(int)(tileWidth*pow(FOV, j+1));
-                                DestR.h=(int)(tileHeight*pow(FOV, j+1));
-                                DestR.y=(int)((SCREEN_HEIGHT-tileHeight*pow(FOV, j+1))/2);
+                                DestR.x=(int)((gameWidth-tileWidth*pow(fov, j+1))/2+i*tileWidth*pow(fov, j+1));
+                                DestR.w=(int)(tileWidth*pow(fov, j+1));
+                                DestR.h=(int)(tileHeight*pow(fov, j+1));
+                                DestR.y=(int)((screenHeight-tileHeight*pow(fov, j+1))/2);
                                 SDL_RenderCopyEx(gRenderer, objectTexture, NULL, &DestR, 0.0, NULL, SDL_FLIP_NONE);
                             }
                         }
@@ -364,26 +368,26 @@ void gameplay() {
                         for (int i=j+1; i>=0; i--) {
 
                             if (visibleArea->getTile(i+7, j)->isWalled('S')) {
-                                DestR.x=(int)((GAME_WIDTH-tileWidth*pow(FOV, j+1))/2+i*tileWidth*pow(FOV, j+1));
-                                DestR.w=(int)(tileWidth*pow(FOV, j+1));
-                                DestR.h=(int)(tileHeight*pow(FOV, j+1));
-                                DestR.y=(int)((SCREEN_HEIGHT-tileHeight*pow(FOV, j+1))/2);
+                                DestR.x=(int)((gameWidth-tileWidth*pow(fov, j+1))/2+i*tileWidth*pow(fov, j+1));
+                                DestR.w=(int)(tileWidth*pow(fov, j+1));
+                                DestR.h=(int)(tileHeight*pow(fov, j+1));
+                                DestR.y=(int)((screenHeight-tileHeight*pow(fov, j+1))/2);
                                 SDL_RenderCopyEx(gRenderer, frontTexture, NULL, &DestR, 0.0, NULL, SDL_FLIP_NONE);
                             }
 
                             if (visibleArea->getTile(i+7, j)->isWalled('W')) {
-                                DestR.x=(int)((GAME_WIDTH+tileWidth*pow(FOV, j+1))/2+i*tileWidth*pow(FOV, j+1));
-                                DestR.w=(int)(abs(i)*(tileWidth*pow(FOV, j)-tileWidth*pow(FOV, j+1))+(tileWidth*pow(FOV, j)-tileWidth*pow(FOV, j+1))/2+1);
-                                DestR.h=(int)(tileHeight*pow(FOV, j));
-                                DestR.y=(int)((SCREEN_HEIGHT-tileHeight*pow(FOV, j))/2);
+                                DestR.x=(int)((gameWidth+tileWidth*pow(fov, j+1))/2+i*tileWidth*pow(fov, j+1));
+                                DestR.w=(int)(abs(i)*(tileWidth*pow(fov, j)-tileWidth*pow(fov, j+1))+(tileWidth*pow(fov, j)-tileWidth*pow(fov, j+1))/2+1);
+                                DestR.h=(int)(tileHeight*pow(fov, j));
+                                DestR.y=(int)((screenHeight-tileHeight*pow(fov, j))/2);
                                 SDL_RenderCopyEx(gRenderer, wallTexture, NULL, &DestR, 0.0, NULL, SDL_FLIP_HORIZONTAL);
                             }
 
                             if (visibleArea->getTile(i+7, j)->containsObject()) {
-                                DestR.x=(int)((GAME_WIDTH-tileWidth*pow(FOV, j+1))/2+i*tileWidth*pow(FOV, j+1));
-                                DestR.w=(int)(tileWidth*pow(FOV, j+1));
-                                DestR.h=(int)(tileHeight*pow(FOV, j+1));
-                                DestR.y=(int)((SCREEN_HEIGHT-tileHeight*pow(FOV, j+1))/2);
+                                DestR.x=(int)((gameWidth-tileWidth*pow(fov, j+1))/2+i*tileWidth*pow(fov, j+1));
+                                DestR.w=(int)(tileWidth*pow(fov, j+1));
+                                DestR.h=(int)(tileHeight*pow(fov, j+1));
+                                DestR.y=(int)((screenHeight-tileHeight*pow(fov, j+1))/2);
                                 SDL_RenderCopyEx(gRenderer, objectTexture, NULL, &DestR, 0.0, NULL, SDL_FLIP_NONE);
                             }
                         }
@@ -394,26 +398,26 @@ void gameplay() {
                         for (int i=-j-1; i<=0; i++) {
 
                             if (visibleArea->getTile(i+7, j)->isWalled('S')) {
-                                DestR.x=(int)((GAME_WIDTH-tileWidth*pow(FOV, j))/2+i*tileWidth*pow(FOV, j));
-                                DestR.w=(int)(abs(i)*(tileWidth*pow(FOV, j)-tileWidth*pow(FOV, j+1))+(tileWidth*pow(FOV, j)-tileWidth*pow(FOV, j+1))/2+1);
-                                DestR.h=(int)(tileHeight*pow(FOV, j));
-                                DestR.y=(int)((SCREEN_HEIGHT-tileHeight*pow(FOV, j))/2);
+                                DestR.x=(int)((gameWidth-tileWidth*pow(fov, j))/2+i*tileWidth*pow(fov, j));
+                                DestR.w=(int)(abs(i)*(tileWidth*pow(fov, j)-tileWidth*pow(fov, j+1))+(tileWidth*pow(fov, j)-tileWidth*pow(fov, j+1))/2+1);
+                                DestR.h=(int)(tileHeight*pow(fov, j));
+                                DestR.y=(int)((screenHeight-tileHeight*pow(fov, j))/2);
                                 SDL_RenderCopyEx(gRenderer, wallTexture, NULL, &DestR, 0.0, NULL, SDL_FLIP_NONE);
                             }
 
                             if (visibleArea->getTile(i+7, j)->isWalled('W')) {
-                                DestR.x=(int)((GAME_WIDTH-tileWidth*pow(FOV, j+1))/2+i*tileWidth*pow(FOV, j+1));
-                                DestR.w=(int)(tileWidth*pow(FOV, j+1));
-                                DestR.h=(int)(tileHeight*pow(FOV, j+1));
-                                DestR.y=(int)((SCREEN_HEIGHT-tileHeight*pow(FOV, j+1))/2);
+                                DestR.x=(int)((gameWidth-tileWidth*pow(fov, j+1))/2+i*tileWidth*pow(fov, j+1));
+                                DestR.w=(int)(tileWidth*pow(fov, j+1));
+                                DestR.h=(int)(tileHeight*pow(fov, j+1));
+                                DestR.y=(int)((screenHeight-tileHeight*pow(fov, j+1))/2);
                                 SDL_RenderCopyEx(gRenderer, frontTexture, NULL, &DestR, 0.0, NULL, SDL_FLIP_NONE);
                             }
 
                             if (visibleArea->getTile(i+7, j)->containsObject()) {
-                                DestR.x=(int)((GAME_WIDTH-tileWidth*pow(FOV, j+1))/2+i*tileWidth*pow(FOV, j+1));
-                                DestR.w=(int)(tileWidth*pow(FOV, j+1));
-                                DestR.h=(int)(tileHeight*pow(FOV, j+1));
-                                DestR.y=(int)((SCREEN_HEIGHT-tileHeight*pow(FOV, j+1))/2);
+                                DestR.x=(int)((gameWidth-tileWidth*pow(fov, j+1))/2+i*tileWidth*pow(fov, j+1));
+                                DestR.w=(int)(tileWidth*pow(fov, j+1));
+                                DestR.h=(int)(tileHeight*pow(fov, j+1));
+                                DestR.y=(int)((screenHeight-tileHeight*pow(fov, j+1))/2);
                                 SDL_RenderCopyEx(gRenderer, objectTexture, NULL, &DestR, 0.0, NULL, SDL_FLIP_NONE);
                             }
                         }
@@ -421,26 +425,26 @@ void gameplay() {
                         for (int i=j+1; i>=0; i--) {
 
                             if (visibleArea->getTile(i+7, j)->isWalled('W')) {
-                                DestR.x=(int)((GAME_WIDTH-tileWidth*pow(FOV, j+1))/2+i*tileWidth*pow(FOV, j+1));
-                                DestR.w=(int)(tileWidth*pow(FOV, j+1));
-                                DestR.h=(int)(tileHeight*pow(FOV, j+1));
-                                DestR.y=(int)((SCREEN_HEIGHT-tileHeight*pow(FOV, j+1))/2);
+                                DestR.x=(int)((gameWidth-tileWidth*pow(fov, j+1))/2+i*tileWidth*pow(fov, j+1));
+                                DestR.w=(int)(tileWidth*pow(fov, j+1));
+                                DestR.h=(int)(tileHeight*pow(fov, j+1));
+                                DestR.y=(int)((screenHeight-tileHeight*pow(fov, j+1))/2);
                                 SDL_RenderCopyEx(gRenderer, frontTexture, NULL, &DestR, 0.0, NULL, SDL_FLIP_NONE);
                             }
 
                             if (visibleArea->getTile(i+7, j)->isWalled('N')) {
-                                DestR.x=(int)((GAME_WIDTH+tileWidth*pow(FOV, j+1))/2+i*tileWidth*pow(FOV, j+1));
-                                DestR.w=(int)(abs(i)*(tileWidth*pow(FOV, j)-tileWidth*pow(FOV, j+1))+(tileWidth*pow(FOV, j)-tileWidth*pow(FOV, j+1))/2+1);
-                                DestR.h=(int)(tileHeight*pow(FOV, j));
-                                DestR.y=(int)((SCREEN_HEIGHT-tileHeight*pow(FOV, j))/2);
+                                DestR.x=(int)((gameWidth+tileWidth*pow(fov, j+1))/2+i*tileWidth*pow(fov, j+1));
+                                DestR.w=(int)(abs(i)*(tileWidth*pow(fov, j)-tileWidth*pow(fov, j+1))+(tileWidth*pow(fov, j)-tileWidth*pow(fov, j+1))/2+1);
+                                DestR.h=(int)(tileHeight*pow(fov, j));
+                                DestR.y=(int)((screenHeight-tileHeight*pow(fov, j))/2);
                                 SDL_RenderCopyEx(gRenderer, wallTexture, NULL, &DestR, 0.0, NULL, SDL_FLIP_HORIZONTAL);
                             }
 
                             if (visibleArea->getTile(i+7, j)->containsObject()) {
-                                DestR.x=(int)((GAME_WIDTH-tileWidth*pow(FOV, j+1))/2+i*tileWidth*pow(FOV, j+1));
-                                DestR.w=(int)(tileWidth*pow(FOV, j+1));
-                                DestR.h=(int)(tileHeight*pow(FOV, j+1));
-                                DestR.y=(int)((SCREEN_HEIGHT-tileHeight*pow(FOV, j+1))/2);
+                                DestR.x=(int)((gameWidth-tileWidth*pow(fov, j+1))/2+i*tileWidth*pow(fov, j+1));
+                                DestR.w=(int)(tileWidth*pow(fov, j+1));
+                                DestR.h=(int)(tileHeight*pow(fov, j+1));
+                                DestR.y=(int)((screenHeight-tileHeight*pow(fov, j+1))/2);
                                 SDL_RenderCopyEx(gRenderer, objectTexture, NULL, &DestR, 0.0, NULL, SDL_FLIP_NONE);
                             }
                         }
@@ -448,14 +452,16 @@ void gameplay() {
                 }
             }
 
-            tileRect={GAME_WIDTH, 0, SCREEN_WIDTH-GAME_WIDTH, SCREEN_HEIGHT};
+            tileRect={gameWidth, 0, screenWidth-gameWidth, screenHeight};
             SDL_RenderFillRect(gRenderer, &tileRect);
-            tileRect={0, 0, GAME_WIDTH, 200};
+            tileRect={0, 0, gameWidth, 200};
             SDL_RenderFillRect(gRenderer, &tileRect);
         }
 
         SDL_RenderPresent(gRenderer);
     }
+
+    delete gameMap;
 
 	SDL_FreeSurface(frontWallSurface);
 	frontWallSurface=NULL;
@@ -471,11 +477,4 @@ void gameplay() {
 
     delete visibleArea;
     visibleArea=NULL;
-
-	SDL_DestroyWindow(gWindow);
-	gWindow=NULL;
-
-	IMG_Quit();
-
-	SDL_Quit();
 }
