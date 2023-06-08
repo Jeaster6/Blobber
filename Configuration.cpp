@@ -5,10 +5,6 @@ Configuration& Configuration::getInstance() {
 }
 
 Configuration::Configuration() {
-
-	/*if (configFile.peek() == std::ifstream::traits_type::eof()) {
-		saveChangesToFile();
-	}*/
 	loadDataFromFile();
 }
 
@@ -25,6 +21,9 @@ Configuration::ConfigVariable Configuration::stringToEnum(const std::string& par
 void Configuration::loadDataFromFile() {
 	std::ifstream configFile;
 	configFile.open(getRootDirectory() + "config.cfg");
+
+//if file doesn't exist, create populate it with default values
+
 	if (!configFile || configFile.peek() == std::ifstream::traits_type::eof()) {
 		saveChangesToFile();
 	}
