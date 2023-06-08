@@ -1,11 +1,8 @@
 #pragma once
+#define SDL_MAIN_HANDLED
 
-#include <fstream>
-#include <sstream>
 #include "SDL.h"
 #include "Graphics.hpp"
-#include "CurrentDirectory.hpp"
+#include "Configuration.hpp"
 
 void openSettings();
-void loadConfigFileData(int&, int&, double&);
-void saveChanges(int, int, double);

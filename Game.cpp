@@ -3,35 +3,35 @@
 void gameplay() {
 
     GameMap *gameMap;
-    GameMap *visibleArea=new GameMap(15, 7);
+    GameMap *visibleArea = new GameMap(15, 7);
 
     std::ifstream ifs(getMapsDirectory() + "Map_1.dat");
     boost::archive::binary_iarchive ia(ifs);
     ia >> gameMap;
 
     SDL_Renderer* gRenderer = Graphics::getInstance().getRenderer();
-    SDL_Surface* sideWallSurface=NULL;
-    SDL_Surface* frontWallSurface=NULL;
-    SDL_Surface* floorSurface=NULL;
-    SDL_Surface* objectSurface=NULL;
-    SDL_Texture* wallTexture=NULL;
-    SDL_Texture* floorTexture=NULL;
-    SDL_Texture* frontTexture=NULL;
-    SDL_Texture* objectTexture=NULL;
+    SDL_Surface* sideWallSurface = NULL;
+    SDL_Surface* frontWallSurface = NULL;
+    SDL_Surface* floorSurface = NULL;
+    SDL_Surface* objectSurface = NULL;
+    SDL_Texture* wallTexture = NULL;
+    SDL_Texture* floorTexture = NULL;
+    SDL_Texture* frontTexture = NULL;
+    SDL_Texture* objectTexture = NULL;
     SDL_Event e;
     SDL_Rect DestR;
 
     int color;
     int tileWidth;
     int tileHeight;
-    int playerX=0;
-    int playerY=0;
-    int playerDirection=0;
+    int playerX = 0;
+    int playerY = 0;
+    int playerDirection = 0;
     int gameWidth = 0;
     int screenWidth = 0;
     int screenHeight = 0;
     double fov = 0;
-    bool quit=false;
+    bool quit = false;
 
     SDL_RenderClear(gRenderer);
 
@@ -57,7 +57,7 @@ void gameplay() {
         while (SDL_PollEvent(&e)!=0) {
 
             if (e.type==SDL_QUIT) {
-                exit(0);
+                quit = true;
             }
 
             switch (playerDirection) {

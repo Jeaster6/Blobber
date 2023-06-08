@@ -5,9 +5,10 @@ Graphics& Graphics::getInstance() {
 }
 
 Graphics::Graphics() {
-	SDL_SetMainReady();
 	surface = NULL;
 	texture = NULL;
+
+	SDL_SetMainReady();
 	SDL_Init(SDL_INIT_VIDEO);
 	refreshSettings();
 }
@@ -44,13 +45,21 @@ void Graphics::renderMenuScreen(const std::string& textureFileName) {
 }
 
 void Graphics::refreshSettings() {
-	loadConfigFileData(screenWidth, screenHeight, fieldOfView);
+	SDL_DestroyRenderer(gameRenderer);
+	gameRenderer = NULL;
+	SDL_DestroyWindow(gameWindow);
+	gameWindow = NULL;
+
+	screenWidth = Configuration::getInstance().getScreenWidth();
+	screenHeight = Configuration::getInstance().getScreenHeight();
+	fieldOfView = Configuration::getInstance().getFieldOfView();
+
 	gameWindow = SDL_CreateWindow("Blobber", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, screenWidth, screenHeight, SDL_WINDOW_SHOWN);
 	gameRenderer = SDL_CreateRenderer(gameWindow, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
 }
 
 SDL_Renderer* Graphics::getRenderer() {
-	return this->gameRenderer;
+	return gameRenderer;
 }
 
 int Graphics::getScreenWidth() {

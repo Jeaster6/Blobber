@@ -3,14 +3,13 @@
 void openMainMenu() {
 	bool quit = false;
 	SDL_Event userInput;
-	while (!quit) {
 
+	while (!quit) {
 		Graphics::getInstance().renderMainMenu();
 
 		while (SDL_PollEvent(&userInput)) {
-
 			if (userInput.type == SDL_QUIT) {
-				exit(0);
+				quit = true;
 			}
 
 			if (userInput.type == SDL_KEYDOWN) {
