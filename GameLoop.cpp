@@ -1,4 +1,4 @@
-#include "Game.hpp"
+#include "GameLoop.hpp"
 
 void gameplay() {
 
@@ -24,9 +24,7 @@ void gameplay() {
     int color;
     int tileWidth;
     int tileHeight;
-    int playerX = 0;
-    int playerY = 0;
-    int playerDirection = 0;
+    Player player;
     int gameWidth = 0;
     int screenWidth = 0;
     int screenHeight = 0;
@@ -60,54 +58,54 @@ void gameplay() {
                 quit = true;
             }
 
-            switch (playerDirection) {
-                case 0:
+            switch (player.getDirection()) {
+                case Direction::N:
                     for (int i=0; i<15; i++) {
                         for (int j=0; j<7; j++) {
-                            if (playerY-j<0 || playerX+i-7>=gameMap->getWidth() || playerX+i-7<0) {
+                            if (player.getY() - j<0 || player.getX() + i - 7 >= gameMap->getWidth() || player.getX() + i - 7<0) {
                                 visibleArea->setTile(i, j, true, true, true, true);
                             }
                             else {
-                                visibleArea->setTile(i, j, gameMap->getTile(playerX+i-7, playerY-j));
+                                visibleArea->setTile(i, j, gameMap->getTile(player.getX() +i-7, player.getY() -j));
                             }
                         }
                     }
                     break;
 
-                case 1:
+                case Direction::E:
                     for (int i=0; i<15; i++) {
                         for (int j=0; j<7; j++) {
-                            if (playerX+j>=gameMap->getWidth() || playerY+i-7>=gameMap->getHeight() || playerY+i-7<0) {
+                            if (player.getX() +j>=gameMap->getWidth() || player.getY() +i-7>=gameMap->getHeight() || player.getY() +i-7<0) {
                                 visibleArea->setTile(i, j, true, true, true, true);
                             }
                             else {
-                                visibleArea->setTile(i, j, gameMap->getTile(playerX+j, playerY+i-7));
+                                visibleArea->setTile(i, j, gameMap->getTile(player.getX() +j, player.getY() +i-7));
                             }
                         }
                     }
                     break;
 
-                case 2:
+                case Direction::S:
                     for (int i=0; i<15; i++) {
                         for (int j=0; j<7; j++) {
-                            if (playerY+j>=gameMap->getHeight() || playerX-i+7>=gameMap->getWidth() || playerX-i+7<0) {
+                            if (player.getY() +j>=gameMap->getHeight() || player.getX() -i+7>=gameMap->getWidth() || player.getX() -i+7<0) {
                                 visibleArea->setTile(i, j, true, true, true, true);
                             }
                             else {
-                                visibleArea->setTile(i, j, gameMap->getTile(playerX-i+7, playerY+j));
+                                visibleArea->setTile(i, j, gameMap->getTile(player.getX() -i+7, player.getY() +j));
                             }
                         }
                     }
                     break;
 
-                case 3:
+                case Direction::W:
                     for (int i=0; i<15; i++) {
                         for (int j=0; j<7; j++) {
-                            if (playerX-j<0 || playerY-i+7>=gameMap->getHeight() || playerY-i+7<0) {
+                            if (player.getX() -j<0 || player.getY() -i+7>=gameMap->getHeight() || player.getY() -i+7<0) {
                                 visibleArea->setTile(i, j, true, true, true, true);
                             }
                             else {
-                                visibleArea->setTile(i, j, gameMap->getTile(playerX-j, playerY-i+7));
+                                visibleArea->setTile(i, j, gameMap->getTile(player.getX() -j, player.getY() -i+7));
                             }
                         }
                     }
@@ -115,7 +113,7 @@ void gameplay() {
                 }
 
             if (e.type==SDL_KEYDOWN) {
-
+                Direction targetDirection = player.getDirection();
                 switch (e.key.keysym.sym) {
 
                     case SDLK_ESCAPE:
@@ -123,81 +121,43 @@ void gameplay() {
                         break;
 
                     case SDLK_w:
-                        if (playerDirection==0 && !visibleArea->getTile(7, 0)->isWalled('N')) {
-                            playerY--;
+                        if (visibleArea->getTile(7, 0)->isWalled(targetDirection)) {
+                            break;
                         }
-                        if (playerDirection==1 && !visibleArea->getTile(7, 0)->isWalled('E')) {
-                            playerX++;
-                        }
-                        if (playerDirection==2 && !visibleArea->getTile(7, 0)->isWalled('S')) {
-                            playerY++;
-                        }
-                        if (playerDirection==3 && !visibleArea->getTile(7, 0)->isWalled('W')) {
-                            playerX--;
-                        }
+                        player.moveForward();
                         break;
 
                     case SDLK_a:
-                        if (playerDirection==0 && !visibleArea->getTile(7, 0)->isWalled('W')) {
-                            playerX--;
+                        targetDirection--;
+                        if (visibleArea->getTile(7, 0)->isWalled(targetDirection)) {
+                            break;
                         }
-                        if (playerDirection==1 && !visibleArea->getTile(7, 0)->isWalled('N')) {
-                            playerY--;
-                        }
-                        if (playerDirection==2 && !visibleArea->getTile(7, 0)->isWalled('E')) {
-                            playerX++;
-                        }
-                        if (playerDirection==3 && !visibleArea->getTile(7, 0)->isWalled('S')) {
-                            playerY++;
-                        }
+                        player.moveLeft();
                         break;
 
                     case SDLK_s:
-                        if (playerDirection==0 && !visibleArea->getTile(7, 0)->isWalled('S')) {
-                            playerY++;
+                        targetDirection++;
+                        targetDirection++;
+                        if (visibleArea->getTile(7, 0)->isWalled(targetDirection)) {
+                            break;
                         }
-                        if (playerDirection==1 && !visibleArea->getTile(7, 0)->isWalled('W')) {
-                            playerX--;
-                        }
-                        if (playerDirection==2 && !visibleArea->getTile(7, 0)->isWalled('N')) {
-                            playerY--;
-                        }
-                        if (playerDirection==3 && !visibleArea->getTile(7, 0)->isWalled('E')) {
-                            playerX++;
-                        }
+                        player.moveBackward();
                         break;
 
                     case SDLK_d:
-                        if (playerDirection==0 && !visibleArea->getTile(7, 0)->isWalled('E')) {
-                            playerX++;
+                        targetDirection++;
+                        if (visibleArea->getTile(7, 0)->isWalled(targetDirection)) {
+                            break;
                         }
-                        if (playerDirection==1 && !visibleArea->getTile(7, 0)->isWalled('S')) {
-                            playerY++;
-                        }
-                        if (playerDirection==2 && !visibleArea->getTile(7, 0)->isWalled('W')) {
-                            playerX--;
-                        }
-                        if (playerDirection==3 && !visibleArea->getTile(7, 0)->isWalled('N')) {
-                            playerY--;
-                        }
+                        player.moveRight();
                         break;
 
                     case SDLK_q:
-                        if (playerDirection>0) {
-                            playerDirection--;
-                        }
-                        else {
-                            playerDirection=3;
-                        }
+                        player.turnLeft();
                         break;
 
                     case SDLK_e:
-                        if (playerDirection<3) {
-                            playerDirection++;
-                        }
-                        else {
-                            playerDirection=0;
-                        }
+                        player.turnRight();
                         break;
                 }
             }
@@ -221,12 +181,12 @@ void gameplay() {
                 SDL_SetTextureColorMod(wallTexture, color, color, color);
                 SDL_SetTextureColorMod(frontTexture, color, color, color);
 
-                switch (playerDirection) {
+                switch (player.getDirection()) {
 
-                    case 0:
+                    case Direction::N:
                         for (int i=-j-1; i<=0; i++) {
 
-                            if (visibleArea->getTile(i+7, j)->isWalled('W')) {
+                            if (visibleArea->getTile(i+7, j)->isWalled(Direction::W)) {
                                 DestR.x=(int)((gameWidth-tileWidth*pow(fov, j))/2+i*tileWidth*pow(fov, j));
                                 DestR.w=(int)(abs(i)*(tileWidth*pow(fov, j)-tileWidth*pow(fov, j+1))+(tileWidth*pow(fov, j)-tileWidth*pow(fov, j+1))/2+1);
                                 DestR.h=(int)(tileHeight*pow(fov, j));
@@ -234,7 +194,7 @@ void gameplay() {
                                 SDL_RenderCopyEx(gRenderer, wallTexture, NULL, &DestR, 0.0, NULL, SDL_FLIP_NONE);
                             }
 
-                            if (visibleArea->getTile(i+7, j)->isWalled('N')) {
+                            if (visibleArea->getTile(i+7, j)->isWalled(Direction::N)) {
                                 DestR.x=(int)((gameWidth-tileWidth*pow(fov, j+1))/2+i*tileWidth*pow(fov, j+1));
                                 DestR.w=(int)(tileWidth*pow(fov, j+1));
                                 DestR.h=(int)(tileHeight*pow(fov, j+1));
@@ -253,7 +213,7 @@ void gameplay() {
 
                         for (int i=j+1; i>=0; i--) {
 
-                            if (visibleArea->getTile(i+7, j)->isWalled('N')) {
+                            if (visibleArea->getTile(i+7, j)->isWalled(Direction::N)) {
                                 DestR.x=(int)((gameWidth-tileWidth*pow(fov, j+1))/2+i*tileWidth*pow(fov, j+1));
                                 DestR.w=(int)(tileWidth*pow(fov, j+1));
                                 DestR.h=(int)(tileHeight*pow(fov, j+1));
@@ -261,7 +221,7 @@ void gameplay() {
                                 SDL_RenderCopyEx(gRenderer, frontTexture, NULL, &DestR, 0.0, NULL, SDL_FLIP_NONE);
                             }
 
-                            if (visibleArea->getTile(i+7, j)->isWalled('E')) {
+                            if (visibleArea->getTile(i+7, j)->isWalled(Direction::E)) {
                                 DestR.x=(int)((gameWidth+tileWidth*pow(fov, j+1))/2+i*tileWidth*pow(fov, j+1));
                                 DestR.w=(int)(abs(i)*(tileWidth*pow(fov, j)-tileWidth*pow(fov, j+1))+(tileWidth*pow(fov, j)-tileWidth*pow(fov, j+1))/2+1);
                                 DestR.h=(int)(tileHeight*pow(fov, j));
@@ -279,11 +239,11 @@ void gameplay() {
                         }
                         break;
 
-                    case 1:
+                    case Direction::E:
 
                         for (int i=-j-1; i<=0; i++) {
 
-                            if (visibleArea->getTile(i+7, j)->isWalled('N')) {
+                            if (visibleArea->getTile(i+7, j)->isWalled(Direction::N)) {
                                 DestR.x=(int)((gameWidth-tileWidth*pow(fov, j))/2+i*tileWidth*pow(fov, j));
                                 DestR.w=(int)(abs(i)*(tileWidth*pow(fov, j)-tileWidth*pow(fov, j+1))+(tileWidth*pow(fov, j)-tileWidth*pow(fov, j+1))/2+1);
                                 DestR.h=(int)(tileHeight*pow(fov, j));
@@ -291,7 +251,7 @@ void gameplay() {
                                 SDL_RenderCopyEx(gRenderer, wallTexture, NULL, &DestR, 0.0, NULL, SDL_FLIP_NONE);
                             }
 
-                            if (visibleArea->getTile(i+7, j)->isWalled('E')) {
+                            if (visibleArea->getTile(i+7, j)->isWalled(Direction::E)) {
                                 DestR.x=(int)((gameWidth-tileWidth*pow(fov, j+1))/2+i*tileWidth*pow(fov, j+1));
                                 DestR.w=(int)(tileWidth*pow(fov, j+1));
                                 DestR.h=(int)(tileHeight*pow(fov, j+1));
@@ -310,7 +270,7 @@ void gameplay() {
 
                         for (int i=j+1; i>=0; i--) {
 
-                            if (visibleArea->getTile(i+7, j)->isWalled('E')) {
+                            if (visibleArea->getTile(i+7, j)->isWalled(Direction::E)) {
                                 DestR.x=(int)((gameWidth-tileWidth*pow(fov, j+1))/2+i*tileWidth*pow(fov, j+1));
                                 DestR.w=(int)(tileWidth*pow(fov, j+1));
                                 DestR.h=(int)(tileHeight*pow(fov, j+1));
@@ -318,7 +278,7 @@ void gameplay() {
                                 SDL_RenderCopyEx(gRenderer, frontTexture, NULL, &DestR, 0.0, NULL, SDL_FLIP_NONE);
                             }
 
-                            if (visibleArea->getTile(i+7, j)->isWalled('S')) {
+                            if (visibleArea->getTile(i+7, j)->isWalled(Direction::S)) {
                                 DestR.x=(int)((gameWidth+tileWidth*pow(fov, j+1))/2+i*tileWidth*pow(fov, j+1));
                                 DestR.w=(int)(abs(i)*(tileWidth*pow(fov, j)-tileWidth*pow(fov, j+1))+(tileWidth*pow(fov, j)-tileWidth*pow(fov, j+1))/2+1);
                                 DestR.h=(int)(tileHeight*pow(fov, j));
@@ -336,11 +296,11 @@ void gameplay() {
                         }
                         break;
 
-                    case 2:
+                    case Direction::S:
 
                         for (int i=-j-1; i<=0; i++) {
 
-                            if (visibleArea->getTile(i+7, j)->isWalled('E')) {
+                            if (visibleArea->getTile(i+7, j)->isWalled(Direction::E)) {
                                 DestR.x=(int)((gameWidth-tileWidth*pow(fov, j))/2+i*tileWidth*pow(fov, j));
                                 DestR.w=(int)(abs(i)*(tileWidth*pow(fov, j)-tileWidth*pow(fov, j+1))+(tileWidth*pow(fov, j)-tileWidth*pow(fov, j+1))/2+1);
                                 DestR.h=(int)(tileHeight*pow(fov, j));
@@ -348,7 +308,7 @@ void gameplay() {
                                 SDL_RenderCopyEx(gRenderer, wallTexture, NULL, &DestR, 0.0, NULL, SDL_FLIP_NONE);
                             }
 
-                            if (visibleArea->getTile(i+7, j)->isWalled('S')) {
+                            if (visibleArea->getTile(i+7, j)->isWalled(Direction::S)) {
                                 DestR.x=(int)((gameWidth-tileWidth*pow(fov, j+1))/2+i*tileWidth*pow(fov, j+1));
                                 DestR.w=(int)(tileWidth*pow(fov, j+1));
                                 DestR.h=(int)(tileHeight*pow(fov, j+1));
@@ -367,7 +327,7 @@ void gameplay() {
 
                         for (int i=j+1; i>=0; i--) {
 
-                            if (visibleArea->getTile(i+7, j)->isWalled('S')) {
+                            if (visibleArea->getTile(i+7, j)->isWalled(Direction::S)) {
                                 DestR.x=(int)((gameWidth-tileWidth*pow(fov, j+1))/2+i*tileWidth*pow(fov, j+1));
                                 DestR.w=(int)(tileWidth*pow(fov, j+1));
                                 DestR.h=(int)(tileHeight*pow(fov, j+1));
@@ -375,7 +335,7 @@ void gameplay() {
                                 SDL_RenderCopyEx(gRenderer, frontTexture, NULL, &DestR, 0.0, NULL, SDL_FLIP_NONE);
                             }
 
-                            if (visibleArea->getTile(i+7, j)->isWalled('W')) {
+                            if (visibleArea->getTile(i+7, j)->isWalled(Direction::W)) {
                                 DestR.x=(int)((gameWidth+tileWidth*pow(fov, j+1))/2+i*tileWidth*pow(fov, j+1));
                                 DestR.w=(int)(abs(i)*(tileWidth*pow(fov, j)-tileWidth*pow(fov, j+1))+(tileWidth*pow(fov, j)-tileWidth*pow(fov, j+1))/2+1);
                                 DestR.h=(int)(tileHeight*pow(fov, j));
@@ -393,11 +353,11 @@ void gameplay() {
                         }
                         break;
 
-                    case 3:
+                    case Direction::W:
 
                         for (int i=-j-1; i<=0; i++) {
 
-                            if (visibleArea->getTile(i+7, j)->isWalled('S')) {
+                            if (visibleArea->getTile(i+7, j)->isWalled(Direction::S)) {
                                 DestR.x=(int)((gameWidth-tileWidth*pow(fov, j))/2+i*tileWidth*pow(fov, j));
                                 DestR.w=(int)(abs(i)*(tileWidth*pow(fov, j)-tileWidth*pow(fov, j+1))+(tileWidth*pow(fov, j)-tileWidth*pow(fov, j+1))/2+1);
                                 DestR.h=(int)(tileHeight*pow(fov, j));
@@ -405,7 +365,7 @@ void gameplay() {
                                 SDL_RenderCopyEx(gRenderer, wallTexture, NULL, &DestR, 0.0, NULL, SDL_FLIP_NONE);
                             }
 
-                            if (visibleArea->getTile(i+7, j)->isWalled('W')) {
+                            if (visibleArea->getTile(i+7, j)->isWalled(Direction::W)) {
                                 DestR.x=(int)((gameWidth-tileWidth*pow(fov, j+1))/2+i*tileWidth*pow(fov, j+1));
                                 DestR.w=(int)(tileWidth*pow(fov, j+1));
                                 DestR.h=(int)(tileHeight*pow(fov, j+1));
@@ -424,7 +384,7 @@ void gameplay() {
 
                         for (int i=j+1; i>=0; i--) {
 
-                            if (visibleArea->getTile(i+7, j)->isWalled('W')) {
+                            if (visibleArea->getTile(i+7, j)->isWalled(Direction::W)) {
                                 DestR.x=(int)((gameWidth-tileWidth*pow(fov, j+1))/2+i*tileWidth*pow(fov, j+1));
                                 DestR.w=(int)(tileWidth*pow(fov, j+1));
                                 DestR.h=(int)(tileHeight*pow(fov, j+1));
@@ -432,7 +392,7 @@ void gameplay() {
                                 SDL_RenderCopyEx(gRenderer, frontTexture, NULL, &DestR, 0.0, NULL, SDL_FLIP_NONE);
                             }
 
-                            if (visibleArea->getTile(i+7, j)->isWalled('N')) {
+                            if (visibleArea->getTile(i+7, j)->isWalled(Direction::N)) {
                                 DestR.x=(int)((gameWidth+tileWidth*pow(fov, j+1))/2+i*tileWidth*pow(fov, j+1));
                                 DestR.w=(int)(abs(i)*(tileWidth*pow(fov, j)-tileWidth*pow(fov, j+1))+(tileWidth*pow(fov, j)-tileWidth*pow(fov, j+1))/2+1);
                                 DestR.h=(int)(tileHeight*pow(fov, j));

@@ -42,22 +42,23 @@ void Tile::deSpawnObject() {
     this->mapObject=newObject;
 }
 
-bool Tile::isWalled(char direction) {
+bool Tile::isWalled(Direction direction) {
     switch(direction) {
-        case 'N':
-            return N;
+
+        case Direction::N:
+            return this->N;
             break;
 
-        case 'E':
-            return E;
+        case Direction::E:
+            return this->E;
             break;
 
-        case 'S':
-            return S;
+        case Direction::S:
+            return this->S;
             break;
 
-        case 'W':
-            return W;
+        case Direction::W:
+            return this->W;
             break;
     }
     return true;

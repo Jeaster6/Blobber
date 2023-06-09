@@ -4,6 +4,6 @@
 #include <SDL.h>
 #include "Graphics.hpp"
 #include "SettingsMenu.hpp"
-#include "Game.hpp"
+#include "GameLoop.hpp"
 
 void openMainMenu();

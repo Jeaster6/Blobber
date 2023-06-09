@@ -9,6 +9,8 @@ class Player {
 		int positionY;
 		Direction direction;
 
+		void moveInDirection(Direction);
+
 	public:
 		Player();
 		~Player();
@@ -18,5 +20,8 @@ class Player {
 		Direction getDirection();
 		void turnRight();
 		void turnLeft();
-		void move(Direction);
+		void moveForward();
+		void moveBackward();
+		void moveRight();
+		void moveLeft();
 };

@@ -4,6 +4,7 @@
 #include <SDL.h>
 #include <SDL_image.h>
 #include <fstream>
+#include <iostream>
 #include "CurrentDirectory.hpp"
 #include "GameMap.hpp"
 #include "Graphics.hpp"

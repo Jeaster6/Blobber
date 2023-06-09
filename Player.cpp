@@ -7,7 +7,27 @@ Player::Player() {
 }
 
 Player::~Player() {
+}
 
+void Player::moveInDirection(Direction direction) {
+	switch (direction) {
+
+		case N:
+			positionY--;
+			break;
+
+		case E:
+			positionX++;
+			break;
+
+		case S:
+			positionY++;
+			break;
+
+		case W:
+			positionX--;
+			break;
+	}
 }
 
 int Player::getX() {
@@ -30,6 +50,25 @@ void Player::turnLeft() {
 	direction--;
 }
 
-void Player::move(Direction) {
+void Player::moveForward() {
+	moveInDirection(direction);
+}
 
+void Player::moveBackward() {
+	Direction targetDirection = direction;
+	targetDirection++;
+	targetDirection++;
+	moveInDirection(targetDirection);
+}
+
+void Player::moveRight() {
+	Direction targetDirection = direction;
+	targetDirection++;
+	moveInDirection(targetDirection);
+}
+
+void Player::moveLeft() {
+	Direction targetDirection = direction;
+	targetDirection--;
+	moveInDirection(targetDirection);
 }

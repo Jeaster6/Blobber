@@ -3,6 +3,7 @@
 #include <boost/archive/binary_oarchive.hpp>
 #include <boost/archive/binary_iarchive.hpp>
 #include "MapObject.hpp"
+#include "Direction.hpp"
 
 class Tile {
 
@@ -28,7 +29,7 @@ class Tile {
         void setTile(Tile*);
         void spawnObject(std::string);
         void deSpawnObject();
-        bool isWalled(char);
+        bool isWalled(Direction);
         bool containsObject();
 
         Tile(bool, bool, bool, bool, MapObject);
