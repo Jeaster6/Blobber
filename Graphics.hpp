@@ -10,20 +10,6 @@
 
 class Graphics {
 
-	public:
-		Graphics(const Graphics&) = delete;
-		void operator = (const Graphics&) = delete;
-
-		static Graphics& getInstance();
-		SDL_Renderer* getRenderer();
-		int getScreenWidth();
-		int getScreenHeight();
-		double getFOV();
-
-		void renderMainMenu();
-		void renderSettings();
-		void refreshSettings();
-
 	private:
 		static Graphics graphics;
 		int screenWidth;
@@ -38,4 +24,18 @@ class Graphics {
 		~Graphics();
 
 		void renderMenuScreen(const std::string&);
+
+	public:
+		Graphics(const Graphics&) = delete;
+		void operator = (const Graphics&) = delete;
+
+		static Graphics& getInstance();
+		SDL_Renderer* getRenderer();
+		int getScreenWidth();
+		int getScreenHeight();
+		double getFOV();
+
+		void renderMainMenu();
+		void renderSettings();
+		void refreshSettings();
 };

@@ -16,21 +16,21 @@ void openMainMenu() {
 
 				switch (userInput.key.keysym.sym) {
 
-				case SDLK_ESCAPE:
-					quit = true;
-					break;
+					case SDLK_ESCAPE:
+						quit = true;
+						break;
 
-				case SDLK_n:
-					gameplay();
-					break;
+					case SDLK_n:
+						gameplay();
+						break;
 
-				case SDLK_l:
-					gameplay();
-					break;
+					case SDLK_l:
+						gameplay();
+						break;
 
-				case SDLK_s:
-					openSettings();
-					break;
+					case SDLK_s:
+						openSettings();
+						break;
 				}
 			}
 		}

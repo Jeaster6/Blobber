@@ -19,34 +19,34 @@ void openSettings() {
 			if (userInput.type == SDL_KEYDOWN) {
 				switch (userInput.key.keysym.sym) {
 
-				case SDLK_ESCAPE:
-					quit = true;
-					break;
+					case SDLK_ESCAPE:
+						quit = true;
+						break;
 
-				case SDLK_1:
-					screenWidth = 1600;
-					screenHeight = 900;
-					break;
+					case SDLK_1:
+						screenWidth = 1600;
+						screenHeight = 900;
+						break;
 
-				case SDLK_2:
-					screenWidth = 1920;
-					screenHeight = 1080;
-					break;
+					case SDLK_2:
+						screenWidth = 1920;
+						screenHeight = 1080;
+						break;
 
-				case SDLK_3:
-					screenWidth = 2560;
-					screenHeight = 1440;
-					break;
+					case SDLK_3:
+						screenWidth = 2560;
+						screenHeight = 1440;
+						break;
 
-				case SDLK_RETURN:
-					quit = true;
+					case SDLK_RETURN:
+						quit = true;
 
-					Configuration::getInstance().setScreenWidth(screenWidth);
-					Configuration::getInstance().setScreenHeight(screenHeight);
-					Configuration::getInstance().setFieldOfView(fieldOfView);
+						Configuration::getInstance().setScreenWidth(screenWidth);
+						Configuration::getInstance().setScreenHeight(screenHeight);
+						Configuration::getInstance().setFieldOfView(fieldOfView);
 
-					Graphics::getInstance().refreshSettings();
-					break;
+						Graphics::getInstance().refreshSettings();
+						break;
 				}
 			}
 		}

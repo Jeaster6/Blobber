@@ -7,5 +7,6 @@
 #include "CurrentDirectory.hpp"
 #include "GameMap.hpp"
 #include "Graphics.hpp"
+#include "Player.hpp"
 
 void gameplay();
