@@ -23,37 +23,37 @@ void gameplay() {
     SDL_Event e;
     SDL_Rect DestR;
 
-    int color;
-    int tileWidth;
-    int tileHeight;
+    int color = 0;
+    int tileWidth = 0;
+    int tileHeight = 0;
     int gameWidth = 0;
     int screenWidth = 0;
     int screenHeight = 0;
     double fov = 0;
     bool quit = false;
 
-	frontWallSurface=IMG_Load((getTexturesDirectory() + "Front.png").c_str());
-	frontTexture=SDL_CreateTextureFromSurface(gRenderer, frontWallSurface);
-	sideWallSurface=IMG_Load((getTexturesDirectory() + "Wall.png").c_str());
-	wallTexture=SDL_CreateTextureFromSurface(gRenderer, sideWallSurface);
-	floorSurface=IMG_Load((getTexturesDirectory() + "Floor.png").c_str());
-	floorTexture=SDL_CreateTextureFromSurface(gRenderer, floorSurface);
-	objectSurface=IMG_Load((getTexturesDirectory() + "Object.png").c_str());
-	objectTexture=SDL_CreateTextureFromSurface(gRenderer, objectSurface);
+	frontWallSurface = IMG_Load((getTexturesDirectory() + "Front.png").c_str());
+	frontTexture = SDL_CreateTextureFromSurface(gRenderer, frontWallSurface);
+	sideWallSurface = IMG_Load((getTexturesDirectory() + "Wall.png").c_str());
+	wallTexture = SDL_CreateTextureFromSurface(gRenderer, sideWallSurface);
+	floorSurface = IMG_Load((getTexturesDirectory() + "Floor.png").c_str());
+	floorTexture = SDL_CreateTextureFromSurface(gRenderer, floorSurface);
+	objectSurface = IMG_Load((getTexturesDirectory() + "Object.png").c_str());
+	objectTexture = SDL_CreateTextureFromSurface(gRenderer, objectSurface);
 
     SDL_QueryTexture(frontTexture, NULL, NULL, &tileWidth, &tileHeight);
     screenWidth = Graphics::getInstance().getScreenWidth();
     screenHeight = Graphics::getInstance().getScreenHeight();
     fov = Graphics::getInstance().getFOV();
     gameWidth = (int)(3 * screenWidth / 4);
-    tileWidth=(int)(tileWidth*gameWidth/2880);
-    tileHeight=(int)(1.3*tileHeight*screenHeight/2160);
+    tileWidth = (int)(tileWidth * gameWidth / 2880);
+    tileHeight = (int)(1.3 * tileHeight * screenHeight / 2160);
 
     while (!quit) {
 
-        while (SDL_PollEvent(&e)!=0) {
+        while (SDL_PollEvent(&e) != 0) {
 
-            if (e.type==SDL_QUIT) {
+            if (e.type == SDL_QUIT) {
                 quit = true;
             }
 
@@ -163,7 +163,7 @@ void gameplay() {
 
             SDL_SetRenderDrawColor(gRenderer, 0, 0, 0, 0xFF);
             SDL_RenderClear(gRenderer);
-            SDL_Rect tileRect={0, 0, gameWidth, screenHeight};
+            SDL_Rect tileRect = {0, 0, gameWidth, screenHeight};
             SDL_RenderFillRect(gRenderer, &tileRect);
 
             DestR.w=gameWidth;
@@ -412,29 +412,30 @@ void gameplay() {
                 }
             }
 
-            tileRect={gameWidth, 0, screenWidth-gameWidth, screenHeight};
+            tileRect = {gameWidth, 0, screenWidth-gameWidth, screenHeight};
             SDL_RenderFillRect(gRenderer, &tileRect);
-            tileRect={0, 0, gameWidth, 200};
+            tileRect = {0, 0, gameWidth, 200};
             SDL_RenderFillRect(gRenderer, &tileRect);
         }
 
         SDL_RenderPresent(gRenderer);
     }
 
-    delete gameMap;
-
 	SDL_FreeSurface(frontWallSurface);
-	frontWallSurface=NULL;
+	frontWallSurface = NULL;
 
 	SDL_FreeSurface(sideWallSurface);
-	sideWallSurface=NULL;
+	sideWallSurface = NULL;
 
 	SDL_FreeSurface(floorSurface);
-	floorSurface=NULL;
+	floorSurface = NULL;
 
 	SDL_FreeSurface(objectSurface);
-	objectSurface=NULL;
+	objectSurface = NULL;
+
+    delete gameMap;
+    gameMap = NULL;
 
     delete visibleArea;
-    visibleArea=NULL;
+    visibleArea = NULL;
 }

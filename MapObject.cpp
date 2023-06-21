@@ -13,16 +13,16 @@ void MapObject::removeItems() {
 }
 
 bool MapObject::exists() {
-    return (objectID!="");
+    return (this != NULL);
 }
 
 MapObject::MapObject(std::string objectID) {
-    this->objectID=objectID;
+    this->objectID = objectID;
     addItems({"item1"});
 }
 
 MapObject::MapObject() {
-    objectID="";
+    objectID = "";
     objectContents.clear();
 }
 

@@ -3,6 +3,7 @@
 
 #include <SDL.h>
 #include <SDL_image.h>
+#include "Direction.hpp"
 #include "GameMap.hpp"
 
 const int SCREEN_WIDTH=2560;

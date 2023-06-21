@@ -15,8 +15,8 @@ void Item::loadItemData() {
             row.push_back(word);
         }
 
-        if (row[0]==itemID) {
-            itemName=row[1];
+        if (row[0] == itemID) {
+            itemName = row[1];
             break;
         }
     }
@@ -25,7 +25,7 @@ void Item::loadItemData() {
 }
 
 Item::Item(std::string itemID) {
-    this->itemID=itemID;
+    this->itemID = itemID;
     loadItemData();
 }
 

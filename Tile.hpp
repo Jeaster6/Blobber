@@ -21,10 +21,10 @@ class Tile {
         bool E;
         bool S;
         bool W;
-        MapObject mapObject;
+        MapObject* mapObject;
 
     public:
-        void setWall(char, bool);
+        void setWall(Direction, bool);
         void setTile(bool, bool, bool, bool);
         void setTile(Tile*);
         void spawnObject(std::string);
@@ -32,7 +32,7 @@ class Tile {
         bool isWalled(Direction);
         bool containsObject();
 
-        Tile(bool, bool, bool, bool, MapObject);
+        Tile(bool, bool, bool, bool, MapObject*);
         Tile();
         ~Tile();
 };

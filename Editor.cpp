@@ -37,19 +37,19 @@ void processMouseAction(GameMap* gameMap, SDL_Event mouseEvent) {
                     if ((i<gameMap->getWidth())&&(j<gameMap->getHeight())) {
                         gameMap->setTile(i, j, true, true, true, true);
                         if (i-1>=0 && i==firstX) {
-                            gameMap->setTileWall(i-1, j, 'E', true);
+                            gameMap->setTileWall(i-1, j, Direction::N, true);
                         }
 
                         if (i+1<gameMap->getWidth() && i==lastX) {
-                            gameMap->setTileWall(i+1, j, 'W', true);
+                            gameMap->setTileWall(i+1, j, Direction::W, true);
                         }
 
                         if (j-1>=0 && j==firstY) {
-                            gameMap->setTileWall(i, j-1, 'S', true);
+                            gameMap->setTileWall(i, j-1, Direction::S, true);
                         }
 
                         if (j+1<gameMap->getHeight() && j==lastY) {
-                            gameMap->setTileWall(i, j+1, 'N', true);
+                            gameMap->setTileWall(i, j+1, Direction::N, true);
                         }
                     }
                 }
@@ -62,39 +62,39 @@ void processMouseAction(GameMap* gameMap, SDL_Event mouseEvent) {
                     if ((i<gameMap->getWidth())&&(j<gameMap->getHeight())) {
                         gameMap->setTile(i, j, false, false, false, false);
                         if (i-1>=0) {
-                            if (i==firstX && gameMap->getTile(i-1, j)->isWalled('E')) {
-                                gameMap->setTileWall(i, j, 'W', true);
+                            if (i==firstX && gameMap->getTile(i-1, j)->isWalled(Direction::E)) {
+                                gameMap->setTileWall(i, j, Direction::W, true);
                             }
                         }
                         else {
-                            gameMap->setTileWall(i, j, 'W', true);
+                            gameMap->setTileWall(i, j, Direction::W, true);
                         }
 
                         if (i+1<gameMap->getWidth()) {
-                            if (i==lastX && gameMap->getTile(i+1, j)->isWalled('W')) {
-                                gameMap->setTileWall(i, j, 'E', true);
+                            if (i==lastX && gameMap->getTile(i+1, j)->isWalled(Direction::W)) {
+                                gameMap->setTileWall(i, j, Direction::E, true);
                             }
                         }
                         else {
-                            gameMap->setTileWall(i, j, 'E', true);
+                            gameMap->setTileWall(i, j, Direction::E, true);
                         }
 
                         if (j-1>=0) {
-                            if (j==firstY && gameMap->getTile(i, j-1)->isWalled('S')) {
-                                gameMap->setTileWall(i, j, 'N', true);
+                            if (j==firstY && gameMap->getTile(i, j-1)->isWalled(Direction::S)) {
+                                gameMap->setTileWall(i, j, Direction::N, true);
                             }
                         }
                         else {
-                            gameMap->setTileWall(i, j, 'N', true);
+                            gameMap->setTileWall(i, j, Direction::N, true);
                         }
 
                         if (j+1<gameMap->getHeight()) {
-                            if (j==lastY && gameMap->getTile(i, j+1)->isWalled('N')) {
-                                gameMap->setTileWall(i, j, 'S', true);
+                            if (j==lastY && gameMap->getTile(i, j+1)->isWalled(Direction::N)) {
+                                gameMap->setTileWall(i, j, Direction::S, true);
                             }
                         }
                         else {
-                            gameMap->setTileWall(i, j, 'S', true);
+                            gameMap->setTileWall(i, j, Direction::S, true);
                         }
                     }
                 }
@@ -143,22 +143,22 @@ void runMapEditor(GameMap* gameMap) {
                 SDL_RenderFillRect(gRenderer, &fillRect);
                 SDL_SetRenderDrawColor(gRenderer, 0xAA, 0x66, 0x00, 0xFF);
 
-                if (gameMap->getTile(i, j)->isWalled('N')) {
+                if (gameMap->getTile(i, j)->isWalled(Direction::N)) {
                     numberOfWalls++;
                     fillRect={i*GRID_TILE_SIZE, j*GRID_TILE_SIZE, TILE_SIZE, WALL_THICKNESS};
                     SDL_RenderFillRect(gRenderer, &fillRect);
                 }
-                if (gameMap->getTile(i, j)->isWalled('E')) {
+                if (gameMap->getTile(i, j)->isWalled(Direction::E)) {
                     numberOfWalls++;
                     fillRect={TILE_SIZE-WALL_THICKNESS+i*GRID_TILE_SIZE, j*GRID_TILE_SIZE, WALL_THICKNESS, TILE_SIZE};
                     SDL_RenderFillRect(gRenderer, &fillRect);
                 }
-                if (gameMap->getTile(i, j)->isWalled('S')) {
+                if (gameMap->getTile(i, j)->isWalled(Direction::S)) {
                     numberOfWalls++;
                     fillRect={i*GRID_TILE_SIZE, TILE_SIZE-WALL_THICKNESS+j*GRID_TILE_SIZE, TILE_SIZE, WALL_THICKNESS};
                     SDL_RenderFillRect(gRenderer, &fillRect);
                 }
-                if (gameMap->getTile(i, j)->isWalled('W')) {
+                if (gameMap->getTile(i, j)->isWalled(Direction::W)) {
                     numberOfWalls++;
                     fillRect={i*GRID_TILE_SIZE, j*GRID_TILE_SIZE, WALL_THICKNESS, TILE_SIZE};
                     SDL_RenderFillRect(gRenderer, &fillRect);
