@@ -1,38 +1,43 @@
 #include "Tile.hpp"
 
-void Tile::setWall(Direction direction, bool walled) {
+void Tile::setWall(Direction direction, const std::string& wallType) {
     switch(direction) {
 
         case Direction::N:
-            N = walled;
+            northWallType = wallType;
             break;
 
         case Direction::E:
-            E = walled;
+            eastWallType = wallType;
             break;
 
         case Direction::S:
-            S = walled;
+            southWallType = wallType;
             break;
 
         case Direction::W:
-            W = walled;
+            westWallType = wallType;
             break;
     }
 }
 
-void Tile::setTile(bool N, bool E, bool S, bool W) {
-    this->N = N;
-    this->E = E;
-    this->S = S;
-    this->W = W;
+void Tile::setTile(const std::string& northWallType, const std::string& eastWallType, const std::string& southWallType, const std::string& westWallType, const std::string& floorType, const std::string& ceilingType, MapObject*) {
+    this->northWallType = northWallType;
+    this->eastWallType = eastWallType;
+    this->southWallType = southWallType;
+    this->westWallType = westWallType;
+    this->floorType = floorType;
+    this->ceilingType = ceilingType;
+    this->mapObject = mapObject;
 }
 
 void Tile::setTile(Tile* targetTile) {
-    this->N = targetTile->N;
-    this->E = targetTile->E;
-    this->S = targetTile->S;
-    this->W = targetTile->W;
+    this->northWallType = targetTile->northWallType;
+    this->eastWallType = targetTile->eastWallType;
+    this->southWallType = targetTile->southWallType;
+    this->westWallType = targetTile->westWallType;
+    this->floorType = targetTile->floorType;
+    this->ceilingType = targetTile->ceilingType;
     this->mapObject = targetTile->mapObject;
 }
 
@@ -42,26 +47,26 @@ void Tile::spawnObject(std::string objectID) {
 
 void Tile::deSpawnObject() {
     delete mapObject;
-    mapObject = NULL;
+    mapObject = nullptr;
 }
 
 bool Tile::isWalled(Direction direction) {
     switch(direction) {
 
         case Direction::N:
-            return this->N;
+            return (this->northWallType != "");
             break;
 
         case Direction::E:
-            return this->E;
+            return (this->eastWallType != "");
             break;
 
         case Direction::S:
-            return this->S;
+            return (this->southWallType != "");
             break;
 
         case Direction::W:
-            return this->W;
+            return (this->westWallType != "");
             break;
     }
     return true;
@@ -71,23 +76,90 @@ bool Tile::containsObject() {
     return this->mapObject->exists();
 }
 
-Tile::Tile(bool N, bool E, bool S, bool W, MapObject* mapObject) {
-    this->N = N;
-    this->E = E;
-    this->S = S;
-    this->W = W;
+const std::string& Tile::getWallType(Direction direction) {
+    switch (direction) {
+
+        case Direction::N:
+            return northWallType;
+
+        case Direction::E:
+            return eastWallType;
+
+        case Direction::S:
+            return southWallType;
+
+        case Direction::W:
+            return westWallType;
+    }
+} 
+
+const std::string& Tile::getFloorType() {
+    return floorType;
+}
+
+const std::string& Tile::getCeilingType() {
+    return ceilingType;
+}
+
+const std::string& Tile::getObjectType() {
+    return mapObject->getObjectType();
+}
+
+std::unordered_set <std::string> Tile::getTextures() {
+    textures.clear();
+    if (northWallType != "") {
+        textures.insert(northWallType + "_front");
+        textures.insert(northWallType + "_side");
+    }
+
+    if (eastWallType != "") {
+        textures.insert(eastWallType + "_front");
+        textures.insert(eastWallType + "_side");
+    }
+
+    if (southWallType != "") {
+        textures.insert(southWallType + "_front");
+        textures.insert(southWallType + "_side");
+    }
+
+    if (westWallType != "") {
+        textures.insert(westWallType + "_front");
+        textures.insert(westWallType + "_side");
+    }
+
+    if (floorType != "") {
+        textures.insert(floorType);
+    }
+
+    if (ceilingType != "") {
+        textures.insert(ceilingType);
+    }
+
+    //textures.insert(mapObject->getObjectType());
+    return textures;
+}
+
+Tile::Tile(const std::string& northWallType, const std::string& eastWallType, const std::string& southWallType, const std::string& westWallType, const std::string& floorType, const std::string& ceilingType, MapObject* mapObject) {
+    this->northWallType = northWallType;
+    this->eastWallType = eastWallType;
+    this->southWallType = southWallType;
+    this->westWallType = westWallType;
+    this->floorType = floorType;
+    this->ceilingType = ceilingType;
     this->mapObject = mapObject;
 }
 
-Tile::Tile(){
-    N = true;
-    E = true;
-    S = true;
-    W = true;
-    mapObject = NULL;
+Tile::Tile() {
+    northWallType = "basicWall";
+    eastWallType = "basicWall";
+    southWallType = "basicWall";
+    westWallType = "basicWall";
+    floorType = "basicFloor";
+    ceilingType = "";
+    mapObject = nullptr;
 }
 
-Tile::~Tile(){
+Tile::~Tile() {
     delete mapObject;
-    mapObject = NULL;
+    mapObject = nullptr;
 }

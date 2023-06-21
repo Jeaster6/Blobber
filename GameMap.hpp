@@ -1,10 +1,16 @@
 #pragma once
+#define SDL_MAIN_HANDLED
 
 #include <vector>
+#include <unordered_set>
+#include <map>
 #include <boost/archive/binary_oarchive.hpp>
 #include <boost/archive/binary_iarchive.hpp>
 #include <boost/serialization/vector.hpp>
+#include "SDL.h"
+#include "Graphics.hpp"
 #include "Direction.hpp"
+#include "Player.hpp"
 #include "Tile.hpp"
 
 class GameMap;
@@ -26,17 +32,20 @@ class GameMap {
         int height;
         Tile** map;
         std::vector <Tile> savedTiles;
+        std::map <std::string, SDL_Texture*> textures;
 
         void loadFromVector();
+        void loadTextures();
 
     public:
         Tile* getTile(int, int);
         int getHeight();
         int getWidth();
-        void setTileWall(int, int, Direction, bool);
+        void setTileWall(int, int, Direction, const std::string&);
         void setTile(int, int, Tile*);
-        void setTile(int, int, bool, bool, bool, bool);
+        void setTileWalls(int, int, const std::string&, const std::string&, const std::string&, const std::string&, const std::string&, const std::string&, MapObject*);
         void saveToVector();
+        void renderVisibleArea(Player);
 
         GameMap(int, int);
         GameMap(int, int, std::vector <Tile>);

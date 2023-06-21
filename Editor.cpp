@@ -35,21 +35,21 @@ void processMouseAction(GameMap* gameMap, SDL_Event mouseEvent) {
             for (int i=firstX; i<=lastX; i++) {
                 for (int j=firstY; j<=lastY; j++) {
                     if ((i<gameMap->getWidth())&&(j<gameMap->getHeight())) {
-                        gameMap->setTile(i, j, true, true, true, true);
+                        gameMap->setTileWalls(i, j, "basicWall", "basicWall", "basicWall", "basicWall", "basicFloor", "", NULL);
                         if (i-1>=0 && i==firstX) {
-                            gameMap->setTileWall(i-1, j, Direction::N, true);
+                            gameMap->setTileWall(i-1, j, Direction::N, "basicWall");
                         }
 
                         if (i+1<gameMap->getWidth() && i==lastX) {
-                            gameMap->setTileWall(i+1, j, Direction::W, true);
+                            gameMap->setTileWall(i+1, j, Direction::W, "basicWall");
                         }
 
                         if (j-1>=0 && j==firstY) {
-                            gameMap->setTileWall(i, j-1, Direction::S, true);
+                            gameMap->setTileWall(i, j-1, Direction::S, "basicWall");
                         }
 
                         if (j+1<gameMap->getHeight() && j==lastY) {
-                            gameMap->setTileWall(i, j+1, Direction::N, true);
+                            gameMap->setTileWall(i, j+1, Direction::N, "basicWall");
                         }
                     }
                 }
@@ -60,41 +60,41 @@ void processMouseAction(GameMap* gameMap, SDL_Event mouseEvent) {
             for (int i=firstX; i<=lastX; i++) {
                 for (int j=firstY; j<=lastY; j++) {
                     if ((i<gameMap->getWidth())&&(j<gameMap->getHeight())) {
-                        gameMap->setTile(i, j, false, false, false, false);
+                        gameMap->setTileWalls(i, j, "", "", "", "", "", "", NULL);
                         if (i-1>=0) {
                             if (i==firstX && gameMap->getTile(i-1, j)->isWalled(Direction::E)) {
-                                gameMap->setTileWall(i, j, Direction::W, true);
+                                gameMap->setTileWall(i, j, Direction::W, "basicWall");
                             }
                         }
                         else {
-                            gameMap->setTileWall(i, j, Direction::W, true);
+                            gameMap->setTileWall(i, j, Direction::W, "basicWall");
                         }
 
                         if (i+1<gameMap->getWidth()) {
                             if (i==lastX && gameMap->getTile(i+1, j)->isWalled(Direction::W)) {
-                                gameMap->setTileWall(i, j, Direction::E, true);
+                                gameMap->setTileWall(i, j, Direction::E, "basicWall");
                             }
                         }
                         else {
-                            gameMap->setTileWall(i, j, Direction::E, true);
+                            gameMap->setTileWall(i, j, Direction::E, "basicWall");
                         }
 
                         if (j-1>=0) {
                             if (j==firstY && gameMap->getTile(i, j-1)->isWalled(Direction::S)) {
-                                gameMap->setTileWall(i, j, Direction::N, true);
+                                gameMap->setTileWall(i, j, Direction::N, "basicWall");
                             }
                         }
                         else {
-                            gameMap->setTileWall(i, j, Direction::N, true);
+                            gameMap->setTileWall(i, j, Direction::N, "basicWall");
                         }
 
                         if (j+1<gameMap->getHeight()) {
                             if (j==lastY && gameMap->getTile(i, j+1)->isWalled(Direction::N)) {
-                                gameMap->setTileWall(i, j, Direction::S, true);
+                                gameMap->setTileWall(i, j, Direction::S, "basicWall");
                             }
                         }
                         else {
-                            gameMap->setTileWall(i, j, Direction::S, true);
+                            gameMap->setTileWall(i, j, Direction::S, "basicWall");
                         }
                     }
                 }

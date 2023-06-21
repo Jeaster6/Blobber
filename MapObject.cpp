@@ -13,17 +13,23 @@ void MapObject::removeItems() {
 }
 
 bool MapObject::exists() {
-    return (this != NULL);
+    return (this != nullptr);
+}
+
+const std::string& MapObject::getObjectType() {
+    return type;
 }
 
 MapObject::MapObject(std::string objectID) {
-    this->objectID = objectID;
+    this->ID = objectID;
     addItems({"item1"});
+    type = "Object";
 }
 
 MapObject::MapObject() {
-    objectID = "";
+    ID = "";
     objectContents.clear();
+    type = "";
 }
 
 MapObject::~MapObject() {

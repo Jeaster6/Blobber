@@ -5,8 +5,8 @@ Graphics& Graphics::getInstance() {
 }
 
 Graphics::Graphics() {
-	surface = NULL;
-	texture = NULL;
+	surface = nullptr;
+	texture = nullptr;
 
 	SDL_SetMainReady();
 	SDL_Init(SDL_INIT_VIDEO);
@@ -15,13 +15,13 @@ Graphics::Graphics() {
 
 Graphics::~Graphics() {
 	SDL_FreeSurface(surface);
-	surface = NULL;
+	surface = nullptr;
 	SDL_DestroyTexture(texture);
-	texture = NULL;
+	texture = nullptr;
 	SDL_DestroyRenderer(gameRenderer);
-	gameRenderer = NULL;
+	gameRenderer = nullptr;
 	SDL_DestroyWindow(gameWindow);
-	gameWindow = NULL;
+	gameWindow = nullptr;
 
 	IMG_Quit();
 	SDL_Quit();
@@ -33,20 +33,20 @@ void Graphics::renderFullscreenTexture(const std::string& textureFileName) {
 
 	SDL_SetRenderDrawColor(gameRenderer, 0, 0, 0, 0xFF);
 	SDL_RenderClear(gameRenderer);
-	SDL_RenderCopy(gameRenderer, texture, NULL, NULL);
+	SDL_RenderCopy(gameRenderer, texture, nullptr, nullptr);
 	SDL_RenderPresent(gameRenderer);
 
 	SDL_FreeSurface(surface);
-	surface = NULL;
+	surface = nullptr;
 	SDL_DestroyTexture(texture);
-	texture = NULL;
+	texture = nullptr;
 }
 
 void Graphics::refreshSettings() {
 	SDL_DestroyRenderer(gameRenderer);
-	gameRenderer = NULL;
+	gameRenderer = nullptr;
 	SDL_DestroyWindow(gameWindow);
-	gameWindow = NULL;
+	gameWindow = nullptr;
 
 	screenWidth = Configuration::getInstance().getScreenWidth();
 	screenHeight = Configuration::getInstance().getScreenHeight();
