@@ -11,20 +11,20 @@ inline Direction operator++(Direction& direction, int) {
 	Direction returnValue = direction;
 	switch (direction) {
 
-		case N:
-			direction = E;
+		case Direction::N:
+			direction = Direction::E;
 			break;
 
-		case E:
-			direction = S;
+		case Direction::E:
+			direction = Direction::S;
 			break;
 
-		case S:
-			direction = W;
+		case Direction::S:
+			direction = Direction::W;
 			break;
 
-		case W:
-			direction = N;
+		case Direction::W:
+			direction = Direction::N;
 			break;
 	}
 	return returnValue;
@@ -34,20 +34,20 @@ inline Direction operator--(Direction& direction, int) {
 	Direction returnValue = direction;
 	switch (direction) {
 
-	case N:
-		direction = W;
+	case Direction::N:
+		direction = Direction::W;
 		break;
 
-	case E:
-		direction = N;
+	case Direction::E:
+		direction = Direction::N;
 		break;
 
-	case S:
-		direction = E;
+	case Direction::S:
+		direction = Direction::E;
 		break;
 
-	case W:
-		direction = S;
+	case Direction::W:
+		direction = Direction::S;
 		break;
 	}
 	return returnValue;

@@ -4,6 +4,7 @@
 #include <boost/archive/binary_oarchive.hpp>
 #include <boost/archive/binary_iarchive.hpp>
 #include <boost/serialization/vector.hpp>
+#include "Direction.hpp"
 #include "Tile.hpp"
 
 class GameMap;
@@ -30,8 +31,8 @@ class GameMap {
 
     public:
         Tile* getTile(int, int);
-        const int getHeight();
-        const int getWidth();
+        int getHeight();
+        int getWidth();
         void setTileWall(int, int, char, bool);
         void setTile(int, int, Tile*);
         void setTile(int, int, bool, bool, bool, bool);

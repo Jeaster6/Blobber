@@ -1,5 +1,9 @@
 #include "SettingsMenu.hpp"
 
+void renderSettingsMenu() {
+	Graphics::getInstance().renderFullscreenTexture("Settings.png");
+}
+
 void openSettings() {
 	bool quit = false;
 	int screenWidth = Configuration::getInstance().getScreenWidth();
@@ -9,7 +13,7 @@ void openSettings() {
 	SDL_Event userInput;
 
 	while (!quit) {
-		Graphics::getInstance().renderSettings();
+		renderSettingsMenu();
 
 		while (SDL_PollEvent(&userInput)) {
 			if (userInput.type == SDL_QUIT) {

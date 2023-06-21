@@ -16,10 +16,10 @@ void GameMap::setTile(int x, int y, bool N, bool E, bool S, bool W) {
     gameMap[x][y].setTile(N, E, S, W);
 }
 
-const int GameMap::getHeight() {
+int GameMap::getHeight() {
     return mapHeight;
 }
-const int GameMap::getWidth() {
+int GameMap::getWidth() {
     return mapWidth;
 }
 

@@ -3,7 +3,13 @@
 Player::Player() {
 	positionX = 0;
 	positionY = 0;
-	direction = N;
+	direction = Direction::S;
+}
+
+Player::Player(int positionX, int positionY, Direction direction) {
+	this->positionX = positionX;
+	this->positionY = positionY;
+	this->direction = direction;
 }
 
 Player::~Player() {
@@ -12,19 +18,19 @@ Player::~Player() {
 void Player::moveInDirection(Direction direction) {
 	switch (direction) {
 
-		case N:
+		case Direction::N:
 			positionY--;
 			break;
 
-		case E:
+		case Direction::E:
 			positionX++;
 			break;
 
-		case S:
+		case Direction::S:
 			positionY++;
 			break;
 
-		case W:
+		case Direction::W:
 			positionX--;
 			break;
 	}
@@ -71,4 +77,9 @@ void Player::moveLeft() {
 	Direction targetDirection = direction;
 	targetDirection--;
 	moveInDirection(targetDirection);
+}
+
+void Player::teleportToCoordinates(int positionX, int positionY) {
+	this->positionX = positionX;
+	this->positionY = positionY;
 }

@@ -14,6 +14,10 @@ Graphics::Graphics() {
 }
 
 Graphics::~Graphics() {
+	SDL_FreeSurface(surface);
+	surface = NULL;
+	SDL_DestroyTexture(texture);
+	texture = NULL;
 	SDL_DestroyRenderer(gameRenderer);
 	gameRenderer = NULL;
 	SDL_DestroyWindow(gameWindow);
@@ -23,18 +27,12 @@ Graphics::~Graphics() {
 	SDL_Quit();
 }
 
-void Graphics::renderMainMenu() {
-	renderMenuScreen("Menu.png");
-}
-
-void Graphics::renderSettings() {
-	renderMenuScreen("Settings.png");
-}
-
-void Graphics::renderMenuScreen(const std::string& textureFileName) {
+void Graphics::renderFullscreenTexture(const std::string& textureFileName) {
 	surface = IMG_Load((getTexturesDirectory() + textureFileName).c_str());
 	texture = SDL_CreateTextureFromSurface(gameRenderer, surface);
 
+	SDL_SetRenderDrawColor(gameRenderer, 0, 0, 0, 0xFF);
+	SDL_RenderClear(gameRenderer);
 	SDL_RenderCopy(gameRenderer, texture, NULL, NULL);
 	SDL_RenderPresent(gameRenderer);
 

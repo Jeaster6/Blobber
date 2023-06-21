@@ -13,6 +13,7 @@ class Player {
 
 	public:
 		Player();
+		Player(int, int, Direction);
 		~Player();
 
 		int getX();
@@ -24,4 +25,5 @@ class Player {
 		void moveBackward();
 		void moveRight();
 		void moveLeft();
+		void teleportToCoordinates(int, int);
 };

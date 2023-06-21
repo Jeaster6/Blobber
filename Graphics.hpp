@@ -23,8 +23,6 @@ class Graphics {
 		Graphics();
 		~Graphics();
 
-		void renderMenuScreen(const std::string&);
-
 	public:
 		Graphics(const Graphics&) = delete;
 		void operator = (const Graphics&) = delete;
@@ -34,8 +32,6 @@ class Graphics {
 		int getScreenWidth();
 		int getScreenHeight();
 		double getFOV();
-
-		void renderMainMenu();
-		void renderSettings();
 		void refreshSettings();
+		void renderFullscreenTexture(const std::string&);
 };

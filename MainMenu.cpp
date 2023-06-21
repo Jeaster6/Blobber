@@ -1,11 +1,15 @@
 #include "MainMenu.hpp"
 
+void renderMainMenu() {
+	Graphics::getInstance().renderFullscreenTexture("Menu.png");
+}
+
 void openMainMenu() {
 	bool quit = false;
 	SDL_Event userInput;
 
 	while (!quit) {
-		Graphics::getInstance().renderMainMenu();
+		renderMainMenu();
 
 		while (SDL_PollEvent(&userInput)) {
 			if (userInput.type == SDL_QUIT) {

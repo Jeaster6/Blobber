@@ -9,6 +9,8 @@ void gameplay() {
     boost::archive::binary_iarchive ia(ifs);
     ia >> gameMap;
 
+    Player player(0, 0, S);
+
     SDL_Renderer* gRenderer = Graphics::getInstance().getRenderer();
     SDL_Surface* sideWallSurface = NULL;
     SDL_Surface* frontWallSurface = NULL;
@@ -24,14 +26,11 @@ void gameplay() {
     int color;
     int tileWidth;
     int tileHeight;
-    Player player;
     int gameWidth = 0;
     int screenWidth = 0;
     int screenHeight = 0;
     double fov = 0;
     bool quit = false;
-
-    SDL_RenderClear(gRenderer);
 
 	frontWallSurface=IMG_Load((getTexturesDirectory() + "Front.png").c_str());
 	frontTexture=SDL_CreateTextureFromSurface(gRenderer, frontWallSurface);
@@ -110,59 +109,60 @@ void gameplay() {
                         }
                     }
                     break;
-                }
+            }
 
-            if (e.type==SDL_KEYDOWN) {
+            if (e.type == SDL_KEYDOWN) {
                 Direction targetDirection = player.getDirection();
                 switch (e.key.keysym.sym) {
 
-                    case SDLK_ESCAPE:
-                        quit=true;
-                        break;
+                case SDLK_ESCAPE:
+                    quit = true;
+                    break;
 
-                    case SDLK_w:
-                        if (visibleArea->getTile(7, 0)->isWalled(targetDirection)) {
-                            break;
-                        }
-                        player.moveForward();
+                case SDLK_w:
+                    if (gameMap->getTile(player.getX(), player.getY())->isWalled(targetDirection)) {
                         break;
+                    }
+                    player.moveForward();
+                    break;
 
-                    case SDLK_a:
-                        targetDirection--;
-                        if (visibleArea->getTile(7, 0)->isWalled(targetDirection)) {
-                            break;
-                        }
-                        player.moveLeft();
+                case SDLK_a:
+                    targetDirection--;
+                    if (gameMap->getTile(player.getX(), player.getY())->isWalled(targetDirection)) {
                         break;
+                    }
+                    player.moveLeft();
+                    break;
 
-                    case SDLK_s:
-                        targetDirection++;
-                        targetDirection++;
-                        if (visibleArea->getTile(7, 0)->isWalled(targetDirection)) {
-                            break;
-                        }
-                        player.moveBackward();
+                case SDLK_s:
+                    targetDirection++;
+                    targetDirection++;
+                    if (gameMap->getTile(player.getX(), player.getY())->isWalled(targetDirection)) {
                         break;
+                    }
+                    player.moveBackward();
+                    break;
 
-                    case SDLK_d:
-                        targetDirection++;
-                        if (visibleArea->getTile(7, 0)->isWalled(targetDirection)) {
-                            break;
-                        }
-                        player.moveRight();
+                case SDLK_d:
+                    targetDirection++;
+                    if (gameMap->getTile(player.getX(), player.getY())->isWalled(targetDirection)) {
                         break;
+                    }
+                    player.moveRight();
+                    break;
 
-                    case SDLK_q:
-                        player.turnLeft();
-                        break;
+                case SDLK_q:
+                    player.turnLeft();
+                    break;
 
-                    case SDLK_e:
-                        player.turnRight();
-                        break;
+                case SDLK_e:
+                    player.turnRight();
+                    break;
                 }
             }
 
             SDL_SetRenderDrawColor(gRenderer, 0, 0, 0, 0xFF);
+            SDL_RenderClear(gRenderer);
             SDL_Rect tileRect={0, 0, gameWidth, screenHeight};
             SDL_RenderFillRect(gRenderer, &tileRect);
 
