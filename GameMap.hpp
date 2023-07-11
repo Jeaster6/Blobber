@@ -33,9 +33,12 @@ class GameMap {
         Tile** map;
         std::vector <Tile> savedTiles;
         std::map <std::string, SDL_Texture*> textures;
+        SDL_Texture* previousScreenTexture;
+        SDL_Texture* currentScreenTexture;
 
         void loadFromVector();
         void loadTextures();
+        void generateScreenTexture(Player, SDL_Texture*);
 
     public:
         Tile* getTile(int, int);
@@ -46,6 +49,13 @@ class GameMap {
         void setTileWalls(int, int, const std::string&, const std::string&, const std::string&, const std::string&, const std::string&, const std::string&, MapObject*);
         void saveToVector();
         void renderVisibleArea(Player);
+        void animateLeftRotation(Player);
+        void animateRightRotation(Player);
+        void animateForwardMovement(Player);
+        void animateBackwardMovement(Player);
+        void animateSidestepLeft(Player);
+        void animateSidestepRight(Player);
+        void makeScreenSnapshot(Player);
 
         GameMap(int, int);
         GameMap(int, int, std::vector <Tile>);

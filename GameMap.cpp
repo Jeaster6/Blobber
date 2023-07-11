@@ -44,7 +44,7 @@ void GameMap::loadFromVector() {
 //get texture sets from all tiles and add them into the texture map if not already added
 
 void GameMap::loadTextures() {
-    SDL_Renderer* gRenderer = Graphics::getInstance().getRenderer();
+    SDL_Renderer* renderer = Graphics::getInstance().getRenderer();
     SDL_Surface* surface = nullptr;
 
     for (int i = 0; i < width; i++) {
@@ -54,7 +54,7 @@ void GameMap::loadTextures() {
                 auto it = textures.find(tileTexture);
                 if (it == textures.end()) {
                     surface = IMG_Load((getTexturesDirectory() + tileTexture + ".png").c_str());
-                    textures.insert({ tileTexture, SDL_CreateTextureFromSurface(gRenderer, surface) });
+                    textures.insert({ tileTexture, SDL_CreateTextureFromSurface(renderer, surface) });
                     SDL_FreeSurface(surface);
                     surface = nullptr;
                 }
@@ -65,7 +65,11 @@ void GameMap::loadTextures() {
 
 //calculates and draws textures, which are in players vision cone
 
-void GameMap::renderVisibleArea(Player player) {
+void GameMap::makeScreenSnapshot(Player player) {
+    generateScreenTexture(player, previousScreenTexture);
+}
+
+void GameMap::generateScreenTexture(Player player, SDL_Texture* targetTexture) {
     int color = 0;
     int screenWidth = Graphics::getInstance().getScreenWidth();
     int screenHeight = Graphics::getInstance().getScreenHeight();
@@ -74,21 +78,19 @@ void GameMap::renderVisibleArea(Player player) {
     int tileWidth = (int)(gameWidth);
     int tileHeight = (int)(1.3 * screenHeight);
 
-    SDL_Renderer* gRenderer = Graphics::getInstance().getRenderer();
-    SDL_RenderClear(gRenderer);
-    SDL_SetRenderDrawColor(gRenderer, 0, 0, 0, 0xFF);
-    SDL_Rect tileRect = { 0, 0, screenWidth, screenHeight };
-    SDL_RenderFillRect(gRenderer, &tileRect);
+    SDL_Renderer* renderer = Graphics::getInstance().getRenderer();
+    SDL_SetRenderTarget(renderer, targetTexture);
+    SDL_Rect targetArea = { 0, 0, 0, 0 };
+    SDL_RenderClear(renderer);
 
-    SDL_Rect DestR;
-    DestR.w = gameWidth;
-    DestR.h = (int)((screenHeight - tileHeight * pow(fov, 7)) / 2);
-    DestR.x = 0;
-    DestR.y = (int)((screenHeight + tileHeight * pow(fov, 7)) / 2);
-    SDL_RenderCopyEx(gRenderer, textures.find("basicFloor")->second, nullptr, &DestR, 0.0, nullptr, SDL_FLIP_NONE);
+    targetArea.x = 0;
+    targetArea.y = (int)((screenHeight + tileHeight * pow(fov, 7)) / 2);
+    targetArea.w = gameWidth;
+    targetArea.h = (int)((screenHeight - tileHeight * pow(fov, 7)) / 2);
+    SDL_RenderCopyEx(renderer, textures.find("basicFloor")->second, nullptr, &targetArea, 0.0, nullptr, SDL_FLIP_NONE);
 
-    DestR.y = 0;
-    SDL_RenderCopyEx(gRenderer, textures.find("basicFloor")->second, nullptr, &DestR, 0.0, nullptr, SDL_FLIP_VERTICAL);
+    targetArea.y = 0;
+    SDL_RenderCopyEx(renderer, textures.find("basicFloor")->second, nullptr, &targetArea, 0.0, nullptr, SDL_FLIP_VERTICAL);
 
     Direction leftHandSide = player.getDirection();
     leftHandSide--;
@@ -104,29 +106,29 @@ void GameMap::renderVisibleArea(Player player) {
 
         for (int i = -j - 1; i <= 0; i++) {
 
-            //rotates coordinates to be relative to the direction the player is looking
+            //rotates coordinates to be relative to the direction the player is facing
 
             switch (player.getDirection()) {
 
-                case Direction::N:
-                    x = player.getX() + i;
-                    y = player.getY() - j;
-                    break;
+            case Direction::N:
+                x = player.getX() + i;
+                y = player.getY() - j;
+                break;
 
-                case Direction::E:
-                    x = player.getX() + j;
-                    y = player.getY() + i;
-                    break;
+            case Direction::E:
+                x = player.getX() + j;
+                y = player.getY() + i;
+                break;
 
-                case Direction::S:
-                    x = player.getX() - i;
-                    y = player.getY() + j;
-                    break;
+            case Direction::S:
+                x = player.getX() - i;
+                y = player.getY() + j;
+                break;
 
-                case Direction::W:
-                    x = player.getX() - j;
-                    y = player.getY() - i;
-                    break;
+            case Direction::W:
+                x = player.getX() - j;
+                y = player.getY() - i;
+                break;
             }
 
             if (x < 0 || y < 0 || x >= width || y >= height) {
@@ -134,52 +136,52 @@ void GameMap::renderVisibleArea(Player player) {
             }
 
             if (map[x][y].isWalled(leftHandSide)) {
-                DestR.x = (int)(gameWidth * 0.5 + (i - 0.5) * tileWidth * pow(fov, j));
-                DestR.w = (int)((abs(i) + 0.5) * (tileWidth * pow(fov, j) - tileWidth * pow(fov, j + 1)) + 1);
-                DestR.h = (int)(tileHeight * pow(fov, j));
-                DestR.y = (int)((screenHeight - tileHeight * pow(fov, j)) * 0.5);
-                SDL_RenderCopyEx(gRenderer, textures.find(map[x][y].getWallType(leftHandSide) + "_side")->second, nullptr, &DestR, 0.0, nullptr, SDL_FLIP_NONE);
+                targetArea.x = (int)(gameWidth * 0.5 + (i - 0.5) * tileWidth * pow(fov, j));
+                targetArea.y = (int)((screenHeight - tileHeight * pow(fov, j)) * 0.5);
+                targetArea.w = (int)((abs(i) + 0.5) * (tileWidth * pow(fov, j) - tileWidth * pow(fov, j + 1)) + 1);
+                targetArea.h = (int)(tileHeight * pow(fov, j));
+                SDL_RenderCopyEx(renderer, textures.find(map[x][y].getWallType(leftHandSide) + "_side")->second, nullptr, &targetArea, 0.0, nullptr, SDL_FLIP_NONE);
             }
 
             if (map[x][y].isWalled(player.getDirection())) {
-                DestR.x = (int)(gameWidth * 0.5 + (i - 0.5) * tileWidth * pow(fov, j + 1));
-                DestR.w = (int)(tileWidth * pow(fov, j + 1) + 1);
-                DestR.h = (int)(tileHeight * pow(fov, j + 1));
-                DestR.y = (int)((screenHeight - tileHeight * pow(fov, j + 1)) * 0.5);
-                SDL_RenderCopyEx(gRenderer, textures.find(map[x][y].getWallType(player.getDirection()) + "_front")->second, nullptr, &DestR, 0.0, nullptr, SDL_FLIP_NONE);
+                targetArea.x = (int)(gameWidth * 0.5 + (i - 0.5) * tileWidth * pow(fov, j + 1));
+                targetArea.y = (int)((screenHeight - tileHeight * pow(fov, j + 1)) * 0.5);
+                targetArea.w = (int)(tileWidth * pow(fov, j + 1) + 1);
+                targetArea.h = (int)(tileHeight * pow(fov, j + 1));
+                SDL_RenderCopyEx(renderer, textures.find(map[x][y].getWallType(player.getDirection()) + "_front")->second, nullptr, &targetArea, 0.0, nullptr, SDL_FLIP_NONE);
             }
 
             if (map[x][y].containsObject()) {
-                DestR.x = (int)(gameWidth * 0.5 + (i - 0.5) * tileWidth * pow(fov, j + 1));
-                DestR.w = (int)(tileWidth * pow(fov, j + 1));
-                DestR.h = (int)(tileHeight * pow(fov, j + 1));
-                DestR.y = (int)((screenHeight - tileHeight * pow(fov, j + 1)) * 0.5);
-                SDL_RenderCopyEx(gRenderer, textures.find(map[x][y].getObjectType())->second, nullptr, &DestR, 0.0, nullptr, SDL_FLIP_NONE);
+                targetArea.x = (int)(gameWidth * 0.5 + (i - 0.5) * tileWidth * pow(fov, j + 1));
+                targetArea.y = (int)((screenHeight - tileHeight * pow(fov, j + 1)) * 0.5);
+                targetArea.w = (int)(tileWidth * pow(fov, j + 1));
+                targetArea.h = (int)(tileHeight * pow(fov, j + 1));
+                SDL_RenderCopyEx(renderer, textures.find(map[x][y].getObjectType())->second, nullptr, &targetArea, 0.0, nullptr, SDL_FLIP_NONE);
             }
         }
 
         for (int i = j + 1; i >= 0; i--) {
             switch (player.getDirection()) {
 
-                case Direction::N:
-                    x = player.getX() + i;
-                    y = player.getY() - j;
-                    break;
+            case Direction::N:
+                x = player.getX() + i;
+                y = player.getY() - j;
+                break;
 
-                case Direction::E:
-                    x = player.getX() + j;
-                    y = player.getY() + i;
-                    break;
+            case Direction::E:
+                x = player.getX() + j;
+                y = player.getY() + i;
+                break;
 
-                case Direction::S:
-                    x = player.getX() - i;
-                    y = player.getY() + j;
-                    break;
+            case Direction::S:
+                x = player.getX() - i;
+                y = player.getY() + j;
+                break;
 
-                case Direction::W:
-                    x = player.getX() - j;
-                    y = player.getY() - i;
-                    break;
+            case Direction::W:
+                x = player.getX() - j;
+                y = player.getY() - i;
+                break;
             }
 
             if (x < 0 || y < 0 || x >= width || y >= height) {
@@ -187,40 +189,190 @@ void GameMap::renderVisibleArea(Player player) {
             }
 
             if (map[x][y].isWalled(rightHandSide)) {
-                DestR.x = (int)(gameWidth * 0.5 + (i + 0.5) * tileWidth * pow(fov, j + 1));
-                DestR.w = (int)((abs(i) + 0.5) * (tileWidth * pow(fov, j) - tileWidth * pow(fov, j + 1)) + 1);
-                DestR.h = (int)(tileHeight * pow(fov, j));
-                DestR.y = (int)((screenHeight - tileHeight * pow(fov, j)) * 0.5);
-                SDL_RenderCopyEx(gRenderer, textures.find(map[x][y].getWallType(rightHandSide) + "_side")->second, nullptr, &DestR, 0.0, nullptr, SDL_FLIP_HORIZONTAL);
+                targetArea.x = (int)(gameWidth * 0.5 + (i + 0.5) * tileWidth * pow(fov, j + 1));
+                targetArea.y = (int)((screenHeight - tileHeight * pow(fov, j)) * 0.5);
+                targetArea.w = (int)((abs(i) + 0.5) * (tileWidth * pow(fov, j) - tileWidth * pow(fov, j + 1)) + 1);
+                targetArea.h = (int)(tileHeight * pow(fov, j));
+                SDL_RenderCopyEx(renderer, textures.find(map[x][y].getWallType(rightHandSide) + "_side")->second, nullptr, &targetArea, 0.0, nullptr, SDL_FLIP_HORIZONTAL);
             }
 
             if (map[x][y].isWalled(player.getDirection())) {
-                DestR.x = (int)(gameWidth * 0.5 + (i - 0.5) * tileWidth * pow(fov, j + 1));
-                DestR.w = (int)(tileWidth * pow(fov, j + 1) + 1);
-                DestR.h = (int)(tileHeight * pow(fov, j + 1));
-                DestR.y = (int)((screenHeight - tileHeight * pow(fov, j + 1)) * 0.5);
-                SDL_RenderCopyEx(gRenderer, textures.find(map[x][y].getWallType(player.getDirection()) + "_front")->second, nullptr, &DestR, 0.0, nullptr, SDL_FLIP_NONE);
+                targetArea.x = (int)(gameWidth * 0.5 + (i - 0.5) * tileWidth * pow(fov, j + 1));
+                targetArea.y = (int)((screenHeight - tileHeight * pow(fov, j + 1)) * 0.5);
+                targetArea.w = (int)(tileWidth * pow(fov, j + 1) + 1);
+                targetArea.h = (int)(tileHeight * pow(fov, j + 1));
+                SDL_RenderCopyEx(renderer, textures.find(map[x][y].getWallType(player.getDirection()) + "_front")->second, nullptr, &targetArea, 0.0, nullptr, SDL_FLIP_NONE);
             }
 
             if (map[x][y].containsObject()) {
-                DestR.x = (int)(gameWidth * 0.5 + (i - 0.5) * tileWidth * pow(fov, j + 1));
-                DestR.w = (int)(tileWidth * pow(fov, j + 1));
-                DestR.h = (int)(tileHeight * pow(fov, j + 1));
-                DestR.y = (int)((screenHeight - tileHeight * pow(fov, j + 1)) * 0.5);
-                SDL_RenderCopyEx(gRenderer, textures.find(map[x][y].getObjectType())->second, nullptr, &DestR, 0.0, nullptr, SDL_FLIP_NONE);
+                targetArea.x = (int)(gameWidth * 0.5 + (i - 0.5) * tileWidth * pow(fov, j + 1));
+                targetArea.y = (int)((screenHeight - tileHeight * pow(fov, j + 1)) * 0.5);
+                targetArea.w = (int)(tileWidth * pow(fov, j + 1));
+                targetArea.h = (int)(tileHeight * pow(fov, j + 1));
+                SDL_RenderCopyEx(renderer, textures.find(map[x][y].getObjectType())->second, nullptr, &targetArea, 0.0, nullptr, SDL_FLIP_NONE);
             }
         }
     }
 
-    tileRect = { gameWidth, 0, screenWidth - gameWidth, screenHeight };
-    SDL_RenderFillRect(gRenderer, &tileRect);
-    tileRect = { 0, 0, gameWidth, screenHeight/7 };
-    SDL_RenderFillRect(gRenderer, &tileRect);
+    SDL_SetRenderTarget(renderer, nullptr);
+}
 
-    SDL_RenderPresent(gRenderer);
+void GameMap::animateLeftRotation(Player player) {
+    int screenWidth = Graphics::getInstance().getScreenWidth();
+    int screenHeight = Graphics::getInstance().getScreenHeight();
+    int gameWidth = (int)(3 * screenWidth / 4);
+    int animationFrames = 16;
+    SDL_Renderer* renderer = Graphics::getInstance().getRenderer();
+    SDL_Rect targetArea = { 0, 0, 0, 0 };
+    SDL_Rect sourceArea = { 0, 0, 0, 0 };
+    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0xFF);
+
+    generateScreenTexture(player, currentScreenTexture);
+
+    for (int i = 1; i < animationFrames; i++) {
+        targetArea = { 0, 0, screenWidth, screenHeight };
+        SDL_RenderFillRect(renderer, &targetArea);
+
+        sourceArea = { 0, 0, (gameWidth * abs(i - animationFrames)) / animationFrames, screenHeight };
+        targetArea = { (gameWidth * i) / animationFrames, 0, (gameWidth * abs(i - animationFrames)) / animationFrames, screenHeight };
+        SDL_RenderCopyEx(renderer, previousScreenTexture, &sourceArea, &targetArea, 0.0, nullptr, SDL_FLIP_NONE);
+
+        sourceArea = { (gameWidth * abs(i - animationFrames)) / animationFrames, 0, (gameWidth * i) / animationFrames, screenHeight };
+        targetArea = { 0, 0, (gameWidth * i) / animationFrames, screenHeight };
+        SDL_RenderCopyEx(renderer, currentScreenTexture, &sourceArea, &targetArea, 0.0, nullptr, SDL_FLIP_NONE);
+
+        targetArea = { gameWidth, 0, screenWidth - gameWidth, screenHeight };
+        SDL_RenderFillRect(renderer, &targetArea);
+        targetArea = { 0, 0, gameWidth, screenHeight / 7 };
+        SDL_RenderFillRect(renderer, &targetArea);
+        SDL_RenderPresent(renderer);
+
+        SDL_Delay(200 / animationFrames);
+    }
+}
+
+void GameMap::animateRightRotation(Player player) {
+    int screenWidth = Graphics::getInstance().getScreenWidth();
+    int screenHeight = Graphics::getInstance().getScreenHeight();
+    int gameWidth = (int)(3 * screenWidth / 4);
+    int animationFrames = 16;
+    SDL_Renderer* renderer = Graphics::getInstance().getRenderer();
+    SDL_Rect targetArea = { 0, 0, 0, 0 };
+    SDL_Rect sourceArea = { 0, 0, 0, 0 };
+    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0xFF);
+
+    generateScreenTexture(player, currentScreenTexture);
+
+    for (int i = 1; i < animationFrames; i++) {
+        targetArea = { 0, 0, screenWidth, screenHeight };
+        SDL_RenderFillRect(renderer, &targetArea);
+
+        sourceArea = { (gameWidth * i) / animationFrames, 0, (gameWidth * abs(i - animationFrames)) / animationFrames, screenHeight };
+        targetArea = { 0, 0, (gameWidth * abs(i - animationFrames)) / animationFrames, screenHeight };
+        SDL_RenderCopyEx(renderer, previousScreenTexture, &sourceArea, &targetArea, 0.0, nullptr, SDL_FLIP_NONE);
+
+        sourceArea = { 0, 0, (gameWidth * i) / animationFrames, screenHeight };
+        targetArea = { (gameWidth * abs(i - animationFrames)) / animationFrames, 0, (gameWidth * i) / animationFrames, screenHeight };
+        SDL_RenderCopyEx(renderer, currentScreenTexture, &sourceArea, &targetArea, 0.0, nullptr, SDL_FLIP_NONE);
+
+        targetArea = { gameWidth, 0, screenWidth - gameWidth, screenHeight };
+        SDL_RenderFillRect(renderer, &targetArea);
+        targetArea = { 0, 0, gameWidth, screenHeight / 7 };
+        SDL_RenderFillRect(renderer, &targetArea);
+        SDL_RenderPresent(renderer);
+
+        SDL_Delay(200 / animationFrames);
+    }
+}
+
+void GameMap::animateForwardMovement(Player player) {
+    int screenWidth = Graphics::getInstance().getScreenWidth();
+    int screenHeight = Graphics::getInstance().getScreenHeight();
+    int gameWidth = (int)(3 * screenWidth / 4);
+    int animationFrames = 16;
+    double fov = Graphics::getInstance().getFOV();
+    SDL_Renderer* renderer = Graphics::getInstance().getRenderer();
+    SDL_Rect targetArea = { 0, 0, 0, 0 };
+    SDL_Rect sourceArea = { 0, 0, 0, 0 };
+    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0xFF);
+
+    for (int i = 1; i <= animationFrames; i++) {
+        targetArea = { 0, 0, screenWidth, screenHeight };
+        SDL_RenderFillRect(renderer, &targetArea);
+        sourceArea = { (int)((gameWidth * (1 - fov) * i) / (animationFrames * 2)), (int)((screenHeight * (1 - fov) * i) / (animationFrames * 2)), (int)(gameWidth - ((gameWidth * i * (1 - fov)) / animationFrames)), (int)(screenHeight - ((screenHeight * i * (1 - fov)) / animationFrames)) };
+        targetArea = { 0, 0, gameWidth, screenHeight };
+        SDL_RenderCopyEx(renderer, previousScreenTexture, &sourceArea, &targetArea, 0.0, nullptr, SDL_FLIP_NONE);
+
+        targetArea = { gameWidth, 0, screenWidth - gameWidth, screenHeight };
+        SDL_RenderFillRect(renderer, &targetArea);
+        targetArea = { 0, 0, gameWidth, screenHeight / 7 };
+        SDL_RenderFillRect(renderer, &targetArea);
+        SDL_RenderPresent(renderer);
+
+        SDL_Delay(200 / animationFrames);
+    }
+}
+
+void GameMap::animateBackwardMovement(Player player) {
+    int screenWidth = Graphics::getInstance().getScreenWidth();
+    int screenHeight = Graphics::getInstance().getScreenHeight();
+    int gameWidth = (int)(3 * screenWidth / 4);
+    int animationFrames = 16;
+    double fov = Graphics::getInstance().getFOV();
+    SDL_Renderer* renderer = Graphics::getInstance().getRenderer();
+    SDL_Rect targetArea = { 0, 0, 0, 0 };
+    SDL_Rect sourceArea = { 0, 0, 0, 0 };
+    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0xFF);
+
+    generateScreenTexture(player, currentScreenTexture);
+
+    for (int i = animationFrames - 1; i > 0; i--) {
+        targetArea = { 0, 0, screenWidth, screenHeight };
+        SDL_RenderFillRect(renderer, &targetArea);
+        sourceArea = { (int)((gameWidth * (1 - fov) * i) / (animationFrames * 2)), (int)((screenHeight * (1 - fov) * i) / (animationFrames * 2)), (int)(gameWidth - ((gameWidth * i * (1 - fov)) / animationFrames)), (int)(screenHeight - ((screenHeight * i * (1 - fov)) / animationFrames)) };
+        targetArea = { 0, 0, gameWidth, screenHeight };
+        SDL_RenderCopyEx(renderer, currentScreenTexture, &sourceArea, &targetArea, 0.0, nullptr, SDL_FLIP_NONE);
+
+        targetArea = { gameWidth, 0, screenWidth - gameWidth, screenHeight };
+        SDL_RenderFillRect(renderer, &targetArea);
+        targetArea = { 0, 0, gameWidth, screenHeight / 7 };
+        SDL_RenderFillRect(renderer, &targetArea);
+        SDL_RenderPresent(renderer);
+
+        SDL_Delay(200 / animationFrames);
+    }
+}
+
+void GameMap::animateSidestepLeft(Player player) {
+
+}
+
+void GameMap::animateSidestepRight(Player player) {
+
+}
+
+void GameMap::renderVisibleArea(Player player) {
+    int screenWidth = Graphics::getInstance().getScreenWidth();
+    int screenHeight = Graphics::getInstance().getScreenHeight();
+    int gameWidth = (int)(3 * screenWidth / 4);
+    SDL_Renderer* renderer = Graphics::getInstance().getRenderer();
+    SDL_Rect targetArea = { 0, 0, 0, 0 };
+
+    generateScreenTexture(player, currentScreenTexture);
+
+    targetArea = { 0, 0, screenWidth, screenHeight };
+    SDL_RenderFillRect(renderer, &targetArea);
+    SDL_RenderCopy(renderer, currentScreenTexture, nullptr, nullptr);
+    targetArea = { gameWidth, 0, screenWidth - gameWidth, screenHeight };
+    SDL_RenderFillRect(renderer, &targetArea);
+    targetArea = { 0, 0, gameWidth, screenHeight / 7 };
+    SDL_RenderFillRect(renderer, &targetArea);
+    SDL_RenderPresent(renderer);
 }
 
 GameMap::GameMap(int width, int height) {
+    previousScreenTexture = SDL_CreateTexture(Graphics::getInstance().getRenderer(), SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, Graphics::getInstance().getScreenWidth(), Graphics::getInstance().getScreenHeight());
+    currentScreenTexture = SDL_CreateTexture(Graphics::getInstance().getRenderer(), SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, Graphics::getInstance().getScreenWidth(), Graphics::getInstance().getScreenHeight());
     this->width = width;
     this->height = height;
     savedTiles.clear();
@@ -231,6 +383,8 @@ GameMap::GameMap(int width, int height) {
 }
 
 GameMap::GameMap(int width, int height, std::vector <Tile> savedTiles) {
+    previousScreenTexture = SDL_CreateTexture(Graphics::getInstance().getRenderer(), SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, Graphics::getInstance().getScreenWidth(), Graphics::getInstance().getScreenHeight());
+    currentScreenTexture = SDL_CreateTexture(Graphics::getInstance().getRenderer(), SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, Graphics::getInstance().getScreenWidth(), Graphics::getInstance().getScreenHeight());
     this->width = width;
     this->height = height;
     map = new Tile * [width];
@@ -242,6 +396,12 @@ GameMap::GameMap(int width, int height, std::vector <Tile> savedTiles) {
 }
 
 GameMap::~GameMap() {
+    previousScreenTexture = nullptr;
+    SDL_DestroyTexture(previousScreenTexture);
+
+    currentScreenTexture = nullptr;
+    SDL_DestroyTexture(currentScreenTexture);
+
     for (int i = 0; i < width; i++) {
         delete[] map[i];
         map[i] = nullptr;

@@ -7,7 +7,7 @@ void gameplay() {
     boostArchive >> gameMap;
 
     Player player(0, 0, S);
-    SDL_Renderer* gRenderer = Graphics::getInstance().getRenderer();
+    Direction targetDirection;
     SDL_Event e;
     bool quit = false;
 
@@ -18,7 +18,9 @@ void gameplay() {
             }
 
             if (e.type == SDL_KEYDOWN) {
-                Direction targetDirection = player.getDirection();
+                targetDirection = player.getDirection();
+                gameMap->makeScreenSnapshot(player);
+
                 switch (e.key.keysym.sym) {
 
                     case SDLK_ESCAPE:
@@ -30,6 +32,7 @@ void gameplay() {
                             break;
                         }
                         player.moveForward();
+                        gameMap->animateForwardMovement(player);
                         break;
 
                     case SDLK_a:
@@ -47,6 +50,7 @@ void gameplay() {
                             break;
                         }
                         player.moveBackward();
+                        gameMap->animateBackwardMovement(player);
                         break;
 
                     case SDLK_d:
@@ -59,17 +63,20 @@ void gameplay() {
 
                     case SDLK_q:
                         player.turnLeft();
+                        gameMap->animateLeftRotation(player);
                         break;
 
                     case SDLK_e:
                         player.turnRight();
+                        gameMap->animateRightRotation(player);
                         break;
                 }
             }
+
             gameMap->renderVisibleArea(player);
         }
     }
-    delete gameMap;
 
+    delete gameMap;
     gameMap = nullptr;
 }
