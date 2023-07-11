@@ -296,9 +296,10 @@ void GameMap::animateForwardMovement(Player player) {
     SDL_Rect sourceArea = { 0, 0, 0, 0 };
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0xFF);
 
-    for (int i = 1; i <= animationFrames; i++) {
+    for (int i = 1; i < animationFrames; i++) {
         targetArea = { 0, 0, screenWidth, screenHeight };
         SDL_RenderFillRect(renderer, &targetArea);
+
         sourceArea = { (int)((gameWidth * (1 - fov) * i) / (animationFrames * 2)), (int)((screenHeight * (1 - fov) * i) / (animationFrames * 2)), (int)(gameWidth - ((gameWidth * i * (1 - fov)) / animationFrames)), (int)(screenHeight - ((screenHeight * i * (1 - fov)) / animationFrames)) };
         targetArea = { 0, 0, gameWidth, screenHeight };
         SDL_RenderCopyEx(renderer, previousScreenTexture, &sourceArea, &targetArea, 0.0, nullptr, SDL_FLIP_NONE);
@@ -329,6 +330,7 @@ void GameMap::animateBackwardMovement(Player player) {
     for (int i = animationFrames - 1; i > 0; i--) {
         targetArea = { 0, 0, screenWidth, screenHeight };
         SDL_RenderFillRect(renderer, &targetArea);
+
         sourceArea = { (int)((gameWidth * (1 - fov) * i) / (animationFrames * 2)), (int)((screenHeight * (1 - fov) * i) / (animationFrames * 2)), (int)(gameWidth - ((gameWidth * i * (1 - fov)) / animationFrames)), (int)(screenHeight - ((screenHeight * i * (1 - fov)) / animationFrames)) };
         targetArea = { 0, 0, gameWidth, screenHeight };
         SDL_RenderCopyEx(renderer, currentScreenTexture, &sourceArea, &targetArea, 0.0, nullptr, SDL_FLIP_NONE);
@@ -344,11 +346,73 @@ void GameMap::animateBackwardMovement(Player player) {
 }
 
 void GameMap::animateSidestepLeft(Player player) {
+    int screenWidth = Graphics::getInstance().getScreenWidth();
+    int screenHeight = Graphics::getInstance().getScreenHeight();
+    int gameWidth = (int)(3 * screenWidth / 4);
+    int animationFrames = 16;
+    double fov = Graphics::getInstance().getFOV();
+    SDL_Renderer* renderer = Graphics::getInstance().getRenderer();
+    SDL_Rect targetArea = { 0, 0, 0, 0 };
+    SDL_Rect sourceArea = { 0, 0, 0, 0 };
+    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0xFF);
 
+    generateScreenTexture(player, currentScreenTexture);
+
+    for (int i = 1; i < animationFrames; i++) {
+        targetArea = { 0, 0, screenWidth, screenHeight };
+        SDL_RenderFillRect(renderer, &targetArea);
+
+        sourceArea = { (int)(gameWidth * (1 - fov) * 0.5), 0, (int)((gameWidth * (1 - fov) * 0.5) + ((gameWidth * fov * abs(i - animationFrames)) / animationFrames)), screenHeight };
+        targetArea = { (int)((gameWidth * (1 - fov) * 0.5) + ((gameWidth * fov * i) / animationFrames)), 0, (int)((gameWidth * (1 - fov) * 0.5) + ((gameWidth * fov * abs(i - animationFrames)) / animationFrames)), screenHeight };
+        SDL_RenderCopyEx(renderer, previousScreenTexture, &sourceArea, &targetArea, 0.0, nullptr, SDL_FLIP_NONE);
+
+        sourceArea = { (int)((gameWidth * fov * abs(i - animationFrames)) / animationFrames), 0, (int)((gameWidth * (1 - fov) * 0.5) + ((gameWidth * fov * i) / animationFrames)), screenHeight };
+        targetArea = { 0, 0, (int)((gameWidth * (1 - fov) * 0.5) + ((gameWidth * fov * i) / animationFrames)), screenHeight };
+        SDL_RenderCopyEx(renderer, currentScreenTexture, &sourceArea, &targetArea, 0.0, nullptr, SDL_FLIP_NONE);
+
+        targetArea = { gameWidth, 0, screenWidth - gameWidth, screenHeight };
+        SDL_RenderFillRect(renderer, &targetArea);
+        targetArea = { 0, 0, gameWidth, screenHeight / 7 };
+        SDL_RenderFillRect(renderer, &targetArea);
+        SDL_RenderPresent(renderer);
+
+        SDL_Delay(200 / animationFrames);
+    }
 }
 
 void GameMap::animateSidestepRight(Player player) {
+    int screenWidth = Graphics::getInstance().getScreenWidth();
+    int screenHeight = Graphics::getInstance().getScreenHeight();
+    int gameWidth = (int)(3 * screenWidth / 4);
+    int animationFrames = 16;
+    double fov = Graphics::getInstance().getFOV();
+    SDL_Renderer* renderer = Graphics::getInstance().getRenderer();
+    SDL_Rect targetArea = { 0, 0, 0, 0 };
+    SDL_Rect sourceArea = { 0, 0, 0, 0 };
+    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0xFF);
 
+    generateScreenTexture(player, currentScreenTexture);
+
+    for (int i = animationFrames - 1; i > 0; i--) {
+        targetArea = { 0, 0, screenWidth, screenHeight };
+        SDL_RenderFillRect(renderer, &targetArea);
+
+        sourceArea = { (int)((gameWidth * fov * abs(i - animationFrames)) / animationFrames), 0, (int)((gameWidth * (1 - fov) * 0.5) + ((gameWidth * fov * i) / animationFrames)), screenHeight };
+        targetArea = { 0, 0, (int)((gameWidth * (1 - fov) * 0.5) + ((gameWidth * fov * i) / animationFrames)), screenHeight };
+        SDL_RenderCopyEx(renderer, previousScreenTexture, &sourceArea, &targetArea, 0.0, nullptr, SDL_FLIP_NONE);
+
+        sourceArea = { (int)(gameWidth * (1 - fov) * 0.5), 0, (int)((gameWidth * (1 - fov) * 0.5) + ((gameWidth * fov * abs(i - animationFrames)) / animationFrames)), screenHeight };
+        targetArea = { (int)((gameWidth * (1 - fov) * 0.5) + ((gameWidth * fov * i) / animationFrames)), 0, (int)((gameWidth * (1 - fov) * 0.5) + ((gameWidth * fov * abs(i - animationFrames)) / animationFrames)), screenHeight };
+        SDL_RenderCopyEx(renderer, currentScreenTexture, &sourceArea, &targetArea, 0.0, nullptr, SDL_FLIP_NONE);
+
+        targetArea = { gameWidth, 0, screenWidth - gameWidth, screenHeight };
+        SDL_RenderFillRect(renderer, &targetArea);
+        targetArea = { 0, 0, gameWidth, screenHeight / 7 };
+        SDL_RenderFillRect(renderer, &targetArea);
+        SDL_RenderPresent(renderer);
+
+        SDL_Delay(200 / animationFrames);
+    }
 }
 
 void GameMap::renderVisibleArea(Player player) {
@@ -357,6 +421,7 @@ void GameMap::renderVisibleArea(Player player) {
     int gameWidth = (int)(3 * screenWidth / 4);
     SDL_Renderer* renderer = Graphics::getInstance().getRenderer();
     SDL_Rect targetArea = { 0, 0, 0, 0 };
+    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0xFF);
 
     generateScreenTexture(player, currentScreenTexture);
 

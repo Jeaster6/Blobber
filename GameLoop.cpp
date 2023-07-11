@@ -41,6 +41,7 @@ void gameplay() {
                             break;
                         }
                         player.moveLeft();
+                        gameMap->animateSidestepLeft(player);
                         break;
 
                     case SDLK_s:
@@ -59,6 +60,7 @@ void gameplay() {
                             break;
                         }
                         player.moveRight();
+                        gameMap->animateSidestepRight(player);
                         break;
 
                     case SDLK_q:
