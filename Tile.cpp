@@ -72,6 +72,14 @@ bool Tile::isWalled(Direction direction) {
     return true;
 }
 
+bool Tile::hasFloor() {
+    return (this->floorType != "");
+}
+
+bool Tile::hasCeiling() {
+    return (this->ceilingType != "");
+}
+
 bool Tile::containsObject() {
     return this->mapObject->exists();
 }
@@ -90,6 +98,10 @@ const std::string& Tile::getWallType(Direction direction) {
 
         case Direction::W:
             return westWallType;
+
+        default:
+            static const std::string& emptyString = "";
+            return emptyString;
     }
 } 
 
@@ -108,23 +120,19 @@ const std::string& Tile::getObjectType() {
 std::unordered_set <std::string> Tile::getTextures() {
     textures.clear();
     if (northWallType != "") {
-        textures.insert(northWallType + "_front");
-        textures.insert(northWallType + "_side");
+        textures.insert(northWallType);
     }
 
     if (eastWallType != "") {
-        textures.insert(eastWallType + "_front");
-        textures.insert(eastWallType + "_side");
+        textures.insert(eastWallType);
     }
 
     if (southWallType != "") {
-        textures.insert(southWallType + "_front");
-        textures.insert(southWallType + "_side");
+        textures.insert(southWallType);
     }
 
     if (westWallType != "") {
-        textures.insert(westWallType + "_front");
-        textures.insert(westWallType + "_side");
+        textures.insert(westWallType);
     }
 
     if (floorType != "") {
@@ -154,7 +162,7 @@ Tile::Tile() {
     eastWallType = "basicWall";
     southWallType = "basicWall";
     westWallType = "basicWall";
-    floorType = "basicFloor";
+    floorType = "";
     ceilingType = "";
     mapObject = nullptr;
 }

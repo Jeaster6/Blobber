@@ -4,6 +4,7 @@
 #include <SDL.h>
 #include <SDL_image.h>
 #include <string>
+#include <array>
 #include "Configuration.hpp"
 #include "SettingsMenu.hpp"
 #include "CurrentDirectory.hpp"
@@ -12,9 +13,9 @@ class Graphics {
 
 	private:
 		static Graphics graphics;
-		int screenWidth;
-		int screenHeight;
-		double fieldOfView;
+		float screenWidth;
+		float screenHeight;
+		float fieldOfView;
 		SDL_Window* gameWindow;
 		SDL_Renderer* gameRenderer;
 		SDL_Surface* surface;
@@ -29,9 +30,10 @@ class Graphics {
 
 		static Graphics& getInstance();
 		SDL_Renderer* getRenderer();
-		int getScreenWidth();
-		int getScreenHeight();
-		double getFOV();
+		float getScreenWidth();
+		float getScreenHeight();
+		float getFOV();
 		void refreshSettings();
 		void renderFullscreenTexture(const std::string&);
+		void renderTextureUsingVertices(SDL_Texture*, const std::array<std::pair<float, float>, 4>&);
 };

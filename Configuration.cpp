@@ -40,15 +40,15 @@ void Configuration::loadDataFromFile() {
 		switch (parameterName) {
 
 		case ScreenWidth:
-			screenWidth = std::stoi(parameterValue);
+			screenWidth = std::stof(parameterValue);
 			break;
 
 		case ScreenHeight:
-			screenHeight = std::stoi(parameterValue);
+			screenHeight = std::stof(parameterValue);
 			break;
 
 		case FieldOfView:
-			fieldOfView = std::stod(parameterValue);
+			fieldOfView = std::stof(parameterValue);
 			break;
 
 		case UnrecognizedVariable:
@@ -67,29 +67,29 @@ void Configuration::saveChangesToFile() {
 	configFile.close();
 }
 
-int Configuration::getScreenWidth() {
+float Configuration::getScreenWidth() {
 	return screenWidth;
 }
 
-int Configuration::getScreenHeight() {
+float Configuration::getScreenHeight() {
 	return screenHeight;
 }
 
-double Configuration::getFieldOfView() {
+float Configuration::getFieldOfView() {
 	return fieldOfView;
 }
 
-void Configuration::setScreenWidth(int screenWidth) {
+void Configuration::setScreenWidth(float screenWidth) {
 	this->screenWidth = screenWidth;
 	saveChangesToFile();
 }
 
-void Configuration::setScreenHeight(int screenHeight) {
+void Configuration::setScreenHeight(float screenHeight) {
 	this->screenHeight = screenHeight;
 	saveChangesToFile();
 }
 
-void Configuration::setFieldOfView(double fieldOfView) {
+void Configuration::setFieldOfView(float fieldOfView) {
 	this->fieldOfView = fieldOfView;
 	saveChangesToFile();
 }

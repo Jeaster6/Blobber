@@ -37,6 +37,8 @@ class Tile {
         void spawnObject(std::string);
         void deSpawnObject();
         bool isWalled(Direction);
+        bool hasFloor();
+        bool hasCeiling();
         bool containsObject();
         const std::string& getWallType(Direction);
         const std::string& getFloorType();

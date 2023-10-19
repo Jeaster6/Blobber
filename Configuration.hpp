@@ -19,9 +19,9 @@ class Configuration {
 		};
 
 		static Configuration configuration;
-		int screenWidth = 1920;
-		int screenHeight = 1080;
-		double fieldOfView = 0.65;
+		float screenWidth = 1920;
+		float screenHeight = 1080;
+		float fieldOfView = 0.65f;
 
 		Configuration();
 		~Configuration();
@@ -35,11 +35,11 @@ class Configuration {
 		void operator = (const Configuration&) = delete;
 
 		static Configuration& getInstance();
-		int getScreenWidth();
-		int getScreenHeight();
-		double getFieldOfView();
+		float getScreenWidth();
+		float getScreenHeight();
+		float getFieldOfView();
 
-		void setScreenWidth(int);
-		void setScreenHeight(int);
-		void setFieldOfView(double);
+		void setScreenWidth(float);
+		void setScreenHeight(float);
+		void setFieldOfView(float);
 };

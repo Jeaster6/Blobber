@@ -70,27 +70,17 @@ void GameMap::makeScreenSnapshot(Player player) {
 }
 
 void GameMap::generateScreenTexture(Player player, SDL_Texture* targetTexture) {
-    int color = 0;
-    int screenWidth = Graphics::getInstance().getScreenWidth();
-    int screenHeight = Graphics::getInstance().getScreenHeight();
-    double fov = Graphics::getInstance().getFOV();
-    int gameWidth = (int)(3 * screenWidth / 4);
-    int tileWidth = (int)(gameWidth);
-    int tileHeight = (int)(1.3 * screenHeight);
+    float screenWidth = Graphics::getInstance().getScreenWidth();
+    float screenHeight = Graphics::getInstance().getScreenHeight();
+    float fov = Graphics::getInstance().getFOV();
+    float gameWidth = 3 * screenWidth / 4;
+    float tileWidth = gameWidth;
+    float tileHeight = 1.3f * screenHeight;
 
     SDL_Renderer* renderer = Graphics::getInstance().getRenderer();
     SDL_SetRenderTarget(renderer, targetTexture);
     SDL_Rect targetArea = { 0, 0, 0, 0 };
     SDL_RenderClear(renderer);
-
-    targetArea.x = 0;
-    targetArea.y = (int)((screenHeight + tileHeight * pow(fov, 7)) / 2);
-    targetArea.w = gameWidth;
-    targetArea.h = (int)((screenHeight - tileHeight * pow(fov, 7)) / 2);
-    SDL_RenderCopyEx(renderer, textures.find("basicFloor")->second, nullptr, &targetArea, 0.0, nullptr, SDL_FLIP_NONE);
-
-    targetArea.y = 0;
-    SDL_RenderCopyEx(renderer, textures.find("basicFloor")->second, nullptr, &targetArea, 0.0, nullptr, SDL_FLIP_VERTICAL);
 
     Direction leftHandSide = player.getDirection();
     leftHandSide--;
@@ -100,11 +90,11 @@ void GameMap::generateScreenTexture(Player player, SDL_Texture* targetTexture) {
     int y = 0;
 
     for (int j = 6; j >= 0; j--) {
-        color = (int)(255 * pow(0.55, j));
-        SDL_SetTextureColorMod(textures.find("basicWall_side")->second, color, color, color);
-        SDL_SetTextureColorMod(textures.find("basicWall_front")->second, color, color, color);
+        //int color = (int)(255 * pow(0.55, j));
+        /*SDL_SetTextureColorMod(textures.find("basicWall_side")->second, color, color, color);
+        SDL_SetTextureColorMod(textures.find("basicWall_front")->second, color, color, color);*/
 
-        for (int i = -j - 1; i <= 0; i++) {
+        for (int i = -j - 3; i <= 0; i++) {
 
             //rotates coordinates to be relative to the direction the player is facing
 
@@ -135,20 +125,68 @@ void GameMap::generateScreenTexture(Player player, SDL_Texture* targetTexture) {
                 continue;
             }
 
+            if (map[x][y].hasFloor()) {
+                float x1 = (float)(gameWidth * 0.5 + (i - 0.5) * tileWidth * pow(fov, j + 1));
+                float x2 = (float)(x1 + tileWidth * pow(fov, j + 1));
+                float x3 = (float)(gameWidth * 0.5 + (i - 0.5) * tileWidth * pow(fov, j));
+                float x4 = (float)(x3 + tileWidth * pow(fov, j));
+
+                float y1 = (float)((screenHeight + tileHeight * pow(fov, j + 1)) * 0.5);
+                float y2 = (float)((screenHeight + tileHeight * pow(fov, j + 1)) * 0.5);
+                float y3 = (float)((screenHeight + tileHeight * pow(fov, j)) * 0.5);
+                float y4 = (float)((screenHeight + tileHeight * pow(fov, j)) * 0.5);
+
+                std::array<std::pair<float, float>, 4> vertextCollection = { { { x1, y1 }, { x2, y2 }, { x3, y3 }, { x4, y4 } } };
+
+                Graphics::getInstance().renderTextureUsingVertices(textures.find(map[x][y].getFloorType())->second, vertextCollection);
+            }
+
+            if (map[x][y].hasCeiling()) {
+                float x1 = (float)(gameWidth * 0.5 + (i - 0.5) * tileWidth * pow(fov, j));
+                float x2 = (float)(x1 + tileWidth * pow(fov, j));
+                float x3 = (float)(gameWidth * 0.5 + (i - 0.5) * tileWidth * pow(fov, j + 1));
+                float x4 = (float)(x3 + tileWidth * pow(fov, j + 1));
+
+                float y1 = (float)((screenHeight - tileHeight * pow(fov, j)) * 0.5);
+                float y2 = (float)((screenHeight - tileHeight * pow(fov, j)) * 0.5);
+                float y3 = (float)((screenHeight - tileHeight * pow(fov, j + 1)) * 0.5);
+                float y4 = (float)((screenHeight - tileHeight * pow(fov, j + 1)) * 0.5);
+
+                std::array<std::pair<float, float>, 4> vertextCollection = { { { x1, y1 }, { x2, y2 }, { x3, y3 }, { x4, y4 } } };
+
+                Graphics::getInstance().renderTextureUsingVertices(textures.find(map[x][y].getCeilingType())->second, vertextCollection);
+            }
+
             if (map[x][y].isWalled(leftHandSide)) {
-                targetArea.x = (int)(gameWidth * 0.5 + (i - 0.5) * tileWidth * pow(fov, j));
-                targetArea.y = (int)((screenHeight - tileHeight * pow(fov, j)) * 0.5);
-                targetArea.w = (int)((abs(i) + 0.5) * (tileWidth * pow(fov, j) - tileWidth * pow(fov, j + 1)) + 1);
-                targetArea.h = (int)(tileHeight * pow(fov, j));
-                SDL_RenderCopyEx(renderer, textures.find(map[x][y].getWallType(leftHandSide) + "_side")->second, nullptr, &targetArea, 0.0, nullptr, SDL_FLIP_NONE);
+                float x1 = (float)(gameWidth * 0.5 + (i - 0.5) * tileWidth * pow(fov, j));
+                float x2 = (float)(x1 + (abs(i) + 0.5) * (tileWidth * pow(fov, j) - tileWidth * pow(fov, j + 1)));
+                float x3 = (float)(gameWidth * 0.5 + (i - 0.5) * tileWidth * pow(fov, j));
+                float x4 = (float)(x3 + (abs(i) + 0.5) * (tileWidth * pow(fov, j) - tileWidth * pow(fov, j + 1)));
+
+                float y1 = (float)((screenHeight - tileHeight * pow(fov, j)) * 0.5);
+                float y2 = (float)((screenHeight - tileHeight * pow(fov, j + 1)) * 0.5);
+                float y3 = (float)(y1 + tileHeight * pow(fov, j));
+                float y4 = (float)(y2 + tileHeight * pow(fov, j + 1));
+
+                std::array<std::pair<float, float>, 4> vertextCollection = { { { x1, y1 }, { x2, y2 }, { x3, y3 }, { x4, y4 } } };
+
+                Graphics::getInstance().renderTextureUsingVertices(textures.find(map[x][y].getWallType(leftHandSide))->second, vertextCollection);
             }
 
             if (map[x][y].isWalled(player.getDirection())) {
-                targetArea.x = (int)(gameWidth * 0.5 + (i - 0.5) * tileWidth * pow(fov, j + 1));
-                targetArea.y = (int)((screenHeight - tileHeight * pow(fov, j + 1)) * 0.5);
-                targetArea.w = (int)(tileWidth * pow(fov, j + 1) + 1);
-                targetArea.h = (int)(tileHeight * pow(fov, j + 1));
-                SDL_RenderCopyEx(renderer, textures.find(map[x][y].getWallType(player.getDirection()) + "_front")->second, nullptr, &targetArea, 0.0, nullptr, SDL_FLIP_NONE);
+                float x1 = (float)(gameWidth * 0.5 + (i - 0.5) * tileWidth * pow(fov, j + 1));
+                float x2 = (float)(x1 + tileWidth * pow(fov, j + 1));
+                float x3 = (float)(gameWidth * 0.5 + (i - 0.5) * tileWidth * pow(fov, j + 1));
+                float x4 = (float)(x3 + tileWidth * pow(fov, j + 1));
+
+                float y1 = (float)((screenHeight - tileHeight * pow(fov, j + 1)) * 0.5);
+                float y2 = (float)((screenHeight - tileHeight * pow(fov, j + 1)) * 0.5);
+                float y3 = (float)(y1 + tileHeight * pow(fov, j + 1));
+                float y4 = (float)(y2 + tileHeight * pow(fov, j + 1));
+
+                std::array<std::pair<float, float>, 4> vertextCollection = { { { x1, y1 }, { x2, y2 }, { x3, y3 }, { x4, y4 } } };
+
+                Graphics::getInstance().renderTextureUsingVertices(textures.find(map[x][y].getWallType(player.getDirection()))->second, vertextCollection);
             }
 
             if (map[x][y].containsObject()) {
@@ -160,7 +198,7 @@ void GameMap::generateScreenTexture(Player player, SDL_Texture* targetTexture) {
             }
         }
 
-        for (int i = j + 1; i >= 0; i--) {
+        for (int i = j + 3; i >= 0; i--) {
             switch (player.getDirection()) {
 
             case Direction::N:
@@ -187,21 +225,69 @@ void GameMap::generateScreenTexture(Player player, SDL_Texture* targetTexture) {
             if (x < 0 || y < 0 || x >= width || y >= height) {
                 continue;
             }
+            
+            if (map[x][y].hasFloor()) {
+                float x1 = (float)(gameWidth * 0.5 + (i - 0.5) * tileWidth * pow(fov, j + 1));
+                float x2 = (float)(x1 + tileWidth * pow(fov, j + 1));
+                float x3 = (float)(gameWidth * 0.5 + (i - 0.5) * tileWidth * pow(fov, j));
+                float x4 = (float)(x3 + tileWidth * pow(fov, j));
+
+                float y1 = (float)((screenHeight + tileHeight * pow(fov, j + 1)) * 0.5);
+                float y2 = (float)((screenHeight + tileHeight * pow(fov, j + 1)) * 0.5);
+                float y3 = (float)((screenHeight + tileHeight * pow(fov, j)) * 0.5);
+                float y4 = (float)((screenHeight + tileHeight * pow(fov, j)) * 0.5);
+
+                std::array<std::pair<float, float>, 4> vertextCollection = { { { x1, y1 }, { x2, y2 }, { x3, y3 }, { x4, y4 } } };
+
+                Graphics::getInstance().renderTextureUsingVertices(textures.find(map[x][y].getFloorType())->second, vertextCollection);
+            }
+
+            if (map[x][y].hasCeiling()) {
+                float x1 = (float)(gameWidth * 0.5 + (i - 0.5) * tileWidth * pow(fov, j));
+                float x2 = (float)(x1 + tileWidth * pow(fov, j));
+                float x3 = (float)(gameWidth * 0.5 + (i - 0.5) * tileWidth * pow(fov, j + 1));
+                float x4 = (float)(x3 + tileWidth * pow(fov, j + 1));
+
+                float y1 = (float)((screenHeight - tileHeight * pow(fov, j)) * 0.5);
+                float y2 = (float)((screenHeight - tileHeight * pow(fov, j)) * 0.5);
+                float y3 = (float)((screenHeight - tileHeight * pow(fov, j + 1)) * 0.5);
+                float y4 = (float)((screenHeight - tileHeight * pow(fov, j + 1)) * 0.5);
+
+                std::array<std::pair<float, float>, 4> vertextCollection = { { { x1, y1 }, { x2, y2 }, { x3, y3 }, { x4, y4 } } };
+
+                Graphics::getInstance().renderTextureUsingVertices(textures.find(map[x][y].getCeilingType())->second, vertextCollection);
+            }
 
             if (map[x][y].isWalled(rightHandSide)) {
-                targetArea.x = (int)(gameWidth * 0.5 + (i + 0.5) * tileWidth * pow(fov, j + 1));
-                targetArea.y = (int)((screenHeight - tileHeight * pow(fov, j)) * 0.5);
-                targetArea.w = (int)((abs(i) + 0.5) * (tileWidth * pow(fov, j) - tileWidth * pow(fov, j + 1)) + 1);
-                targetArea.h = (int)(tileHeight * pow(fov, j));
-                SDL_RenderCopyEx(renderer, textures.find(map[x][y].getWallType(rightHandSide) + "_side")->second, nullptr, &targetArea, 0.0, nullptr, SDL_FLIP_HORIZONTAL);
+                float x1 = (float)(gameWidth * 0.5 + (i + 0.5) * tileWidth * pow(fov, j + 1));
+                float x2 = (float)(x1 + (abs(i) + 0.5) * (tileWidth * pow(fov, j) - tileWidth * pow(fov, j + 1)));
+                float x3 = (float)(gameWidth * 0.5 + (i + 0.5) * tileWidth * pow(fov, j + 1));
+                float x4 = (float)(x3 + (abs(i) + 0.5) * (tileWidth * pow(fov, j) - tileWidth * pow(fov, j + 1)));
+
+                float y1 = (float)((screenHeight - tileHeight * pow(fov, j + 1)) * 0.5);
+                float y2 = (float)((screenHeight - tileHeight * pow(fov, j)) * 0.5);
+                float y3 = (float)(y1 + tileHeight * pow(fov, j + 1));
+                float y4 = (float)(y2 + tileHeight * pow(fov, j));
+
+                std::array<std::pair<float, float>, 4> vertextCollection = { { { x2, y2 }, { x1, y1 }, { x4, y4 }, { x3, y3 } } };
+
+                Graphics::getInstance().renderTextureUsingVertices(textures.find(map[x][y].getWallType(rightHandSide))->second, vertextCollection);
             }
 
             if (map[x][y].isWalled(player.getDirection())) {
-                targetArea.x = (int)(gameWidth * 0.5 + (i - 0.5) * tileWidth * pow(fov, j + 1));
-                targetArea.y = (int)((screenHeight - tileHeight * pow(fov, j + 1)) * 0.5);
-                targetArea.w = (int)(tileWidth * pow(fov, j + 1) + 1);
-                targetArea.h = (int)(tileHeight * pow(fov, j + 1));
-                SDL_RenderCopyEx(renderer, textures.find(map[x][y].getWallType(player.getDirection()) + "_front")->second, nullptr, &targetArea, 0.0, nullptr, SDL_FLIP_NONE);
+                float x1 = (float)(gameWidth * 0.5 + (i - 0.5) * tileWidth * pow(fov, j + 1));
+                float x2 = (float)(x1 + tileWidth * pow(fov, j + 1));
+                float x3 = (float)(gameWidth * 0.5 + (i - 0.5) * tileWidth * pow(fov, j + 1));
+                float x4 = (float)(x3 + tileWidth * pow(fov, j + 1));
+
+                float y1 = (float)((screenHeight - tileHeight * pow(fov, j + 1)) * 0.5);
+                float y2 = (float)((screenHeight - tileHeight * pow(fov, j + 1)) * 0.5);
+                float y3 = (float)(y1 + tileHeight * pow(fov, j + 1));
+                float y4 = (float)(y2 + tileHeight * pow(fov, j + 1));
+
+                std::array<std::pair<float, float>, 4> vertextCollection = { { { x1, y1 }, { x2, y2 }, { x3, y3 }, { x4, y4 } } };
+
+                Graphics::getInstance().renderTextureUsingVertices(textures.find(map[x][y].getWallType(player.getDirection()))->second, vertextCollection);
             }
 
             if (map[x][y].containsObject()) {
@@ -218,8 +304,8 @@ void GameMap::generateScreenTexture(Player player, SDL_Texture* targetTexture) {
 }
 
 void GameMap::animateLeftRotation(Player player) {
-    int screenWidth = Graphics::getInstance().getScreenWidth();
-    int screenHeight = Graphics::getInstance().getScreenHeight();
+    int screenWidth = (int)Graphics::getInstance().getScreenWidth();
+    int screenHeight = (int)Graphics::getInstance().getScreenHeight();
     int gameWidth = (int)(3 * screenWidth / 4);
     int animationFrames = 16;
     SDL_Renderer* renderer = Graphics::getInstance().getRenderer();
@@ -252,8 +338,8 @@ void GameMap::animateLeftRotation(Player player) {
 }
 
 void GameMap::animateRightRotation(Player player) {
-    int screenWidth = Graphics::getInstance().getScreenWidth();
-    int screenHeight = Graphics::getInstance().getScreenHeight();
+    int screenWidth = (int)Graphics::getInstance().getScreenWidth();
+    int screenHeight = (int)Graphics::getInstance().getScreenHeight();
     int gameWidth = (int)(3 * screenWidth / 4);
     int animationFrames = 16;
     SDL_Renderer* renderer = Graphics::getInstance().getRenderer();
@@ -286,11 +372,11 @@ void GameMap::animateRightRotation(Player player) {
 }
 
 void GameMap::animateForwardMovement(Player player) {
-    int screenWidth = Graphics::getInstance().getScreenWidth();
-    int screenHeight = Graphics::getInstance().getScreenHeight();
+    int screenWidth = (int)Graphics::getInstance().getScreenWidth();
+    int screenHeight = (int)Graphics::getInstance().getScreenHeight();
     int gameWidth = (int)(3 * screenWidth / 4);
     int animationFrames = 16;
-    double fov = Graphics::getInstance().getFOV();
+    float fov = Graphics::getInstance().getFOV();
     SDL_Renderer* renderer = Graphics::getInstance().getRenderer();
     SDL_Rect targetArea = { 0, 0, 0, 0 };
     SDL_Rect sourceArea = { 0, 0, 0, 0 };
@@ -315,11 +401,11 @@ void GameMap::animateForwardMovement(Player player) {
 }
 
 void GameMap::animateBackwardMovement(Player player) {
-    int screenWidth = Graphics::getInstance().getScreenWidth();
-    int screenHeight = Graphics::getInstance().getScreenHeight();
+    int screenWidth = (int)Graphics::getInstance().getScreenWidth();
+    int screenHeight = (int)Graphics::getInstance().getScreenHeight();
     int gameWidth = (int)(3 * screenWidth / 4);
     int animationFrames = 16;
-    double fov = Graphics::getInstance().getFOV();
+    float fov = Graphics::getInstance().getFOV();
     SDL_Renderer* renderer = Graphics::getInstance().getRenderer();
     SDL_Rect targetArea = { 0, 0, 0, 0 };
     SDL_Rect sourceArea = { 0, 0, 0, 0 };
@@ -346,11 +432,11 @@ void GameMap::animateBackwardMovement(Player player) {
 }
 
 void GameMap::animateSidestepLeft(Player player) {
-    int screenWidth = Graphics::getInstance().getScreenWidth();
-    int screenHeight = Graphics::getInstance().getScreenHeight();
+    int screenWidth = (int)Graphics::getInstance().getScreenWidth();
+    int screenHeight = (int)Graphics::getInstance().getScreenHeight();
     int gameWidth = (int)(3 * screenWidth / 4);
     int animationFrames = 16;
-    double fov = Graphics::getInstance().getFOV();
+    float fov = Graphics::getInstance().getFOV();
     SDL_Renderer* renderer = Graphics::getInstance().getRenderer();
     SDL_Rect targetArea = { 0, 0, 0, 0 };
     SDL_Rect sourceArea = { 0, 0, 0, 0 };
@@ -381,11 +467,11 @@ void GameMap::animateSidestepLeft(Player player) {
 }
 
 void GameMap::animateSidestepRight(Player player) {
-    int screenWidth = Graphics::getInstance().getScreenWidth();
-    int screenHeight = Graphics::getInstance().getScreenHeight();
+    int screenWidth = (int)Graphics::getInstance().getScreenWidth();
+    int screenHeight = (int)Graphics::getInstance().getScreenHeight();
     int gameWidth = (int)(3 * screenWidth / 4);
     int animationFrames = 16;
-    double fov = Graphics::getInstance().getFOV();
+    float fov = Graphics::getInstance().getFOV();
     SDL_Renderer* renderer = Graphics::getInstance().getRenderer();
     SDL_Rect targetArea = { 0, 0, 0, 0 };
     SDL_Rect sourceArea = { 0, 0, 0, 0 };
@@ -416,8 +502,8 @@ void GameMap::animateSidestepRight(Player player) {
 }
 
 void GameMap::renderVisibleArea(Player player) {
-    int screenWidth = Graphics::getInstance().getScreenWidth();
-    int screenHeight = Graphics::getInstance().getScreenHeight();
+    int screenWidth = (int)Graphics::getInstance().getScreenWidth();
+    int screenHeight = (int)Graphics::getInstance().getScreenHeight();
     int gameWidth = (int)(3 * screenWidth / 4);
     SDL_Renderer* renderer = Graphics::getInstance().getRenderer();
     SDL_Rect targetArea = { 0, 0, 0, 0 };
@@ -436,8 +522,8 @@ void GameMap::renderVisibleArea(Player player) {
 }
 
 GameMap::GameMap(int width, int height) {
-    previousScreenTexture = SDL_CreateTexture(Graphics::getInstance().getRenderer(), SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, Graphics::getInstance().getScreenWidth(), Graphics::getInstance().getScreenHeight());
-    currentScreenTexture = SDL_CreateTexture(Graphics::getInstance().getRenderer(), SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, Graphics::getInstance().getScreenWidth(), Graphics::getInstance().getScreenHeight());
+    previousScreenTexture = SDL_CreateTexture(Graphics::getInstance().getRenderer(), SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, (int)Graphics::getInstance().getScreenWidth(), (int)Graphics::getInstance().getScreenHeight());
+    currentScreenTexture = SDL_CreateTexture(Graphics::getInstance().getRenderer(), SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, (int)Graphics::getInstance().getScreenWidth(), (int)Graphics::getInstance().getScreenHeight());
     this->width = width;
     this->height = height;
     savedTiles.clear();
@@ -448,8 +534,8 @@ GameMap::GameMap(int width, int height) {
 }
 
 GameMap::GameMap(int width, int height, std::vector <Tile> savedTiles) {
-    previousScreenTexture = SDL_CreateTexture(Graphics::getInstance().getRenderer(), SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, Graphics::getInstance().getScreenWidth(), Graphics::getInstance().getScreenHeight());
-    currentScreenTexture = SDL_CreateTexture(Graphics::getInstance().getRenderer(), SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, Graphics::getInstance().getScreenWidth(), Graphics::getInstance().getScreenHeight());
+    previousScreenTexture = SDL_CreateTexture(Graphics::getInstance().getRenderer(), SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, (int)Graphics::getInstance().getScreenWidth(), (int)Graphics::getInstance().getScreenHeight());
+    currentScreenTexture = SDL_CreateTexture(Graphics::getInstance().getRenderer(), SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, (int)Graphics::getInstance().getScreenWidth(), (int)Graphics::getInstance().getScreenHeight());
     this->width = width;
     this->height = height;
     map = new Tile * [width];

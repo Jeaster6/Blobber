@@ -1,11 +1,6 @@
 #pragma once
 
-enum Direction {
-	N,
-	E,
-	S,
-	W
-};
+enum Direction { N,	E, S, W };
 
 inline Direction operator++(Direction& direction, int) {
 	Direction returnValue = direction;
