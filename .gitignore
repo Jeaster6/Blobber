@@ -64,9 +64,12 @@ Solution/
 
 ##Project Files
 
-Blobber/*/Debug/*
-Blobber/*/Release/*
-Map Editor/*/Debug/*
-Map Editor/*/Release/*
-/Blobber/x64/Debug/vc143.idb
-/Map Editor/x64/Debug/vc143.idb
+/Blobber/*/Debug/*
+/Blobber/*/Release/*
+/Map Editor/*/Debug/*
+/Map Editor/*/Release/*
+
+/Blobber/x64/Debug/Blobber.tlog/CL.command.1.tlog
+/Map Editor/x64/Debug/Map Editor.tlog/CL.command.1.tlog
+/Map Editor/x64/Debug/Map Editor.tlog/link.command.1.tlog
+/Map Editor/x64/Debug/Map Editor.tlog/link.read.1.tlog
