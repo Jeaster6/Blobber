@@ -64,5 +64,9 @@ Solution/
 
 ##Project Files
 
-Blobber/
-Map Editor/
+Blobber/*/Debug/*
+Blobber/*/Release/*
+Map Editor/*/Debug/*
+Map Editor/*/Release/*
+/Blobber/x64/Debug/vc143.idb
+/Map Editor/x64/Debug/vc143.idb
