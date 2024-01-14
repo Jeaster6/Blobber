@@ -16,6 +16,8 @@ class Graphics {
 		float screenWidth;
 		float screenHeight;
 		float fieldOfView;
+        int animationFrames;
+        int animationDuration;
 		SDL_Window* gameWindow;
 		SDL_Renderer* gameRenderer;
 		SDL_Surface* surface;
@@ -33,6 +35,8 @@ class Graphics {
 		float getScreenWidth();
 		float getScreenHeight();
 		float getFOV();
+        int getAnimationFrames();
+        int getAnimationDuration();
 		void refreshSettings();
 		void renderFullscreenTexture(const std::string&);
 		void renderTextureUsingVertices(SDL_Texture*, const std::array<std::pair<float, float>, 4>&);

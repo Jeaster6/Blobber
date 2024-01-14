@@ -66,10 +66,7 @@ Solution/
 
 /Blobber/*/Debug/*
 /Blobber/*/Release/*
+/Blobber/*/Debug/Blobber.tlog/*
 /Map Editor/*/Debug/*
 /Map Editor/*/Release/*
-
-/Blobber/x64/Debug/Blobber.tlog/CL.command.1.tlog
-/Map Editor/x64/Debug/Map Editor.tlog/CL.command.1.tlog
-/Map Editor/x64/Debug/Map Editor.tlog/link.command.1.tlog
-/Map Editor/x64/Debug/Map Editor.tlog/link.read.1.tlog
+/Map Editor/*/Debug/Map Editor.tlog/*

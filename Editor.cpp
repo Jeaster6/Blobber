@@ -47,12 +47,14 @@ void runMapEditor(GameMap* gameMap) {
 
     while (!quit) {
         while (SDL_PollEvent(&event) != 0) {
-            ImGui_ImplSDL2_ProcessEvent(&event);
-            if (event.type == SDL_QUIT || (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_ESCAPE)) {
-                quit = true;
-            }
-            else if (event.type == SDL_WINDOWEVENT && event.window.event == SDL_WINDOWEVENT_CLOSE && event.window.windowID == SDL_GetWindowID(window)) {
-                quit = true;
+            if (ImGui::GetIO().WantCaptureMouse) {
+                ImGui_ImplSDL2_ProcessEvent(&event);
+                if (event.type == SDL_QUIT || (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_ESCAPE)) {
+                    quit = true;
+                }
+                if (event.type == SDL_WINDOWEVENT && event.window.event == SDL_WINDOWEVENT_CLOSE && event.window.windowID == SDL_GetWindowID(window)) {
+                    quit = true;
+                }
             }
             else if (event.type == SDL_MOUSEBUTTONDOWN) {
                 processMouseAction(gameMap, event);

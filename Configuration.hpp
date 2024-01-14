@@ -11,10 +11,13 @@ class Configuration {
 
 	private:
 
-		enum ConfigVariable {
-			ScreenWidth,
-			ScreenHeight,
-			FieldOfView,
+        enum ConfigVariable {
+            ScreenWidth,
+            ScreenHeight,
+            FieldOfView,
+            AnimationDuration,
+            AnimationFrames,
+            LevelOfDetail,
 			UnrecognizedVariable
 		};
 
@@ -22,6 +25,9 @@ class Configuration {
 		float screenWidth = 1920;
 		float screenHeight = 1080;
 		float fieldOfView = 0.65f;
+        int animationDuration = 16;
+        int animationFrames = 200;
+        int levelOfDetail = 8;
 
 		Configuration();
 		~Configuration();
@@ -38,8 +44,14 @@ class Configuration {
 		float getScreenWidth();
 		float getScreenHeight();
 		float getFieldOfView();
+        int getAnimationDuration();
+        int getAnimationFrames();
+        int getLevelOfDetail();
 
 		void setScreenWidth(float);
 		void setScreenHeight(float);
 		void setFieldOfView(float);
+        void setAnimationDuration(int);
+        void setAnimationFrames(int);
+        void setLevelOfDetail(int);
 };

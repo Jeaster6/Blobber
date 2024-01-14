@@ -39,6 +39,7 @@ class GameMap {
         void loadFromVector();
         void loadTextures();
         void generateScreenTexture(Player, SDL_Texture*);
+        void generateScreenTexture(Player, SDL_Texture*, float);
 
     public:
         Tile* getTile(int, int);
