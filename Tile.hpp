@@ -40,6 +40,7 @@ class Tile {
         bool hasFloor();
         bool hasCeiling();
         bool containsObject();
+        bool isFullyWalled();
         const std::string& getWallType(Direction);
         const std::string& getFloorType();
         const std::string& getCeilingType();

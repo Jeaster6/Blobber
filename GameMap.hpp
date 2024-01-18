@@ -40,6 +40,7 @@ class GameMap {
         void loadTextures();
         void generateScreenTexture(Player, SDL_Texture*);
         void generateScreenTexture(Player, SDL_Texture*, float);
+        bool isTextureInView(std::array<std::pair<float, float>, 4>);
 
     public:
         Tile* getTile(int, int);

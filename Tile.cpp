@@ -147,6 +147,13 @@ std::unordered_set <std::string> Tile::getTextures() {
     return textures;
 }
 
+bool Tile::isFullyWalled() {
+    if (isWalled(N) && isWalled(E) && isWalled(S) && isWalled(W)) {
+        return true;
+    }
+    else return false;
+}
+
 Tile::Tile(const std::string& northWallType, const std::string& eastWallType, const std::string& southWallType, const std::string& westWallType, const std::string& floorType, const std::string& ceilingType, MapObject* mapObject) {
     this->northWallType = northWallType;
     this->eastWallType = eastWallType;

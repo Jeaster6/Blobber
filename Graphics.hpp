@@ -37,7 +37,7 @@ class Graphics {
 		float getFOV();
         int getAnimationFrames();
         int getAnimationDuration();
-		void refreshSettings();
+		void init();
 		void renderFullscreenTexture(const std::string&);
 		void renderTextureUsingVertices(SDL_Texture*, const std::array<std::pair<float, float>, 4>&);
 };

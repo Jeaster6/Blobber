@@ -22,8 +22,8 @@ class Configuration {
 		};
 
 		static Configuration configuration;
-		float screenWidth = 1920;
-		float screenHeight = 1080;
+		float screenWidth = 1920.0f;
+		float screenHeight = 1080.0f;
 		float fieldOfView = 0.65f;
         int animationDuration = 16;
         int animationFrames = 200;

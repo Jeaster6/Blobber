@@ -49,7 +49,7 @@ void openSettings() {
 						Configuration::getInstance().setScreenHeight(screenHeight);
 						Configuration::getInstance().setFieldOfView(fieldOfView);
 
-						Graphics::getInstance().refreshSettings();
+						Graphics::getInstance().init();
 						break;
 				}
 			}

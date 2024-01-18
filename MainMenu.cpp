@@ -5,6 +5,7 @@ void renderMainMenu() {
 }
 
 void openMainMenu() {
+    Graphics::getInstance().init();
 	bool quit = false;
 	SDL_Event userInput;
 

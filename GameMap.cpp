@@ -41,7 +41,7 @@ void GameMap::loadFromVector() {
     loadTextures();
 }
 
-//get texture sets from all tiles and add them into the texture map if not already added
+// get texture sets from all tiles and add them into the texture map if not already added
 
 void GameMap::loadTextures() {
     SDL_Renderer* renderer = Graphics::getInstance().getRenderer();
@@ -63,23 +63,23 @@ void GameMap::loadTextures() {
     }
 }
 
-//calculates and draws textures, which are in players vision cone
+// calculates and draws textures, which are in players vision cone
 
 void GameMap::makeScreenSnapshot(Player player) {
     generateScreenTexture(player, previousScreenTexture);
 }
 
 void GameMap::generateScreenTexture(Player player, SDL_Texture* targetTexture) {
-    generateScreenTexture(player, targetTexture, 0.0);
+    generateScreenTexture(player, targetTexture, 0.0f);
 }
 
-void GameMap::generateScreenTexture(Player player, SDL_Texture* targetTexture, float offset) { //offset determines the point of view (negative value means the player is moving left, positive right and 0.0 is centered)
+void GameMap::generateScreenTexture(Player player, SDL_Texture* targetTexture, float offset) { // offset determines the point of view (negative value means the player is moving left, positive right and 0.0 is centered)
     float screenWidth = Graphics::getInstance().getScreenWidth();
     float screenHeight = Graphics::getInstance().getScreenHeight();
     float fov = Graphics::getInstance().getFOV();
-    float gameWidth = 3 * screenWidth / 4;
+    float gameWidth = 0.75f * screenWidth;
     float tileWidth = gameWidth;
-    float tileHeight = 1.3f * screenHeight;
+    float tileHeight = 1.5f * screenHeight;
 
     SDL_Renderer* renderer = Graphics::getInstance().getRenderer();
     SDL_SetRenderTarget(renderer, targetTexture);
@@ -90,14 +90,17 @@ void GameMap::generateScreenTexture(Player player, SDL_Texture* targetTexture, f
     leftHandSide--;
     Direction rightHandSide = player.getDirection();
     rightHandSide++;
+    int viewDistance = 10;
     int x = 0;
     int y = 0;
 
-    for (int j = 10; j >= 0; j--) {
+    for (int j = viewDistance; j >= 0; j--) {
 
-        for (int i = -j - 3; i <= 0; i++) {
+        // calculate maximum cone of view based on view distance
 
-            //rotates coordinates to be relative to the direction the player is facing
+        for (int i = (-(int)(1 / pow(fov, viewDistance)) / 2) - 1; i <= (offset == 0.0f ? 0 : 1); i++) {
+
+            // rotates coordinates to be relative to the direction the player is facing
 
             switch (player.getDirection()) {
 
@@ -126,82 +129,95 @@ void GameMap::generateScreenTexture(Player player, SDL_Texture* targetTexture, f
                 continue;
             }
 
-            if (map[x][y].hasFloor()) {
-                float x1 = (float)(gameWidth * 0.5 + (i - 0.5 + offset) * tileWidth * pow(fov, j + 1));
-                float x2 = (float)(x1 + tileWidth * pow(fov, j + 1));
-                float x3 = (float)(gameWidth * 0.5 + (i - 0.5 + offset) * tileWidth * pow(fov, j));
-                float x4 = (float)(x3 + tileWidth * pow(fov, j));
+            if (!map[x][y].isFullyWalled()) { // ignore tiles, which are part of the wall and therefore not accessible or observable
 
-                float y1 = (float)((screenHeight + tileHeight * pow(fov, j + 1)) * 0.5);
-                float y2 = (float)((screenHeight + tileHeight * pow(fov, j + 1)) * 0.5);
-                float y3 = (float)((screenHeight + tileHeight * pow(fov, j)) * 0.5);
-                float y4 = (float)((screenHeight + tileHeight * pow(fov, j)) * 0.5);
+                if (map[x][y].hasFloor()) {
+                    float x1 = (float)(gameWidth * 0.5 + (i - 0.5 + offset) * tileWidth * pow(fov, j + 1));
+                    float x2 = (float)(x1 + tileWidth * pow(fov, j + 1));
+                    float x3 = (float)(gameWidth * 0.5 + (i - 0.5 + offset) * tileWidth * pow(fov, j));
+                    float x4 = (float)(x3 + tileWidth * pow(fov, j));
 
-                std::array<std::pair<float, float>, 4> vertextCollection = { { { x1, y1 }, { x2, y2 }, { x3, y3 }, { x4, y4 } } };
+                    float y1 = (float)((screenHeight + tileHeight * pow(fov, j + 1)) * 0.5);
+                    float y2 = (float)((screenHeight + tileHeight * pow(fov, j + 1)) * 0.5);
+                    float y3 = (float)((screenHeight + tileHeight * pow(fov, j)) * 0.5);
+                    float y4 = (float)((screenHeight + tileHeight * pow(fov, j)) * 0.5);
 
-                Graphics::getInstance().renderTextureUsingVertices(textures.find(map[x][y].getFloorType())->second, vertextCollection);
-            }
+                    std::array<std::pair<float, float>, 4> vertexCollection = { { { x1, y1 }, { x2, y2 }, { x3, y3 }, { x4, y4 } } };
 
-            if (map[x][y].hasCeiling()) {
-                float x1 = (float)(gameWidth * 0.5 + (i - 0.5 + offset) * tileWidth * pow(fov, j));
-                float x2 = (float)(x1 + tileWidth * pow(fov, j));
-                float x3 = (float)(gameWidth * 0.5 + (i - 0.5 + offset) * tileWidth * pow(fov, j + 1));
-                float x4 = (float)(x3 + tileWidth * pow(fov, j + 1));
+                    if (isTextureInView(vertexCollection)) {
+                        Graphics::getInstance().renderTextureUsingVertices(textures.find(map[x][y].getFloorType())->second, vertexCollection);
+                    }
+                }
 
-                float y1 = (float)((screenHeight - tileHeight * pow(fov, j)) * 0.5);
-                float y2 = (float)((screenHeight - tileHeight * pow(fov, j)) * 0.5);
-                float y3 = (float)((screenHeight - tileHeight * pow(fov, j + 1)) * 0.5);
-                float y4 = (float)((screenHeight - tileHeight * pow(fov, j + 1)) * 0.5);
+                if (map[x][y].hasCeiling()) {
+                    float x1 = (float)(gameWidth * 0.5 + (i - 0.5 + offset) * tileWidth * pow(fov, j));
+                    float x2 = (float)(x1 + tileWidth * pow(fov, j));
+                    float x3 = (float)(gameWidth * 0.5 + (i - 0.5 + offset) * tileWidth * pow(fov, j + 1));
+                    float x4 = (float)(x3 + tileWidth * pow(fov, j + 1));
 
-                std::array<std::pair<float, float>, 4> vertextCollection = { { { x1, y1 }, { x2, y2 }, { x3, y3 }, { x4, y4 } } };
+                    float y1 = (float)((screenHeight - tileHeight * pow(fov, j)) * 0.5);
+                    float y2 = (float)((screenHeight - tileHeight * pow(fov, j)) * 0.5);
+                    float y3 = (float)((screenHeight - tileHeight * pow(fov, j + 1)) * 0.5);
+                    float y4 = (float)((screenHeight - tileHeight * pow(fov, j + 1)) * 0.5);
 
-                Graphics::getInstance().renderTextureUsingVertices(textures.find(map[x][y].getCeilingType())->second, vertextCollection);
-            }
+                    std::array<std::pair<float, float>, 4> vertexCollection = { { { x1, y1 }, { x2, y2 }, { x3, y3 }, { x4, y4 } } };
 
-            if (map[x][y].isWalled(leftHandSide)) {
-                float x1 = (float)(gameWidth * 0.5 + (i - 0.5 + offset) * tileWidth * pow(fov, j));
-                float x2 = (float)(gameWidth * 0.5 + (i - 0.5 + offset) * tileWidth * pow(fov, j + 1));
-                float x3 = x1;
-                float x4 = x2;
+                    if (isTextureInView(vertexCollection)) {
+                        Graphics::getInstance().renderTextureUsingVertices(textures.find(map[x][y].getCeilingType())->second, vertexCollection);
+                    }
+                }
 
-                float y1 = (float)((screenHeight - tileHeight * pow(fov, j)) * 0.5);
-                float y2 = (float)((screenHeight - tileHeight * pow(fov, j + 1)) * 0.5);
-                float y3 = (float)(y1 + tileHeight * pow(fov, j));
-                float y4 = (float)(y2 + tileHeight * pow(fov, j + 1));
+                if (map[x][y].isWalled(leftHandSide)) {
+                    float x1 = (float)(gameWidth * 0.5 + (i - 0.5 + offset) * tileWidth * pow(fov, j));
+                    float x2 = (float)(gameWidth * 0.5 + (i - 0.5 + offset) * tileWidth * pow(fov, j + 1));
+                    float x3 = x1;
+                    float x4 = x2;
 
-                std::array<std::pair<float, float>, 4> vertextCollection = { { { x1, y1 }, { x2, y2 }, { x3, y3 }, { x4, y4 } } };
+                    float y1 = (float)((screenHeight - tileHeight * pow(fov, j)) * 0.5);
+                    float y2 = (float)((screenHeight - tileHeight * pow(fov, j + 1)) * 0.5);
+                    float y3 = (float)(y1 + tileHeight * pow(fov, j));
+                    float y4 = (float)(y2 + tileHeight * pow(fov, j + 1));
 
-                Graphics::getInstance().renderTextureUsingVertices(textures.find(map[x][y].getWallType(leftHandSide))->second, vertextCollection);
-            }
+                    std::array<std::pair<float, float>, 4> vertexCollection = { { { x1, y1 }, { x2, y2 }, { x3, y3 }, { x4, y4 } } };
 
-            if (map[x][y].isWalled(player.getDirection())) {
-                float x1 = (float)(gameWidth * 0.5 + (i - 0.5 + offset) * tileWidth * pow(fov, j + 1));
-                float x2 = (float)(x1 + tileWidth * pow(fov, j + 1));
-                float x3 = (float)(gameWidth * 0.5 + (i - 0.5 + offset) * tileWidth * pow(fov, j + 1));
-                float x4 = (float)(x3 + tileWidth * pow(fov, j + 1));
+                    if (isTextureInView(vertexCollection)) {
+                        Graphics::getInstance().renderTextureUsingVertices(textures.find(map[x][y].getWallType(leftHandSide))->second, vertexCollection);
+                    }
+                }
 
-                float y1 = (float)((screenHeight - tileHeight * pow(fov, j + 1)) * 0.5);
-                float y2 = (float)((screenHeight - tileHeight * pow(fov, j + 1)) * 0.5);
-                float y3 = (float)(y1 + tileHeight * pow(fov, j + 1));
-                float y4 = (float)(y2 + tileHeight * pow(fov, j + 1));
+                if (map[x][y].isWalled(player.getDirection())) {
+                    float x1 = (float)(gameWidth * 0.5 + (i - 0.5 + offset) * tileWidth * pow(fov, j + 1));
+                    float x2 = (float)(x1 + tileWidth * pow(fov, j + 1));
+                    float x3 = (float)(gameWidth * 0.5 + (i - 0.5 + offset) * tileWidth * pow(fov, j + 1));
+                    float x4 = (float)(x3 + tileWidth * pow(fov, j + 1));
 
-                std::array<std::pair<float, float>, 4> vertextCollection = { { { x1, y1 }, { x2, y2 }, { x3, y3 }, { x4, y4 } } };
+                    float y1 = (float)((screenHeight - tileHeight * pow(fov, j + 1)) * 0.5);
+                    float y2 = (float)((screenHeight - tileHeight * pow(fov, j + 1)) * 0.5);
+                    float y3 = (float)(y1 + tileHeight * pow(fov, j + 1));
+                    float y4 = (float)(y2 + tileHeight * pow(fov, j + 1));
 
-                Graphics::getInstance().renderTextureUsingVertices(textures.find(map[x][y].getWallType(player.getDirection()))->second, vertextCollection);
-            }
+                    std::array<std::pair<float, float>, 4> vertexCollection = { { { x1, y1 }, { x2, y2 }, { x3, y3 }, { x4, y4 } } };
 
-            if (map[x][y].containsObject()) {
-                targetArea.x = (int)(gameWidth * 0.5 + (i - 0.5 + offset) * tileWidth * pow(fov, j + 1));
-                targetArea.y = (int)((screenHeight - tileHeight * pow(fov, j + 1)) * 0.5);
-                targetArea.w = (int)(tileWidth * pow(fov, j + 1));
-                targetArea.h = (int)(tileHeight * pow(fov, j + 1));
-                SDL_RenderCopyEx(renderer, textures.find(map[x][y].getObjectType())->second, nullptr, &targetArea, 0.0, nullptr, SDL_FLIP_NONE);
+                    if (isTextureInView(vertexCollection)) {
+                        Graphics::getInstance().renderTextureUsingVertices(textures.find(map[x][y].getWallType(player.getDirection()))->second, vertexCollection);
+                    }
+                }
+
+                if (map[x][y].containsObject()) {
+                    targetArea.x = (int)(gameWidth * 0.5 + (i - 0.5 + offset) * tileWidth * pow(fov, j + 1));
+                    targetArea.y = (int)((screenHeight - tileHeight * pow(fov, j + 1)) * 0.5);
+                    targetArea.w = (int)(tileWidth * pow(fov, j + 1));
+                    targetArea.h = (int)(tileHeight * pow(fov, j + 1));
+                    SDL_RenderCopyEx(renderer, textures.find(map[x][y].getObjectType())->second, nullptr, &targetArea, 0.0, nullptr, SDL_FLIP_NONE);
+                }
             }
         }
 
-        for (int i = j + 3; i >= 0; i--) {
+        // calculate maximum cone of view based on view distance
 
-            //rotates coordinates to be relative to the direction the player is facing
+        for (int i = ((int)(1 / pow(fov, viewDistance)) / 2) + 1; i >= (offset == 0.0f ? 0 : -1); i--) {
+
+            // rotates coordinates to be relative to the direction the player is facing
 
             switch (player.getDirection()) {
 
@@ -229,77 +245,88 @@ void GameMap::generateScreenTexture(Player player, SDL_Texture* targetTexture, f
             if (x < 0 || y < 0 || x >= width || y >= height) {
                 continue;
             }
-            
-            if (map[x][y].hasFloor()) {
-                float x1 = (float)(gameWidth * 0.5 + (i - 0.5 + offset) * tileWidth * pow(fov, j + 1));
-                float x2 = (float)(x1 + tileWidth * pow(fov, j + 1));
-                float x3 = (float)(gameWidth * 0.5 + (i - 0.5 + offset) * tileWidth * pow(fov, j));
-                float x4 = (float)(x3 + tileWidth * pow(fov, j));
 
-                float y1 = (float)((screenHeight + tileHeight * pow(fov, j + 1)) * 0.5);
-                float y2 = (float)((screenHeight + tileHeight * pow(fov, j + 1)) * 0.5);
-                float y3 = (float)((screenHeight + tileHeight * pow(fov, j)) * 0.5);
-                float y4 = (float)((screenHeight + tileHeight * pow(fov, j)) * 0.5);
+            if (!map[x][y].isFullyWalled()) { // ignore tiles, which are part of the wall and therefore not accessible or observable
 
-                std::array<std::pair<float, float>, 4> vertextCollection = { { { x1, y1 }, { x2, y2 }, { x3, y3 }, { x4, y4 } } };
+                if (map[x][y].hasFloor()) {
+                    float x1 = (float)(gameWidth * 0.5 + (i - 0.5 + offset) * tileWidth * pow(fov, j + 1));
+                    float x2 = (float)(x1 + tileWidth * pow(fov, j + 1));
+                    float x3 = (float)(gameWidth * 0.5 + (i - 0.5 + offset) * tileWidth * pow(fov, j));
+                    float x4 = (float)(x3 + tileWidth * pow(fov, j));
 
-                Graphics::getInstance().renderTextureUsingVertices(textures.find(map[x][y].getFloorType())->second, vertextCollection);
-            }
+                    float y1 = (float)((screenHeight + tileHeight * pow(fov, j + 1)) * 0.5);
+                    float y2 = (float)((screenHeight + tileHeight * pow(fov, j + 1)) * 0.5);
+                    float y3 = (float)((screenHeight + tileHeight * pow(fov, j)) * 0.5);
+                    float y4 = (float)((screenHeight + tileHeight * pow(fov, j)) * 0.5);
 
-            if (map[x][y].hasCeiling()) {
-                float x1 = (float)(gameWidth * 0.5 + (i - 0.5 + offset) * tileWidth * pow(fov, j));
-                float x2 = (float)(x1 + tileWidth * pow(fov, j));
-                float x3 = (float)(gameWidth * 0.5 + (i - 0.5 + offset) * tileWidth * pow(fov, j + 1));
-                float x4 = (float)(x3 + tileWidth * pow(fov, j + 1));
+                    std::array<std::pair<float, float>, 4> vertexCollection = { { { x1, y1 }, { x2, y2 }, { x3, y3 }, { x4, y4 } } };
 
-                float y1 = (float)((screenHeight - tileHeight * pow(fov, j)) * 0.5);
-                float y2 = (float)((screenHeight - tileHeight * pow(fov, j)) * 0.5);
-                float y3 = (float)((screenHeight - tileHeight * pow(fov, j + 1)) * 0.5);
-                float y4 = (float)((screenHeight - tileHeight * pow(fov, j + 1)) * 0.5);
+                    if (isTextureInView(vertexCollection)) {
+                        Graphics::getInstance().renderTextureUsingVertices(textures.find(map[x][y].getFloorType())->second, vertexCollection);
+                    }
+                }
 
-                std::array<std::pair<float, float>, 4> vertextCollection = { { { x1, y1 }, { x2, y2 }, { x3, y3 }, { x4, y4 } } };
+                if (map[x][y].hasCeiling()) {
+                    float x1 = (float)(gameWidth * 0.5 + (i - 0.5 + offset) * tileWidth * pow(fov, j));
+                    float x2 = (float)(x1 + tileWidth * pow(fov, j));
+                    float x3 = (float)(gameWidth * 0.5 + (i - 0.5 + offset) * tileWidth * pow(fov, j + 1));
+                    float x4 = (float)(x3 + tileWidth * pow(fov, j + 1));
 
-                Graphics::getInstance().renderTextureUsingVertices(textures.find(map[x][y].getCeilingType())->second, vertextCollection);
-            }
+                    float y1 = (float)((screenHeight - tileHeight * pow(fov, j)) * 0.5);
+                    float y2 = (float)((screenHeight - tileHeight * pow(fov, j)) * 0.5);
+                    float y3 = (float)((screenHeight - tileHeight * pow(fov, j + 1)) * 0.5);
+                    float y4 = (float)((screenHeight - tileHeight * pow(fov, j + 1)) * 0.5);
 
-            if (map[x][y].isWalled(rightHandSide)) {
-                float x1 = (float)(gameWidth * 0.5 + (i + 0.5 + offset) * tileWidth * pow(fov, j + 1));
-                float x2 = (float)(gameWidth * 0.5 + (i + 0.5 + offset) * tileWidth * pow(fov, j));
-                float x3 = x1;
-                float x4 = x2;
+                    std::array<std::pair<float, float>, 4> vertexCollection = { { { x1, y1 }, { x2, y2 }, { x3, y3 }, { x4, y4 } } };
 
-                float y1 = (float)((screenHeight - tileHeight * pow(fov, j + 1)) * 0.5);
-                float y2 = (float)((screenHeight - tileHeight * pow(fov, j)) * 0.5);
-                float y3 = (float)(y1 + tileHeight * pow(fov, j + 1));
-                float y4 = (float)(y2 + tileHeight * pow(fov, j));
+                    if (isTextureInView(vertexCollection)) {
+                        Graphics::getInstance().renderTextureUsingVertices(textures.find(map[x][y].getCeilingType())->second, vertexCollection);
+                    }
+                }
 
-                std::array<std::pair<float, float>, 4> vertextCollection = { { { x2, y2 }, { x1, y1 }, { x4, y4 }, { x3, y3 } } };
+                if (map[x][y].isWalled(rightHandSide)) {
+                    float x1 = (float)(gameWidth * 0.5 + (i + 0.5 + offset) * tileWidth * pow(fov, j + 1));
+                    float x2 = (float)(gameWidth * 0.5 + (i + 0.5 + offset) * tileWidth * pow(fov, j));
+                    float x3 = x1;
+                    float x4 = x2;
 
-                Graphics::getInstance().renderTextureUsingVertices(textures.find(map[x][y].getWallType(rightHandSide))->second, vertextCollection);
-            }
+                    float y1 = (float)((screenHeight - tileHeight * pow(fov, j + 1)) * 0.5);
+                    float y2 = (float)((screenHeight - tileHeight * pow(fov, j)) * 0.5);
+                    float y3 = (float)(y1 + tileHeight * pow(fov, j + 1));
+                    float y4 = (float)(y2 + tileHeight * pow(fov, j));
 
-            if (map[x][y].isWalled(player.getDirection())) {
-                float x1 = (float)(gameWidth * 0.5 + (i - 0.5 + offset) * tileWidth * pow(fov, j + 1));
-                float x2 = (float)(x1 + tileWidth * pow(fov, j + 1));
-                float x3 = (float)(gameWidth * 0.5 + (i - 0.5 + offset) * tileWidth * pow(fov, j + 1));
-                float x4 = (float)(x3 + tileWidth * pow(fov, j + 1));
+                    std::array<std::pair<float, float>, 4> vertexCollection = { { { x2, y2 }, { x1, y1 }, { x4, y4 }, { x3, y3 } } };
 
-                float y1 = (float)((screenHeight - tileHeight * pow(fov, j + 1)) * 0.5);
-                float y2 = (float)((screenHeight - tileHeight * pow(fov, j + 1)) * 0.5);
-                float y3 = (float)(y1 + tileHeight * pow(fov, j + 1));
-                float y4 = (float)(y2 + tileHeight * pow(fov, j + 1));
+                    if (isTextureInView(vertexCollection)) {
+                        Graphics::getInstance().renderTextureUsingVertices(textures.find(map[x][y].getWallType(rightHandSide))->second, vertexCollection);
+                    }
+                }
 
-                std::array<std::pair<float, float>, 4> vertextCollection = { { { x1, y1 }, { x2, y2 }, { x3, y3 }, { x4, y4 } } };
+                if (map[x][y].isWalled(player.getDirection())) {
+                    float x1 = (float)(gameWidth * 0.5 + (i - 0.5 + offset) * tileWidth * pow(fov, j + 1));
+                    float x2 = (float)(x1 + tileWidth * pow(fov, j + 1));
+                    float x3 = (float)(gameWidth * 0.5 + (i - 0.5 + offset) * tileWidth * pow(fov, j + 1));
+                    float x4 = (float)(x3 + tileWidth * pow(fov, j + 1));
 
-                Graphics::getInstance().renderTextureUsingVertices(textures.find(map[x][y].getWallType(player.getDirection()))->second, vertextCollection);
-            }
+                    float y1 = (float)((screenHeight - tileHeight * pow(fov, j + 1)) * 0.5);
+                    float y2 = (float)((screenHeight - tileHeight * pow(fov, j + 1)) * 0.5);
+                    float y3 = (float)(y1 + tileHeight * pow(fov, j + 1));
+                    float y4 = (float)(y2 + tileHeight * pow(fov, j + 1));
 
-            if (map[x][y].containsObject()) {
-                targetArea.x = (int)(gameWidth * 0.5 + (i - 0.5 + offset) * tileWidth * pow(fov, j + 1));
-                targetArea.y = (int)((screenHeight - tileHeight * pow(fov, j + 1)) * 0.5);
-                targetArea.w = (int)(tileWidth * pow(fov, j + 1));
-                targetArea.h = (int)(tileHeight * pow(fov, j + 1));
-                SDL_RenderCopyEx(renderer, textures.find(map[x][y].getObjectType())->second, nullptr, &targetArea, 0.0, nullptr, SDL_FLIP_NONE);
+                    std::array<std::pair<float, float>, 4> vertexCollection = { { { x1, y1 }, { x2, y2 }, { x3, y3 }, { x4, y4 } } };
+
+                    if (isTextureInView(vertexCollection)) {
+                        Graphics::getInstance().renderTextureUsingVertices(textures.find(map[x][y].getWallType(player.getDirection()))->second, vertexCollection);
+                    }
+                }
+
+                if (map[x][y].containsObject()) {
+                    targetArea.x = (int)(gameWidth * 0.5 + (i - 0.5 + offset) * tileWidth * pow(fov, j + 1));
+                    targetArea.y = (int)((screenHeight - tileHeight * pow(fov, j + 1)) * 0.5);
+                    targetArea.w = (int)(tileWidth * pow(fov, j + 1));
+                    targetArea.h = (int)(tileHeight * pow(fov, j + 1));
+                    SDL_RenderCopyEx(renderer, textures.find(map[x][y].getObjectType())->second, nullptr, &targetArea, 0.0, nullptr, SDL_FLIP_NONE);
+                }
             }
         }
     }
@@ -515,6 +542,17 @@ void GameMap::renderVisibleArea(Player player) {
     targetArea = { 0, 0, gameWidth, screenHeight / 7 };
     SDL_RenderFillRect(renderer, &targetArea);
     SDL_RenderPresent(renderer);
+}
+
+// returns false, if none of the X vertex coordinates are located inside the game view
+bool GameMap::isTextureInView(std::array<std::pair<float, float>, 4> vertexCollection) {
+    int verticesOnScreen = 0;
+    for (int i = 0; i < 4; i++) {
+        if (vertexCollection[i].first >= 0 && vertexCollection[i].first <= 0.75f * Graphics::getInstance().getScreenWidth()) {
+            verticesOnScreen++;
+        }
+    }
+    return verticesOnScreen == 0 ? false : true;
 }
 
 GameMap::GameMap(int width, int height) {

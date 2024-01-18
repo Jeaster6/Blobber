@@ -7,10 +7,16 @@ Graphics& Graphics::getInstance() {
 Graphics::Graphics() {
 	surface = nullptr;
 	texture = nullptr;
+    gameRenderer = nullptr;
+    gameWindow = nullptr;
+    screenWidth = 0.0f;
+    screenHeight = 0.0f;
+    fieldOfView = 0.0f;
+    animationFrames = 0;
+    animationDuration = 0;
 
 	SDL_SetMainReady();
 	SDL_Init(SDL_INIT_VIDEO);
-	refreshSettings();
 }
 
 Graphics::~Graphics() {
@@ -42,7 +48,7 @@ void Graphics::renderFullscreenTexture(const std::string& textureFileName) {
 	texture = nullptr;
 }
 
-void Graphics::renderTextureUsingVertices(SDL_Texture* targetTexture, const std::array<std::pair<float, float>, 4>& vertextCollection) {
+void Graphics::renderTextureUsingVertices(SDL_Texture* targetTexture, const std::array<std::pair<float, float>, 4>& vertexCollection) {
 	int LOD = Configuration::getInstance().getLevelOfDetail();
 	std::vector<SDL_Vertex> vertices;
 	std::vector<int> indexList;
@@ -50,12 +56,12 @@ void Graphics::renderTextureUsingVertices(SDL_Texture* targetTexture, const std:
 	for (int i = 0; i <= LOD; i++) {
 		for (int j = 0; j <= LOD; j++) {
 
-			float delta_X1 = (vertextCollection[0].first - (j * (vertextCollection[0].first - vertextCollection[2].first) / (float)(LOD)));
-			float delta_X2 = (vertextCollection[1].first - (j * (vertextCollection[1].first - vertextCollection[3].first) / (float)(LOD)));
+			float delta_X1 = (vertexCollection[0].first - (j * (vertexCollection[0].first - vertexCollection[2].first) / (float)(LOD)));
+			float delta_X2 = (vertexCollection[1].first - (j * (vertexCollection[1].first - vertexCollection[3].first) / (float)(LOD)));
 			float finalVertex_X = (delta_X1 - (i * (delta_X1 - delta_X2) / LOD));
 
-			float delta_Y1 = (vertextCollection[0].second - (j * (vertextCollection[0].second - vertextCollection[2].second) / (float)(LOD)));
-			float delta_Y2 = (vertextCollection[1].second - (j * (vertextCollection[1].second - vertextCollection[3].second) / (float)(LOD)));
+			float delta_Y1 = (vertexCollection[0].second - (j * (vertexCollection[0].second - vertexCollection[2].second) / (float)(LOD)));
+			float delta_Y2 = (vertexCollection[1].second - (j * (vertexCollection[1].second - vertexCollection[3].second) / (float)(LOD)));
 			float finalVertex_Y = (delta_Y1 - (i * (delta_Y1 - delta_Y2) / LOD));
 
 			vertices.push_back({ {finalVertex_X, finalVertex_Y}, { 0xff, 0xff, 0xff, 0xff }, { (float)(i / (float)(LOD)), (float)(j / (float)(LOD)) } });
@@ -78,7 +84,7 @@ void Graphics::renderTextureUsingVertices(SDL_Texture* targetTexture, const std:
 	SDL_RenderGeometry(gameRenderer, targetTexture, vertices.data(), (int)vertices.size(), indexList.data(), (int)indexList.size());
 }
 
-void Graphics::refreshSettings() {
+void Graphics::init() {
 	SDL_DestroyRenderer(gameRenderer);
 	gameRenderer = nullptr;
 	SDL_DestroyWindow(gameWindow);
