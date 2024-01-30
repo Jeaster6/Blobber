@@ -1,7 +1,7 @@
 #include "MainMenu.hpp"
 
 void renderMainMenu() {
-	Graphics::getInstance().renderFullscreenTexture("Menu.png");
+	Graphics::getInstance().renderMenuTexture("Menu.png");
 }
 
 void openMainMenu() {

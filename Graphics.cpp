@@ -33,8 +33,8 @@ Graphics::~Graphics() {
 	SDL_Quit();
 }
 
-void Graphics::renderFullscreenTexture(const std::string& textureFileName) {
-	surface = IMG_Load((getTexturesDirectory() + textureFileName).c_str());
+void Graphics::renderMenuTexture(const std::string& textureFileName) {
+	surface = IMG_Load((getMenuTexturesDirectory() + textureFileName).c_str());
 	texture = SDL_CreateTextureFromSurface(gameRenderer, surface);
 
 	SDL_SetRenderDrawColor(gameRenderer, 0, 0, 0, 0xFF);

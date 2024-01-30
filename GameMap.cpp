@@ -8,6 +8,14 @@ void GameMap::setTileWall(int x, int y, Direction direction, const std::string& 
     map[x][y].setWall(direction, wallType);
 }
 
+void GameMap::setFloorType(int x, int y, const std::string& floorType) {
+    map[x][y].setFloorType(floorType);
+}
+
+void GameMap::setCeilingType(int x, int y, const std::string& ceilingType) {
+    map[x][y].setCeilingType(ceilingType);
+}
+
 void GameMap::setTile(int x, int y, Tile* targetTile) {
     map[x][y].setTile(targetTile);
 }
@@ -50,10 +58,10 @@ void GameMap::loadTextures() {
     for (int i = 0; i < width; i++) {
         for (int j = 0; j < height; j++) {
             std::unordered_set tileTextures = map[i][j].getTextures();
-            for (std::string tileTexture: tileTextures) {
+            for (std::string tileTexture : tileTextures) {
                 auto it = textures.find(tileTexture);
                 if (it == textures.end()) {
-                    surface = IMG_Load((getTexturesDirectory() + tileTexture + ".png").c_str());
+                    surface = IMG_Load((getEnvironmentTexturesDirectory() + tileTexture + ".png").c_str());
                     textures.insert({ tileTexture, SDL_CreateTextureFromSurface(renderer, surface) });
                     SDL_FreeSurface(surface);
                     surface = nullptr;

@@ -1,7 +1,7 @@
 #include "SettingsMenu.hpp"
 
 void renderSettingsMenu() {
-	Graphics::getInstance().renderFullscreenTexture("Settings.png");
+	Graphics::getInstance().renderMenuTexture("Settings.png");
 }
 
 void openSettings() {

@@ -47,6 +47,8 @@ class GameMap {
         int getHeight();
         int getWidth();
         void setTileWall(int, int, Direction, const std::string&);
+        void setFloorType(int, int, const std::string&);
+        void setCeilingType(int, int, const std::string&);
         void setTile(int, int, Tile*);
         void setTileWalls(int, int, const std::string&, const std::string&, const std::string&, const std::string&, const std::string&, const std::string&, MapObject*);
         void saveToVector();

@@ -21,6 +21,14 @@ void Tile::setWall(Direction direction, const std::string& wallType) {
     }
 }
 
+void Tile::setFloorType(const std::string& floorType) {
+    this->floorType = floorType;
+}
+
+void Tile::setCeilingType(const std::string& ceilingType) {
+    this->ceilingType = ceilingType;
+}
+
 void Tile::setTile(const std::string& northWallType, const std::string& eastWallType, const std::string& southWallType, const std::string& westWallType, const std::string& floorType, const std::string& ceilingType, MapObject*) {
     this->northWallType = northWallType;
     this->eastWallType = eastWallType;

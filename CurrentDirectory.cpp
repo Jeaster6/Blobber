@@ -11,8 +11,16 @@ std::string getMapsDirectory() {
 	return getRootDirectory() + "Maps/";
 }
 
-std::string getTexturesDirectory() {
-	return getRootDirectory() + "Textures/";
+std::string getMenuTexturesDirectory() {
+	return getRootDirectory() + "Textures/Menus/";
+}
+
+std::string getObjectTexturesDirectory() {
+    return getRootDirectory() + "Textures/Objects/";
+}
+
+std::string getEnvironmentTexturesDirectory() {
+    return getRootDirectory() + "Textures/Environment/";
 }
 
 std::string getDataDirectory() {

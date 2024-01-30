@@ -38,6 +38,6 @@ class Graphics {
         int getAnimationFrames();
         int getAnimationDuration();
 		void init();
-		void renderFullscreenTexture(const std::string&);
+		void renderMenuTexture(const std::string&);
 		void renderTextureUsingVertices(SDL_Texture*, const std::array<std::pair<float, float>, 4>&);
 };

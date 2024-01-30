@@ -7,12 +7,6 @@
 
 const int MAX_MAP_SIZE=100;
 
-struct pathLeafString {
-    std::string operator() (const boost::filesystem::directory_entry& entry) const {
-        return entry.path().leaf().string();
-    }
-};
-
 std::vector<std::string> readMapsFromDirectory();
 void showExistingFiles();
 int readUserInput(int&, int&);

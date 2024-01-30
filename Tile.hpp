@@ -32,10 +32,13 @@ class Tile {
 
     public:
         void setWall(Direction, const std::string&);
+        void setFloorType(const std::string&);
+        void setCeilingType(const std::string&);
         void setTile(const std::string&, const std::string&, const std::string&, const std::string&, const std::string&, const std::string&, MapObject*);
         void setTile(Tile*);
         void spawnObject(std::string);
         void deSpawnObject();
+
         bool isWalled(Direction);
         bool hasFloor();
         bool hasCeiling();

@@ -6,5 +6,7 @@
 
 std::string getRootDirectory();
 std::string getMapsDirectory();
-std::string getTexturesDirectory();
+std::string getMenuTexturesDirectory();
+std::string getObjectTexturesDirectory();
+std::string getEnvironmentTexturesDirectory();
 std::string getDataDirectory();

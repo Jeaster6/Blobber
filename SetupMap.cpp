@@ -3,8 +3,7 @@
 std::vector<std::string> readMapsFromDirectory() {
     std::vector<std::string> allFiles;
     std::vector<std::string> mapFiles;
-    boost::filesystem::path p(getMapsDirectory());
-    boost::filesystem::directory_iterator start(p);
+    boost::filesystem::directory_iterator start(getMapsDirectory());
     boost::filesystem::directory_iterator end;
     transform(start, end, back_inserter(allFiles), pathLeafString());
 
