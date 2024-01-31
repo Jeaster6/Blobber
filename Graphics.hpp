@@ -18,6 +18,7 @@ class Graphics {
 		float fieldOfView;
         int animationFrames;
         int animationDuration;
+        int levelOfDetail;
 		SDL_Window* gameWindow;
 		SDL_Renderer* gameRenderer;
 		SDL_Surface* surface;
@@ -39,5 +40,5 @@ class Graphics {
         int getAnimationDuration();
 		void init();
 		void renderMenuTexture(const std::string&);
-		void renderTextureUsingVertices(SDL_Texture*, const std::array<std::pair<float, float>, 4>&);
+		void renderTextureUsingVertices(SDL_Texture*, const std::array<std::pair<float, float>, 4>&, int);
 };

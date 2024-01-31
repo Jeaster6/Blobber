@@ -98,7 +98,8 @@ void GameMap::generateScreenTexture(Player player, SDL_Texture* targetTexture, f
     leftHandSide--;
     Direction rightHandSide = player.getDirection();
     rightHandSide++;
-    int viewDistance = 10;
+    int viewDistance = 15;
+    int distanceFromPlayer = 0;
     int x = 0;
     int y = 0;
 
@@ -137,6 +138,8 @@ void GameMap::generateScreenTexture(Player player, SDL_Texture* targetTexture, f
                 continue;
             }
 
+            distanceFromPlayer = (int)sqrt(i * i + j * j);
+
             if (!map[x][y].isFullyWalled()) { // ignore tiles, which are part of the wall and therefore not accessible or observable
 
                 if (map[x][y].hasFloor()) {
@@ -153,7 +156,7 @@ void GameMap::generateScreenTexture(Player player, SDL_Texture* targetTexture, f
                     std::array<std::pair<float, float>, 4> vertexCollection = { { { x1, y1 }, { x2, y2 }, { x3, y3 }, { x4, y4 } } };
 
                     if (isTextureInView(vertexCollection)) {
-                        Graphics::getInstance().renderTextureUsingVertices(textures.find(map[x][y].getFloorType())->second, vertexCollection);
+                        Graphics::getInstance().renderTextureUsingVertices(textures.find(map[x][y].getFloorType())->second, vertexCollection, distanceFromPlayer);
                     }
                 }
 
@@ -171,7 +174,7 @@ void GameMap::generateScreenTexture(Player player, SDL_Texture* targetTexture, f
                     std::array<std::pair<float, float>, 4> vertexCollection = { { { x1, y1 }, { x2, y2 }, { x3, y3 }, { x4, y4 } } };
 
                     if (isTextureInView(vertexCollection)) {
-                        Graphics::getInstance().renderTextureUsingVertices(textures.find(map[x][y].getCeilingType())->second, vertexCollection);
+                        Graphics::getInstance().renderTextureUsingVertices(textures.find(map[x][y].getCeilingType())->second, vertexCollection, distanceFromPlayer);
                     }
                 }
 
@@ -189,7 +192,7 @@ void GameMap::generateScreenTexture(Player player, SDL_Texture* targetTexture, f
                     std::array<std::pair<float, float>, 4> vertexCollection = { { { x1, y1 }, { x2, y2 }, { x3, y3 }, { x4, y4 } } };
 
                     if (isTextureInView(vertexCollection)) {
-                        Graphics::getInstance().renderTextureUsingVertices(textures.find(map[x][y].getWallType(leftHandSide))->second, vertexCollection);
+                        Graphics::getInstance().renderTextureUsingVertices(textures.find(map[x][y].getWallType(leftHandSide))->second, vertexCollection, distanceFromPlayer);
                     }
                 }
 
@@ -207,7 +210,7 @@ void GameMap::generateScreenTexture(Player player, SDL_Texture* targetTexture, f
                     std::array<std::pair<float, float>, 4> vertexCollection = { { { x1, y1 }, { x2, y2 }, { x3, y3 }, { x4, y4 } } };
 
                     if (isTextureInView(vertexCollection)) {
-                        Graphics::getInstance().renderTextureUsingVertices(textures.find(map[x][y].getWallType(player.getDirection()))->second, vertexCollection);
+                        Graphics::getInstance().renderTextureUsingVertices(textures.find(map[x][y].getWallType(player.getDirection()))->second, vertexCollection, 100);
                     }
                 }
 
@@ -254,6 +257,8 @@ void GameMap::generateScreenTexture(Player player, SDL_Texture* targetTexture, f
                 continue;
             }
 
+            distanceFromPlayer = (int)sqrt(i * i + j * j);
+
             if (!map[x][y].isFullyWalled()) { // ignore tiles, which are part of the wall and therefore not accessible or observable
 
                 if (map[x][y].hasFloor()) {
@@ -270,7 +275,7 @@ void GameMap::generateScreenTexture(Player player, SDL_Texture* targetTexture, f
                     std::array<std::pair<float, float>, 4> vertexCollection = { { { x1, y1 }, { x2, y2 }, { x3, y3 }, { x4, y4 } } };
 
                     if (isTextureInView(vertexCollection)) {
-                        Graphics::getInstance().renderTextureUsingVertices(textures.find(map[x][y].getFloorType())->second, vertexCollection);
+                        Graphics::getInstance().renderTextureUsingVertices(textures.find(map[x][y].getFloorType())->second, vertexCollection, distanceFromPlayer);
                     }
                 }
 
@@ -288,7 +293,7 @@ void GameMap::generateScreenTexture(Player player, SDL_Texture* targetTexture, f
                     std::array<std::pair<float, float>, 4> vertexCollection = { { { x1, y1 }, { x2, y2 }, { x3, y3 }, { x4, y4 } } };
 
                     if (isTextureInView(vertexCollection)) {
-                        Graphics::getInstance().renderTextureUsingVertices(textures.find(map[x][y].getCeilingType())->second, vertexCollection);
+                        Graphics::getInstance().renderTextureUsingVertices(textures.find(map[x][y].getCeilingType())->second, vertexCollection, distanceFromPlayer);
                     }
                 }
 
@@ -306,7 +311,7 @@ void GameMap::generateScreenTexture(Player player, SDL_Texture* targetTexture, f
                     std::array<std::pair<float, float>, 4> vertexCollection = { { { x2, y2 }, { x1, y1 }, { x4, y4 }, { x3, y3 } } };
 
                     if (isTextureInView(vertexCollection)) {
-                        Graphics::getInstance().renderTextureUsingVertices(textures.find(map[x][y].getWallType(rightHandSide))->second, vertexCollection);
+                        Graphics::getInstance().renderTextureUsingVertices(textures.find(map[x][y].getWallType(rightHandSide))->second, vertexCollection, distanceFromPlayer);
                     }
                 }
 
@@ -324,7 +329,7 @@ void GameMap::generateScreenTexture(Player player, SDL_Texture* targetTexture, f
                     std::array<std::pair<float, float>, 4> vertexCollection = { { { x1, y1 }, { x2, y2 }, { x3, y3 }, { x4, y4 } } };
 
                     if (isTextureInView(vertexCollection)) {
-                        Graphics::getInstance().renderTextureUsingVertices(textures.find(map[x][y].getWallType(player.getDirection()))->second, vertexCollection);
+                        Graphics::getInstance().renderTextureUsingVertices(textures.find(map[x][y].getWallType(player.getDirection()))->second, vertexCollection, 100);
                     }
                 }
 

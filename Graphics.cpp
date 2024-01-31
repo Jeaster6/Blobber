@@ -14,6 +14,7 @@ Graphics::Graphics() {
     fieldOfView = 0.0f;
     animationFrames = 0;
     animationDuration = 0;
+    levelOfDetail = 0;
 
 	SDL_SetMainReady();
 	SDL_Init(SDL_INIT_VIDEO);
@@ -48,10 +49,13 @@ void Graphics::renderMenuTexture(const std::string& textureFileName) {
 	texture = nullptr;
 }
 
-void Graphics::renderTextureUsingVertices(SDL_Texture* targetTexture, const std::array<std::pair<float, float>, 4>& vertexCollection) {
-	int LOD = Configuration::getInstance().getLevelOfDetail();
-	std::vector<SDL_Vertex> vertices;
-	std::vector<int> indexList;
+void Graphics::renderTextureUsingVertices(SDL_Texture* targetTexture, const std::array<std::pair<float, float>, 4>& vertexCollection, int distanceFromPlayer) {
+
+    std::vector<SDL_Vertex> vertices;
+    std::vector<int> indexList;
+
+    // limit level of detail when texture is further away from the player
+	int LOD = std::max(levelOfDetail - distanceFromPlayer, 1);
 
 	for (int i = 0; i <= LOD; i++) {
 		for (int j = 0; j <= LOD; j++) {
@@ -95,6 +99,7 @@ void Graphics::init() {
 	fieldOfView = Configuration::getInstance().getFieldOfView();
     animationFrames = Configuration::getInstance().getAnimationFrames();
     animationDuration = Configuration::getInstance().getAnimationDuration();
+    levelOfDetail = Configuration::getInstance().getLevelOfDetail();
 
 	gameWindow = SDL_CreateWindow("Blobber", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, (int)screenWidth, (int)screenHeight, SDL_WINDOW_SHOWN);
 	gameRenderer = SDL_CreateRenderer(gameWindow, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);

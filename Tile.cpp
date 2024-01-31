@@ -173,10 +173,10 @@ Tile::Tile(const std::string& northWallType, const std::string& eastWallType, co
 }
 
 Tile::Tile() {
-    northWallType = "basicWall";
-    eastWallType = "basicWall";
-    southWallType = "basicWall";
-    westWallType = "basicWall";
+    northWallType = "";
+    eastWallType = "";
+    southWallType = "";
+    westWallType = "";
     floorType = "";
     ceilingType = "";
     mapObject = nullptr;

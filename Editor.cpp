@@ -64,6 +64,16 @@ void runMapEditor(GameMap* gameMap) {
                 targetArea = { (i + 1) * GRID_TILE_SIZE, (j + 1) * GRID_TILE_SIZE, TILE_SIZE, TILE_SIZE };
                 SDL_RenderFillRect(renderer, &targetArea);
 
+                if (currentMode == 2 && gameMap->getTile(i, j)->hasFloor()) {
+                    auto index = std::distance(textures.begin(), std::find_if(textures.begin(), textures.end(), [&](const auto& pair) { return pair.first == gameMap->getTile(i, j)->getFloorType(); }));
+                    SDL_RenderCopy(renderer, textures[index].second, nullptr, &targetArea);
+                }
+
+                if (currentMode == 3 && gameMap->getTile(i, j)->hasCeiling()) {
+                    auto index = std::distance(textures.begin(), std::find_if(textures.begin(), textures.end(), [&](const auto& pair) { return pair.first == gameMap->getTile(i, j)->getCeilingType(); }));
+                    SDL_RenderCopy(renderer, textures[index].second, nullptr, &targetArea);
+                }
+
                 if (gameMap->getTile(i, j)->isWalled(Direction::N)) {
                     numberOfWalls++;
                     targetArea = { (i + 1) * GRID_TILE_SIZE, (j + 1) * GRID_TILE_SIZE, TILE_SIZE, WALL_THICKNESS };
@@ -364,7 +374,7 @@ void processMouseAction(GameMap* gameMap, SDL_Event mouseEvent, int currentMode,
     if (currentMode == 2) {
         for (int i = firstX; i <= lastX; i++) {
             for (int j = firstY; j <= lastY; j++) {
-                if ((i < gameMap->getWidth()) && (j < gameMap->getHeight())) {
+                if ((i < gameMap->getWidth()) && (j < gameMap->getHeight()) && i >= 0 && j >= 0) {
                     gameMap->setFloorType(i, j, selectedTile);
                 }
             }
@@ -374,7 +384,7 @@ void processMouseAction(GameMap* gameMap, SDL_Event mouseEvent, int currentMode,
     if (currentMode == 3) {
         for (int i = firstX; i <= lastX; i++) {
             for (int j = firstY; j <= lastY; j++) {
-                if ((i < gameMap->getWidth()) && (j < gameMap->getHeight())) {
+                if ((i < gameMap->getWidth()) && (j < gameMap->getHeight()) && i >= 0 && j >= 0) {
                     gameMap->setCeilingType(i, j, selectedTile);
                 }
             }
