@@ -31,38 +31,38 @@ class GameMap {
         int width;
         int height;
         Tile** map;
-        std::vector <Tile> savedTiles;
-        std::map <std::string, SDL_Texture*> textures;
+        std::vector<Tile> savedTiles;
+        std::map<std::string, SDL_Texture*> textures;
         SDL_Texture* previousScreenTexture;
         SDL_Texture* currentScreenTexture;
 
         void loadFromVector();
         void loadTextures();
-        void generateScreenTexture(Player, SDL_Texture*);
-        void generateScreenTexture(Player, SDL_Texture*, float);
+        void generateScreenTexture(Player*, SDL_Texture*);
+        void generateScreenTexture(Player*, SDL_Texture*, float);
         bool isTextureInView(std::array<std::pair<float, float>, 4>);
 
     public:
         Tile* getTile(int, int);
-        int getHeight();
-        int getWidth();
+        int getHeight() const;
+        int getWidth() const;
         void setTileWall(int, int, Direction, const std::string&);
         void setFloorType(int, int, const std::string&);
         void setCeilingType(int, int, const std::string&);
         void setTile(int, int, Tile*);
-        void setTileWalls(int, int, const std::string&, const std::string&, const std::string&, const std::string&, const std::string&, const std::string&, MapObject*);
+        void setTileParameters(int, int, const std::string&, const std::string&, const std::string&, const std::string&, const std::string&, const std::string&, MapObject*, bool);
         void saveToVector();
-        void renderVisibleArea(Player);
-        void animateLeftRotation(Player);
-        void animateRightRotation(Player);
-        void animateForwardMovement(Player);
-        void animateBackwardMovement(Player);
-        void animateSidestepLeft(Player);
-        void animateSidestepRight(Player);
-        void makeScreenSnapshot(Player);
+        void renderVisibleArea(Player*);
+        void animateLeftRotation(Player*);
+        void animateRightRotation(Player*);
+        void animateForwardMovement(Player*);
+        void animateBackwardMovement(Player*);
+        void animateSidestepLeft(Player*);
+        void animateSidestepRight(Player*);
+        void makeScreenSnapshot(Player*);
 
         GameMap(int, int);
-        GameMap(int, int, std::vector <Tile>);
+        GameMap(int, int, std::vector<Tile>);
         ~GameMap();
 };
 
@@ -76,9 +76,9 @@ namespace boost {
         }
 
         template<class Archive> inline void load_construct_data(Archive& ar, GameMap* map, const unsigned int version) {
-            int width ;
-            int height;
-            std::vector <Tile> savedTiles;
+            int width = 0;
+            int height = 0;
+            std::vector<Tile> savedTiles;
 
             ar >> width;
             ar >> height;

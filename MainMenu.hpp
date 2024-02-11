@@ -5,5 +5,7 @@
 #include "Graphics.hpp"
 #include "SettingsMenu.hpp"
 #include "GameLoop.hpp"
+#include "CurrentDirectory.hpp"
 
 void openMainMenu();
+std::string getSavedGameFile();

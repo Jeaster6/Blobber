@@ -109,23 +109,23 @@ SDL_Renderer* Graphics::getRenderer() {
 	return gameRenderer;
 }
 
-float Graphics::getScreenWidth() {
+float Graphics::getScreenWidth() const {
 	return screenWidth;
 }
 
-float Graphics::getScreenHeight() {
+float Graphics::getScreenHeight() const {
 	return screenHeight;
 }
 
-float Graphics::getFOV() {
+float Graphics::getFOV() const {
 	return fieldOfView;
 }
 
-int Graphics::getAnimationFrames() {
+int Graphics::getAnimationFrames() const {
     return animationFrames;
 }
    
-int Graphics::getAnimationDuration() {
+int Graphics::getAnimationDuration() const {
     return animationDuration;
 }
 

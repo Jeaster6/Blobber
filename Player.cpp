@@ -4,12 +4,14 @@ Player::Player() {
 	positionX = 0;
 	positionY = 0;
 	direction = Direction::S;
+    currentMap = "Map_1.dat";
 }
 
-Player::Player(int positionX, int positionY, Direction direction) {
+Player::Player(int positionX, int positionY, Direction direction, const std::string& currentMap) {
 	this->positionX = positionX;
 	this->positionY = positionY;
 	this->direction = direction;
+    this->currentMap = currentMap;
 }
 
 Player::~Player() {
@@ -36,16 +38,20 @@ void Player::moveInDirection(Direction direction) {
 	}
 }
 
-int Player::getX() {
+int Player::getX() const {
 	return positionX;
 }
 
-int Player::getY() {
+int Player::getY() const {
 	return positionY;
 }
 
-Direction Player::getDirection() {
+Direction Player::getDirection() const {
 	return direction;
+}
+
+std::string Player::getCurrentMapFileName() const {
+    return currentMap;
 }
 
 void Player::turnRight() {
@@ -79,7 +85,8 @@ void Player::moveLeft() {
 	moveInDirection(targetDirection);
 }
 
-void Player::teleportToCoordinates(int positionX, int positionY) {
+void Player::teleportToCoordinates(int positionX, int positionY, const std::string& targetMap) {
 	this->positionX = positionX;
 	this->positionY = positionY;
+    this->currentMap = targetMap;
 }

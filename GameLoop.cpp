@@ -1,15 +1,17 @@
 #include "GameLoop.hpp"
 
-void gameplay() {
-    std::ifstream mapFile(getMapsDirectory() + "Map_1.dat");
-    boost::archive::binary_iarchive boostArchive(mapFile);
-    GameMap* gameMap;
-    boostArchive >> gameMap;
-
-    Player player(0, 0, S);
-    Direction targetDirection;
+void gameplay(const std::string& saveFile) {
     SDL_Event e;
     bool quit = false;
+    GameState* game = nullptr;
+    std::string quickSaveFile = "quick.sav";
+
+    if (saveFile == "") {
+        game = new GameState();
+    }
+    else {
+        game = loadGame(saveFile);
+    }
 
     while (!quit) {
         while (SDL_PollEvent(&e) != 0) {
@@ -18,9 +20,6 @@ void gameplay() {
             }
 
             if (e.type == SDL_KEYDOWN) {
-                targetDirection = player.getDirection();
-                gameMap->makeScreenSnapshot(player);
-
                 switch (e.key.keysym.sym) {
 
                     case SDLK_ESCAPE:
@@ -28,57 +27,51 @@ void gameplay() {
                         break;
 
                     case SDLK_w:
-                        if (gameMap->getTile(player.getX(), player.getY())->isWalled(targetDirection)) {
-                            break;
-                        }
-                        player.moveForward();
-                        gameMap->animateForwardMovement(player);
-                        break;
-
-                    case SDLK_a:
-                        targetDirection--;
-                        if (gameMap->getTile(player.getX(), player.getY())->isWalled(targetDirection)) {
-                            break;
-                        }
-                        player.moveLeft();
-                        gameMap->animateSidestepLeft(player);
+                        game->movePlayerForward();
                         break;
 
                     case SDLK_s:
-                        targetDirection++;
-                        targetDirection++;
-                        if (gameMap->getTile(player.getX(), player.getY())->isWalled(targetDirection)) {
-                            break;
-                        }
-                        player.moveBackward();
-                        gameMap->animateBackwardMovement(player);
+                        game->movePlayerBackward();
+                        break;
+
+                    case SDLK_a:
+                        game->movePlayerLeft();
                         break;
 
                     case SDLK_d:
-                        targetDirection++;
-                        if (gameMap->getTile(player.getX(), player.getY())->isWalled(targetDirection)) {
-                            break;
-                        }
-                        player.moveRight();
-                        gameMap->animateSidestepRight(player);
+                        game->movePlayerRight();
                         break;
 
                     case SDLK_q:
-                        player.turnLeft();
-                        gameMap->animateLeftRotation(player);
+                        game->turnPlayerLeft();
                         break;
 
                     case SDLK_e:
-                        player.turnRight();
-                        gameMap->animateRightRotation(player);
+                        game->turnPlayerRight();
+                        break;
+
+                    case SDLK_r:
+                        game->quickSave(quickSaveFile);
+                        break;
+
+                    case SDLK_l:
+                        delete game;
+                        game = loadGame(quickSaveFile);
                         break;
                 }
             }
 
-            gameMap->renderVisibleArea(player);
+            game->renderPlayerView();
         }
     }
 
-    delete gameMap;
-    gameMap = nullptr;
+    delete game;
+}
+
+static GameState* loadGame(const std::string& saveFile) {
+    GameState* game;
+    std::ifstream ifs(getSaveFileDirectory() + saveFile);
+    boost::archive::binary_iarchive boostArchive(ifs);
+    boostArchive >> game;
+    return game;
 }

@@ -30,6 +30,8 @@ Item::Item(std::string itemID) {
 }
 
 Item::Item() {
+    itemID = "";
+    itemName = "";
 }
 
 Item::~Item() {

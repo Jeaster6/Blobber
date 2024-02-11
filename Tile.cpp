@@ -29,7 +29,7 @@ void Tile::setCeilingType(const std::string& ceilingType) {
     this->ceilingType = ceilingType;
 }
 
-void Tile::setTile(const std::string& northWallType, const std::string& eastWallType, const std::string& southWallType, const std::string& westWallType, const std::string& floorType, const std::string& ceilingType, MapObject*) {
+void Tile::setTile(const std::string& northWallType, const std::string& eastWallType, const std::string& southWallType, const std::string& westWallType, const std::string& floorType, const std::string& ceilingType, MapObject*, bool explored) {
     this->northWallType = northWallType;
     this->eastWallType = eastWallType;
     this->southWallType = southWallType;
@@ -37,6 +37,7 @@ void Tile::setTile(const std::string& northWallType, const std::string& eastWall
     this->floorType = floorType;
     this->ceilingType = ceilingType;
     this->mapObject = mapObject;
+    this->explored = explored;
 }
 
 void Tile::setTile(Tile* targetTile) {
@@ -47,18 +48,18 @@ void Tile::setTile(Tile* targetTile) {
     this->floorType = targetTile->floorType;
     this->ceilingType = targetTile->ceilingType;
     this->mapObject = targetTile->mapObject;
+    this->explored = targetTile->explored;
 }
 
-void Tile::spawnObject(std::string objectID) {
+void Tile::spawnObject(const std::string& objectID) {
     mapObject = new MapObject(objectID);
 }
 
 void Tile::deSpawnObject() {
     delete mapObject;
-    mapObject = nullptr;
 }
 
-bool Tile::isWalled(Direction direction) {
+bool Tile::isWalled(Direction direction) const {
     switch(direction) {
 
         case Direction::N:
@@ -80,19 +81,19 @@ bool Tile::isWalled(Direction direction) {
     return true;
 }
 
-bool Tile::hasFloor() {
+bool Tile::hasFloor() const {
     return (this->floorType != "");
 }
 
-bool Tile::hasCeiling() {
+bool Tile::hasCeiling() const {
     return (this->ceilingType != "");
 }
 
-bool Tile::containsObject() {
+bool Tile::containsObject() const {
     return this->mapObject->exists();
 }
 
-const std::string& Tile::getWallType(Direction direction) {
+std::string Tile::getWallType(Direction direction) const {
     switch (direction) {
 
         case Direction::N:
@@ -113,19 +114,20 @@ const std::string& Tile::getWallType(Direction direction) {
     }
 } 
 
-const std::string& Tile::getFloorType() {
+std::string Tile::getFloorType() const {
     return floorType;
 }
 
-const std::string& Tile::getCeilingType() {
+std::string Tile::getCeilingType() const {
     return ceilingType;
 }
 
-const std::string& Tile::getObjectType() {
-    return mapObject->getObjectType();
+MapObject* Tile::getObject() const {
+    return mapObject;
 }
 
-std::unordered_set <std::string> Tile::getTextures() {
+std::unordered_set <std::string> Tile::getTextures() const {
+    std::unordered_set <std::string> textures;
     textures.clear();
     if (northWallType != "") {
         textures.insert(northWallType);
@@ -155,14 +157,22 @@ std::unordered_set <std::string> Tile::getTextures() {
     return textures;
 }
 
-bool Tile::isFullyWalled() {
+bool Tile::isFullyWalled() const {
     if (isWalled(N) && isWalled(E) && isWalled(S) && isWalled(W)) {
         return true;
     }
     else return false;
 }
 
-Tile::Tile(const std::string& northWallType, const std::string& eastWallType, const std::string& southWallType, const std::string& westWallType, const std::string& floorType, const std::string& ceilingType, MapObject* mapObject) {
+void Tile::markAsExplored() {
+    explored = true;
+}
+
+bool Tile::isExplored() const {
+    return explored;
+}
+
+Tile::Tile(const std::string& northWallType, const std::string& eastWallType, const std::string& southWallType, const std::string& westWallType, const std::string& floorType, const std::string& ceilingType, MapObject* mapObject, bool explored) {
     this->northWallType = northWallType;
     this->eastWallType = eastWallType;
     this->southWallType = southWallType;
@@ -170,6 +180,7 @@ Tile::Tile(const std::string& northWallType, const std::string& eastWallType, co
     this->floorType = floorType;
     this->ceilingType = ceilingType;
     this->mapObject = mapObject;
+    this->explored = explored;
 }
 
 Tile::Tile() {
@@ -180,9 +191,9 @@ Tile::Tile() {
     floorType = "";
     ceilingType = "";
     mapObject = nullptr;
+    explored = false;
 }
 
 Tile::~Tile() {
     delete mapObject;
-    mapObject = nullptr;
 }

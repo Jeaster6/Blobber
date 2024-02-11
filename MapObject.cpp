@@ -16,17 +16,23 @@ bool MapObject::exists() {
     return (this != nullptr);
 }
 
-const std::string& MapObject::getObjectType() {
+std::string MapObject::getObjectType() const {
     return type;
 }
 
+void MapObject::triggerObject() {
+    triggered = !triggered;
+}
+
 MapObject::MapObject(std::string objectID) {
+    triggered = false;
     this->ID = objectID;
     addItems({"item1"});
     type = "Object";
 }
 
 MapObject::MapObject() {
+    triggered = false;
     ID = "";
     objectContents.clear();
     type = "";

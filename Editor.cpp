@@ -253,7 +253,7 @@ void processMouseAction(GameMap* gameMap, SDL_Event mouseEvent, int currentMode,
             for (int i = firstX; i <= lastX; i++) {
                 for (int j = firstY; j <= lastY; j++) {
                     if ((i < gameMap->getWidth()) && (j < gameMap->getHeight()) && (i >=0 ) && (j >= 0)) {
-                        gameMap->setTileWalls(i, j, selectedTile, selectedTile, selectedTile, selectedTile, "", "", NULL);
+                        gameMap->setTileParameters(i, j, selectedTile, selectedTile, selectedTile, selectedTile, "", "", nullptr, false);
                         if (i - 1 >= 0 && i == firstX) {
                             gameMap->setTileWall(i - 1, j, Direction::E, selectedTile);
                         }
@@ -278,7 +278,7 @@ void processMouseAction(GameMap* gameMap, SDL_Event mouseEvent, int currentMode,
             for (int i = firstX; i <= lastX; i++) {
                 for (int j = firstY; j <= lastY; j++) {
                     if ((i < gameMap->getWidth()) && (j < gameMap->getHeight()) && (i >= 0) && (j >= 0)) {
-                        gameMap->setTileWalls(i, j, "", "", "", "", selectedTile, selectedTile, NULL);
+                        gameMap->setTileParameters(i, j, "", "", "", "", selectedTile, selectedTile, nullptr, false);
                         if (i - 1 >= 0) {
                             if (i == firstX && gameMap->getTile(i - 1, j)->isWalled(Direction::E)) {
                                 gameMap->setTileWall(i, j, Direction::W, selectedTile);

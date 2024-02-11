@@ -10,3 +10,4 @@ std::string getMenuTexturesDirectory();
 std::string getObjectTexturesDirectory();
 std::string getEnvironmentTexturesDirectory();
 std::string getDataDirectory();
+std::string getSaveFileDirectory();

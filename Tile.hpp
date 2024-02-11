@@ -28,29 +28,31 @@ class Tile {
         std::string floorType;
         std::string ceilingType;
         MapObject* mapObject;
-        std::unordered_set <std::string> textures;
+        bool explored;
 
     public:
+        Tile(const std::string&, const std::string&, const std::string&, const std::string&, const std::string&, const std::string&, MapObject*, bool);
+        Tile();
+        ~Tile();
+
         void setWall(Direction, const std::string&);
         void setFloorType(const std::string&);
         void setCeilingType(const std::string&);
-        void setTile(const std::string&, const std::string&, const std::string&, const std::string&, const std::string&, const std::string&, MapObject*);
+        void setTile(const std::string&, const std::string&, const std::string&, const std::string&, const std::string&, const std::string&, MapObject*, bool);
         void setTile(Tile*);
-        void spawnObject(std::string);
+        void spawnObject(const std::string&);
         void deSpawnObject();
+        void markAsExplored();
 
-        bool isWalled(Direction);
-        bool hasFloor();
-        bool hasCeiling();
-        bool containsObject();
-        bool isFullyWalled();
-        const std::string& getWallType(Direction);
-        const std::string& getFloorType();
-        const std::string& getCeilingType();
-        const std::string& getObjectType();
-        std::unordered_set <std::string> getTextures();
-
-        Tile(const std::string&, const std::string&, const std::string&, const std::string&, const std::string&, const std::string&, MapObject*);
-        Tile();
-        ~Tile();
+        bool isExplored() const;
+        bool isWalled(Direction) const;
+        bool hasFloor() const;
+        bool hasCeiling() const;
+        bool containsObject() const;
+        bool isFullyWalled() const;
+        std::string getWallType(Direction) const;
+        std::string getFloorType() const;
+        std::string getCeilingType() const;
+        MapObject* getObject() const;
+        std::unordered_set <std::string> getTextures() const;
 };

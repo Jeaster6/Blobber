@@ -41,12 +41,12 @@ class Configuration {
 		void operator = (const Configuration&) = delete;
 
 		static Configuration& getInstance();
-		float getScreenWidth();
-		float getScreenHeight();
-		float getFieldOfView();
-        int getAnimationDuration();
-        int getAnimationFrames();
-        int getLevelOfDetail();
+		float getScreenWidth() const;
+		float getScreenHeight() const;
+		float getFieldOfView() const;
+        int getAnimationDuration() const;
+        int getAnimationFrames() const;
+        int getLevelOfDetail() const;
 
 		void setScreenWidth(float);
 		void setScreenHeight(float);

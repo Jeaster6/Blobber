@@ -26,3 +26,7 @@ std::string getEnvironmentTexturesDirectory() {
 std::string getDataDirectory() {
 	return getRootDirectory() + "Data/";
 }
+
+std::string getSaveFileDirectory() {
+    return getRootDirectory() + "Save/";
+}

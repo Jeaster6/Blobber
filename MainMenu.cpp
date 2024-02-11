@@ -26,11 +26,11 @@ void openMainMenu() {
 						break;
 
 					case SDLK_n:
-						gameplay();
+						gameplay("");
 						break;
 
 					case SDLK_l:
-						gameplay();
+						gameplay(getSavedGameFile());
 						break;
 
 					case SDLK_s:
@@ -40,4 +40,8 @@ void openMainMenu() {
 			}
 		}
 	}
+}
+
+std::string getSavedGameFile() {
+    return "quick.sav";
 }

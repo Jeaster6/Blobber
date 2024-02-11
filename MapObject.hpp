@@ -13,17 +13,20 @@ class MapObject {
         template<class Archive> void serialize(Archive& ar, const unsigned int version) {
             ar& ID;
             ar& objectContents;
+            ar& triggered;
         }
 
         std::string ID;
         std::vector <Item> objectContents;
         std::string type;
+        bool triggered;
 
     public:
         void addItems(std::vector <std::string>);
         void removeItems();
         bool exists();
-        const std::string& getObjectType();
+        void triggerObject();
+        std::string getObjectType() const;
 
         MapObject(std::string);
         MapObject();

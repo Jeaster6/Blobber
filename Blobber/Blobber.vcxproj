@@ -170,6 +170,7 @@
     <ClCompile Include="..\CurrentDirectory.cpp" />
     <ClCompile Include="..\GameLoop.cpp" />
     <ClCompile Include="..\GameMap.cpp" />
+    <ClCompile Include="..\GameState.cpp" />
     <ClCompile Include="..\Item.cpp" />
     <ClCompile Include="..\MainMenu.cpp" />
     <ClCompile Include="..\MapObject.cpp" />
@@ -177,6 +178,7 @@
     <ClCompile Include="..\Player.cpp" />
     <ClCompile Include="..\SettingsMenu.cpp" />
     <ClCompile Include="..\Tile.cpp" />
+    <ClCompile Include="..\WorldChange.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Configuration.hpp" />
@@ -184,6 +186,7 @@
     <ClInclude Include="..\Direction.hpp" />
     <ClInclude Include="..\GameLoop.hpp" />
     <ClInclude Include="..\GameMap.hpp" />
+    <ClInclude Include="..\GameState.hpp" />
     <ClInclude Include="..\Item.hpp" />
     <ClInclude Include="..\MainMenu.hpp" />
     <ClInclude Include="..\MapObject.hpp" />
@@ -191,6 +194,7 @@
     <ClInclude Include="..\Player.hpp" />
     <ClInclude Include="..\SettingsMenu.hpp" />
     <ClInclude Include="..\Tile.hpp" />
+    <ClInclude Include="..\WorldChange.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

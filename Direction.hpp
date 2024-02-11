@@ -2,7 +2,7 @@
 
 enum Direction { N,	E, S, W };
 
-inline Direction operator++(Direction& direction, int) {
+inline Direction operator++ (Direction& direction, int) {
 	Direction returnValue = direction;
 	switch (direction) {
 
@@ -25,7 +25,7 @@ inline Direction operator++(Direction& direction, int) {
 	return returnValue;
 }
 
-inline Direction operator--(Direction& direction, int) {
+inline Direction operator-- (Direction& direction, int) {
 	Direction returnValue = direction;
 	switch (direction) {
 

@@ -85,27 +85,27 @@ void Configuration::saveChangesToFile() {
 	configFile.close();
 }
 
-float Configuration::getScreenWidth() {
+float Configuration::getScreenWidth() const {
 	return screenWidth;
 }
 
-float Configuration::getScreenHeight() {
+float Configuration::getScreenHeight() const {
 	return screenHeight;
 }
 
-float Configuration::getFieldOfView() {
+float Configuration::getFieldOfView() const {
 	return fieldOfView;
 }
 
-int Configuration::getAnimationDuration() {
+int Configuration::getAnimationDuration() const {
     return animationDuration;
 }
 
-int Configuration::getAnimationFrames() {
+int Configuration::getAnimationFrames() const {
     return animationFrames;
 }
 
-int Configuration::getLevelOfDetail() {
+int Configuration::getLevelOfDetail() const {
     return levelOfDetail;
 }
 

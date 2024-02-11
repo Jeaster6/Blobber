@@ -6,8 +6,8 @@
 #include <fstream>
 #include <iostream>
 #include "CurrentDirectory.hpp"
-#include "GameMap.hpp"
 #include "Graphics.hpp"
-#include "Player.hpp"
+#include "GameState.hpp"
 
-void gameplay();
+void gameplay(const std::string&);
+static GameState* loadGame(const std::string&);

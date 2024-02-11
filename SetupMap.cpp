@@ -158,7 +158,6 @@ void setupMap() {
             runMapEditor(gameMap);
             saveMap(getMapsDirectory() + selectMapSaveFile() + ".dat", gameMap);
             delete gameMap;
-            gameMap = NULL;
             break;
         }
         case 2: {
@@ -166,7 +165,6 @@ void setupMap() {
             runMapEditor(gameMap);
             saveMap(getMapsDirectory() + selectMapSaveFile() + ".dat", gameMap);
             delete gameMap;
-            gameMap = NULL;
             break;
         }
         case 3:

@@ -33,11 +33,11 @@ class Graphics {
 
 		static Graphics& getInstance();
 		SDL_Renderer* getRenderer();
-		float getScreenWidth();
-		float getScreenHeight();
-		float getFOV();
-        int getAnimationFrames();
-        int getAnimationDuration();
+		float getScreenWidth() const;
+		float getScreenHeight() const;
+		float getFOV() const;
+        int getAnimationFrames() const;
+        int getAnimationDuration() const;
 		void init();
 		void renderMenuTexture(const std::string&);
 		void renderTextureUsingVertices(SDL_Texture*, const std::array<std::pair<float, float>, 4>&, int);
