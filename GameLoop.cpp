@@ -3,11 +3,11 @@
 void gameplay(const std::string& saveFile) {
     SDL_Event e;
     bool quit = false;
-    GameState* game = nullptr;
+    std::shared_ptr<GameState> game;
     std::string quickSaveFile = "quick.sav";
 
     if (saveFile == "") {
-        game = new GameState();
+        game = std::make_shared<GameState>();
     }
     else {
         game = loadGame(saveFile);
@@ -51,11 +51,10 @@ void gameplay(const std::string& saveFile) {
                         break;
 
                     case SDLK_r:
-                        game->quickSave(quickSaveFile);
+                        quickSave(game, quickSaveFile);
                         break;
 
                     case SDLK_l:
-                        delete game;
                         game = loadGame(quickSaveFile);
                         break;
                 }
@@ -64,14 +63,18 @@ void gameplay(const std::string& saveFile) {
             game->renderPlayerView();
         }
     }
-
-    delete game;
 }
 
-static GameState* loadGame(const std::string& saveFile) {
-    GameState* game;
+static std::shared_ptr<GameState> loadGame(const std::string& saveFile) {
+    std::shared_ptr<GameState> game;
     std::ifstream ifs(getSaveFileDirectory() + saveFile);
     boost::archive::binary_iarchive boostArchive(ifs);
     boostArchive >> game;
     return game;
+}
+
+static void quickSave(std::shared_ptr<GameState> gameState, const std::string& saveFile) {
+    std::ofstream ofs(getSaveFileDirectory() + saveFile);
+    boost::archive::binary_oarchive oa(ofs);
+    oa << gameState;
 }

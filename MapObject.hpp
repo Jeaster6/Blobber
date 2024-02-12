@@ -14,17 +14,17 @@ class MapObject {
             ar& ID;
             ar& objectContents;
             ar& triggered;
+            ar& type;
         }
 
         std::string ID;
-        std::vector <Item> objectContents;
+        std::vector<Item> objectContents;
         std::string type;
         bool triggered;
 
     public:
         void addItems(std::vector <std::string>);
         void removeItems();
-        bool exists();
         void triggerObject();
         std::string getObjectType() const;
 

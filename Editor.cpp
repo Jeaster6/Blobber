@@ -1,6 +1,6 @@
 #include "Editor.hpp"
 
-void runMapEditor(GameMap* gameMap) {
+void runMapEditor(std::shared_ptr<GameMap> gameMap) {
 
     SDL_WindowFlags window_flags = (SDL_WindowFlags)(SDL_WINDOW_RESIZABLE | SDL_WINDOW_ALLOW_HIGHDPI);
     SDL_Window* window = SDL_CreateWindow("Map Editor", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, SCREEN_WIDTH, SCREEN_HEIGHT, window_flags);
@@ -64,41 +64,41 @@ void runMapEditor(GameMap* gameMap) {
                 targetArea = { (i + 1) * GRID_TILE_SIZE, (j + 1) * GRID_TILE_SIZE, TILE_SIZE, TILE_SIZE };
                 SDL_RenderFillRect(renderer, &targetArea);
 
-                if (currentMode == 2 && gameMap->getTile(i, j)->hasFloor()) {
-                    auto index = std::distance(textures.begin(), std::find_if(textures.begin(), textures.end(), [&](const auto& pair) { return pair.first == gameMap->getTile(i, j)->getFloorType(); }));
+                if (currentMode == 2 && gameMap->getTile(i, j).hasFloor()) {
+                    auto index = std::distance(textures.begin(), std::find_if(textures.begin(), textures.end(), [&](const auto& pair) { return pair.first == gameMap->getTile(i, j).getFloorType(); }));
                     SDL_RenderCopy(renderer, textures[index].second, nullptr, &targetArea);
                 }
 
-                if (currentMode == 3 && gameMap->getTile(i, j)->hasCeiling()) {
-                    auto index = std::distance(textures.begin(), std::find_if(textures.begin(), textures.end(), [&](const auto& pair) { return pair.first == gameMap->getTile(i, j)->getCeilingType(); }));
+                if (currentMode == 3 && gameMap->getTile(i, j).hasCeiling()) {
+                    auto index = std::distance(textures.begin(), std::find_if(textures.begin(), textures.end(), [&](const auto& pair) { return pair.first == gameMap->getTile(i, j).getCeilingType(); }));
                     SDL_RenderCopy(renderer, textures[index].second, nullptr, &targetArea);
                 }
 
-                if (gameMap->getTile(i, j)->isWalled(Direction::N)) {
+                if (gameMap->getTile(i, j).isWalled(Direction::N)) {
                     numberOfWalls++;
                     targetArea = { (i + 1) * GRID_TILE_SIZE, (j + 1) * GRID_TILE_SIZE, TILE_SIZE, WALL_THICKNESS };
-                    auto index = std::distance(textures.begin(), std::find_if(textures.begin(), textures.end(), [&](const auto& pair) { return pair.first == gameMap->getTile(i, j)->getWallType(Direction::N); }));
+                    auto index = std::distance(textures.begin(), std::find_if(textures.begin(), textures.end(), [&](const auto& pair) { return pair.first == gameMap->getTile(i, j).getWallType(Direction::N); }));
                     SDL_RenderCopy(renderer, textures[index].second, nullptr, &targetArea);
                 }
 
-                if (gameMap->getTile(i, j)->isWalled(Direction::E)) {
+                if (gameMap->getTile(i, j).isWalled(Direction::E)) {
                     numberOfWalls++;
                     targetArea = { TILE_SIZE - WALL_THICKNESS + (i + 1) * GRID_TILE_SIZE, (j + 1) * GRID_TILE_SIZE, WALL_THICKNESS, TILE_SIZE };
-                    auto index = std::distance(textures.begin(), std::find_if(textures.begin(), textures.end(), [&](const auto& pair) { return pair.first == gameMap->getTile(i, j)->getWallType(Direction::E); }));
+                    auto index = std::distance(textures.begin(), std::find_if(textures.begin(), textures.end(), [&](const auto& pair) { return pair.first == gameMap->getTile(i, j).getWallType(Direction::E); }));
                     SDL_RenderCopy(renderer, textures[index].second, nullptr, &targetArea);
                 }
 
-                if (gameMap->getTile(i, j)->isWalled(Direction::S)) {
+                if (gameMap->getTile(i, j).isWalled(Direction::S)) {
                     numberOfWalls++;
                     targetArea = { (i + 1) * GRID_TILE_SIZE, TILE_SIZE-WALL_THICKNESS + (j + 1) * GRID_TILE_SIZE, TILE_SIZE, WALL_THICKNESS };
-                    auto index = std::distance(textures.begin(), std::find_if(textures.begin(), textures.end(), [&](const auto& pair) { return pair.first == gameMap->getTile(i, j)->getWallType(Direction::S); }));
+                    auto index = std::distance(textures.begin(), std::find_if(textures.begin(), textures.end(), [&](const auto& pair) { return pair.first == gameMap->getTile(i, j).getWallType(Direction::S); }));
                     SDL_RenderCopy(renderer, textures[index].second, nullptr, &targetArea);
                 }
 
-                if (gameMap->getTile(i, j)->isWalled(Direction::W)) {
+                if (gameMap->getTile(i, j).isWalled(Direction::W)) {
                     numberOfWalls++;
                     targetArea = { (i + 1) * GRID_TILE_SIZE, (j + 1) * GRID_TILE_SIZE, WALL_THICKNESS, TILE_SIZE };
-                    auto index = std::distance(textures.begin(), std::find_if(textures.begin(), textures.end(), [&](const auto& pair) { return pair.first == gameMap->getTile(i, j)->getWallType(Direction::W); }));
+                    auto index = std::distance(textures.begin(), std::find_if(textures.begin(), textures.end(), [&](const auto& pair) { return pair.first == gameMap->getTile(i, j).getWallType(Direction::W); }));
                     SDL_RenderCopy(renderer, textures[index].second, nullptr, &targetArea);
                 }
 
@@ -108,8 +108,14 @@ void runMapEditor(GameMap* gameMap) {
                     SDL_RenderFillRect(renderer, &targetArea);
                 }
 
-                SDL_SetRenderDrawColor(renderer, 0x00, 0x66, 0xAA, 0xFF);
-                if (gameMap->getTile(i, j)->containsObject()) {
+                if (currentMode == 4 && gameMap->getTile(i, j).containsObject()) {
+                    SDL_SetRenderDrawColor(renderer, 0x66, 0x66, 0x00, 0xFF);
+                    targetArea = { (i + 1) * GRID_TILE_SIZE + TILE_SIZE / 4, (j + 1) * GRID_TILE_SIZE + TILE_SIZE / 4, TILE_SIZE / 2, TILE_SIZE / 2 };
+                    SDL_RenderFillRect(renderer, &targetArea);
+                }
+
+                if (currentMode == 5 && gameMap->getTile(i, j).containsTrigger()) {
+                    SDL_SetRenderDrawColor(renderer, 0x00, 0x66, 0x66, 0xFF);
                     targetArea = { (i + 1) * GRID_TILE_SIZE + TILE_SIZE / 4, (j + 1) * GRID_TILE_SIZE + TILE_SIZE / 4, TILE_SIZE / 2, TILE_SIZE / 2 };
                     SDL_RenderFillRect(renderer, &targetArea);
                 }
@@ -129,7 +135,9 @@ void runMapEditor(GameMap* gameMap) {
             ImGui::RadioButton("Basic Mode", &currentMode, 0); ImGui::SameLine();
             ImGui::RadioButton("Wall Mode", &currentMode, 1); ImGui::SameLine();
             ImGui::RadioButton("Floor Mode", &currentMode, 2); ImGui::SameLine();
-            ImGui::RadioButton("Ceiling Mode", &currentMode, 3);
+            ImGui::RadioButton("Ceiling Mode", &currentMode, 3); ImGui::NewLine();
+            ImGui::RadioButton("Object Mode", &currentMode, 4); ImGui::SameLine();
+            ImGui::RadioButton("Trigger Mode", &currentMode, 5);
 
             ImGui::ColorEdit3("Background colour", (float*)&backgroundColour);
             ImGui::Checkbox("Show Second Window", &show_demo_window);
@@ -207,7 +215,7 @@ void runMapEditor(GameMap* gameMap) {
 	SDL_Quit();
 }
 
-void processMouseAction(GameMap* gameMap, SDL_Event mouseEvent, int currentMode, SDL_Renderer* renderer, SDL_Texture* targetTexture, const std::string& selectedTile) {
+void processMouseAction(std::shared_ptr<GameMap> gameMap, SDL_Event mouseEvent, int currentMode, SDL_Renderer* renderer, SDL_Texture* targetTexture, const std::string& selectedTile) {
 
     int mouseCursorX = 0, mouseCursorY = 0;
     int mouseCursorOnButtonDownX = 0, mouseCursorOnButtonDownY = 0;
@@ -249,84 +257,76 @@ void processMouseAction(GameMap* gameMap, SDL_Event mouseEvent, int currentMode,
 
     if (currentMode == 0) {
         switch (currentEvent.button.button) {
-        case SDL_BUTTON_LEFT:
-            for (int i = firstX; i <= lastX; i++) {
-                for (int j = firstY; j <= lastY; j++) {
-                    if ((i < gameMap->getWidth()) && (j < gameMap->getHeight()) && (i >=0 ) && (j >= 0)) {
-                        gameMap->setTileParameters(i, j, selectedTile, selectedTile, selectedTile, selectedTile, "", "", nullptr, false);
-                        if (i - 1 >= 0 && i == firstX) {
-                            gameMap->setTileWall(i - 1, j, Direction::E, selectedTile);
-                        }
+            case SDL_BUTTON_LEFT:
+                for (int i = firstX; i <= lastX; i++) {
+                    for (int j = firstY; j <= lastY; j++) {
+                        if ((i < gameMap->getWidth()) && (j < gameMap->getHeight()) && (i >=0 ) && (j >= 0)) {
+                            gameMap->setTileParameters(i, j, selectedTile, selectedTile, selectedTile, selectedTile, "", "", nullptr, nullptr, false);
+                            if (i - 1 >= 0 && i == firstX) {
+                                gameMap->setTileWall(i - 1, j, Direction::E, selectedTile);
+                            }
 
-                        if (i + 1 < gameMap->getWidth() && i == lastX) {
-                            gameMap->setTileWall(i + 1, j, Direction::W, selectedTile);
-                        }
+                            if (i + 1 < gameMap->getWidth() && i == lastX) {
+                                gameMap->setTileWall(i + 1, j, Direction::W, selectedTile);
+                            }
 
-                        if (j - 1 >= 0 && j == firstY) {
-                            gameMap->setTileWall(i, j - 1, Direction::S, selectedTile);
-                        }
+                            if (j - 1 >= 0 && j == firstY) {
+                                gameMap->setTileWall(i, j - 1, Direction::S, selectedTile);
+                            }
 
-                        if (j + 1 < gameMap->getHeight() && j == lastY) {
-                            gameMap->setTileWall(i, j + 1, Direction::N, selectedTile);
+                            if (j + 1 < gameMap->getHeight() && j == lastY) {
+                                gameMap->setTileWall(i, j + 1, Direction::N, selectedTile);
+                            }
                         }
                     }
                 }
-            }
-            break;
+                break;
 
-        case SDL_BUTTON_RIGHT:
-            for (int i = firstX; i <= lastX; i++) {
-                for (int j = firstY; j <= lastY; j++) {
-                    if ((i < gameMap->getWidth()) && (j < gameMap->getHeight()) && (i >= 0) && (j >= 0)) {
-                        gameMap->setTileParameters(i, j, "", "", "", "", selectedTile, selectedTile, nullptr, false);
-                        if (i - 1 >= 0) {
-                            if (i == firstX && gameMap->getTile(i - 1, j)->isWalled(Direction::E)) {
+            case SDL_BUTTON_RIGHT:
+                for (int i = firstX; i <= lastX; i++) {
+                    for (int j = firstY; j <= lastY; j++) {
+                        if ((i < gameMap->getWidth()) && (j < gameMap->getHeight()) && (i >= 0) && (j >= 0)) {
+                            gameMap->setTileParameters(i, j, "", "", "", "", selectedTile, selectedTile, nullptr, nullptr, false);
+                            if (i - 1 >= 0) {
+                                if (i == firstX && gameMap->getTile(i - 1, j).isWalled(Direction::E)) {
+                                    gameMap->setTileWall(i, j, Direction::W, selectedTile);
+                                }
+                            }
+                            else {
                                 gameMap->setTileWall(i, j, Direction::W, selectedTile);
                             }
-                        }
-                        else {
-                            gameMap->setTileWall(i, j, Direction::W, selectedTile);
-                        }
 
-                        if (i + 1 < gameMap->getWidth()) {
-                            if (i == lastX && gameMap->getTile(i + 1, j)->isWalled(Direction::W)) {
+                            if (i + 1 < gameMap->getWidth()) {
+                                if (i == lastX && gameMap->getTile(i + 1, j).isWalled(Direction::W)) {
+                                    gameMap->setTileWall(i, j, Direction::E, selectedTile);
+                                }
+                            }
+                            else {
                                 gameMap->setTileWall(i, j, Direction::E, selectedTile);
                             }
-                        }
-                        else {
-                            gameMap->setTileWall(i, j, Direction::E, selectedTile);
-                        }
 
-                        if (j - 1 >= 0) {
-                            if (j == firstY && gameMap->getTile(i, j - 1)->isWalled(Direction::S)) {
+                            if (j - 1 >= 0) {
+                                if (j == firstY && gameMap->getTile(i, j - 1).isWalled(Direction::S)) {
+                                    gameMap->setTileWall(i, j, Direction::N, selectedTile);
+                                }
+                            }
+                            else {
                                 gameMap->setTileWall(i, j, Direction::N, selectedTile);
                             }
-                        }
-                        else {
-                            gameMap->setTileWall(i, j, Direction::N, selectedTile);
-                        }
 
-                        if (j + 1 < gameMap->getHeight()) {
-                            if (j == lastY && gameMap->getTile(i, j + 1)->isWalled(Direction::N)) {
+                            if (j + 1 < gameMap->getHeight()) {
+                                if (j == lastY && gameMap->getTile(i, j + 1).isWalled(Direction::N)) {
+                                    gameMap->setTileWall(i, j, Direction::S, selectedTile);
+                                }
+                            }
+                            else {
                                 gameMap->setTileWall(i, j, Direction::S, selectedTile);
                             }
                         }
-                        else {
-                            gameMap->setTileWall(i, j, Direction::S, selectedTile);
-                        }
                     }
                 }
+                break;
             }
-            break;
-
-        case SDL_BUTTON_X2:
-            gameMap->getTile(firstX, firstY)->spawnObject("Chest");
-            break;
-
-        case SDL_BUTTON_X1:
-            gameMap->getTile(firstX, firstY)->deSpawnObject();
-            break;
-        }
     }
 
     if (currentMode == 1) {
@@ -335,7 +335,7 @@ void processMouseAction(GameMap* gameMap, SDL_Event mouseEvent, int currentMode,
                 if ((i < gameMap->getWidth()) && (j < gameMap->getHeight()) && (i >= 0) && (j >= 0)) {
                     Direction direction = N;
                     for (int k = 0; k < 4; k++) {
-                        if (gameMap->getTile(i, j)->isWalled(direction)) {
+                        if (gameMap->getTile(i, j).isWalled(direction)) {
                             gameMap->setTileWall(i, j, direction, selectedTile);
                         }
                         direction++;
@@ -346,12 +346,12 @@ void processMouseAction(GameMap* gameMap, SDL_Event mouseEvent, int currentMode,
 
         for (int i = firstX + 1; i <= lastX - 1; i++) {
             if ((i < gameMap->getWidth()) && (i >= 0) && (firstY >= 0)) {
-                if (gameMap->getTile(i, firstY)->isWalled(Direction::S)) {
+                if (gameMap->getTile(i, firstY).isWalled(Direction::S)) {
                     gameMap->setTileWall(i, firstY, Direction::S, selectedTile);
                 }
             }
             if ((i < gameMap->getWidth()) && (lastY < gameMap->getHeight()) && (i >= 0)) {
-                if (gameMap->getTile(i, lastY)->isWalled(Direction::N)) {
+                if (gameMap->getTile(i, lastY).isWalled(Direction::N)) {
                     gameMap->setTileWall(i, lastY, Direction::N, selectedTile);
                 }
             }
@@ -359,12 +359,12 @@ void processMouseAction(GameMap* gameMap, SDL_Event mouseEvent, int currentMode,
 
         for (int i = firstY + 1; i <= lastY - 1; i++) {
             if ((i < gameMap->getHeight()) && (firstX >= 0) && (i >= 0)) {
-                if (gameMap->getTile(firstX, i)->isWalled(Direction::E)) {
+                if (gameMap->getTile(firstX, i).isWalled(Direction::E)) {
                     gameMap->setTileWall(firstX, i, Direction::E, selectedTile);
                 }
             }
             if ((lastX < gameMap->getWidth()) && (i < gameMap->getHeight()) && (i >= 0)) {
-                if (gameMap->getTile(lastX, i)->isWalled(Direction::W)) {
+                if (gameMap->getTile(lastX, i).isWalled(Direction::W)) {
                     gameMap->setTileWall(lastX, i, Direction::W, selectedTile);
                 }
             }
@@ -386,6 +386,38 @@ void processMouseAction(GameMap* gameMap, SDL_Event mouseEvent, int currentMode,
             for (int j = firstY; j <= lastY; j++) {
                 if ((i < gameMap->getWidth()) && (j < gameMap->getHeight()) && i >= 0 && j >= 0) {
                     gameMap->setCeilingType(i, j, selectedTile);
+                }
+            }
+        }
+    }
+
+    if (currentMode == 4) {
+        if (firstX < gameMap->getWidth() && firstY < gameMap->getHeight() && firstX >= 0 && firstY >= 0) {
+            switch (currentEvent.button.button) {
+                case SDL_BUTTON_LEFT: {
+                    gameMap->getTile(firstX, firstY).placeObject("Chest");
+                    break;
+                }
+
+                case SDL_BUTTON_RIGHT: {
+                    gameMap->getTile(firstX, firstY).removeObject();
+                    break;
+                }
+            }
+        }
+    }
+
+    if (currentMode == 5) {
+        if (firstX < gameMap->getWidth() && firstY < gameMap->getHeight() && firstX >= 0 && firstY >= 0) {
+            switch (currentEvent.button.button) {
+                case SDL_BUTTON_LEFT: {
+                    gameMap->getTile(firstX, firstY).placeTrigger(TriggerType::MapExit, "Map_2.dat", false);
+                    break;
+                }
+
+                case SDL_BUTTON_RIGHT: {
+                    gameMap->getTile(firstX, firstY).removeTrigger();
+                    break;
                 }
             }
         }

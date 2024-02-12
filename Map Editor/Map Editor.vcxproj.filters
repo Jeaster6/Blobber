@@ -72,6 +72,9 @@
     <ClCompile Include="..\imgui\imgui_impl_sdlrenderer2.cpp">
       <Filter>Imgui</Filter>
     </ClCompile>
+    <ClCompile Include="..\MapTrigger.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\CurrentDirectory.hpp">
@@ -127,6 +130,9 @@
     </ClInclude>
     <ClInclude Include="..\imgui\imgui_impl_sdlrenderer2.h">
       <Filter>Imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\MapTrigger.hpp">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

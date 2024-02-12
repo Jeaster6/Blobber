@@ -1,7 +1,7 @@
 #include "GameMap.hpp"
 
-Tile* GameMap::getTile(int x, int y) {
-    return &map[x][y];
+Tile& GameMap::getTile(int x, int y) {
+    return map[x][y];
 }
 
 void GameMap::setTileWall(int x, int y, Direction direction, const std::string& wallType) {
@@ -16,12 +16,12 @@ void GameMap::setCeilingType(int x, int y, const std::string& ceilingType) {
     map[x][y].setCeilingType(ceilingType);
 }
 
-void GameMap::setTile(int x, int y, Tile* targetTile) {
+void GameMap::setTile(int x, int y, Tile targetTile) {
     map[x][y].setTile(targetTile);
 }
 
-void GameMap::setTileParameters(int x, int y, const std::string& northWall, const std::string& eastWall, const std::string& southWall, const std::string& westWall, const std::string& floor, const std::string& ceiling, MapObject* mapObject, bool explored) {
-    map[x][y].setTile(northWall, eastWall, southWall, westWall, floor, ceiling, mapObject, explored);
+void GameMap::setTileParameters(int x, int y, const std::string& northWall, const std::string& eastWall, const std::string& southWall, const std::string& westWall, const std::string& floor, const std::string& ceiling, std::shared_ptr<MapObject> mapObject, std::shared_ptr<MapTrigger> mapTrigger, bool explored) {
+    map[x][y].setTile(northWall, eastWall, southWall, westWall, floor, ceiling, mapObject, mapTrigger, explored);
 }
 
 int GameMap::getHeight() const {
@@ -42,7 +42,7 @@ void GameMap::saveToVector() {
 void GameMap::loadFromVector() {
     for (int i = width - 1; i >= 0; i--) {
         for (int j = height - 1; j >= 0; j--) {
-            map[i][j].setTile(&savedTiles.back());
+            map[i][j].setTile(savedTiles.back());
             savedTiles.pop_back();
         }
     }
@@ -73,15 +73,15 @@ void GameMap::loadTextures() {
 
 // calculates and draws textures, which are in players vision cone
 
-void GameMap::makeScreenSnapshot(Player* player) {
+void GameMap::makeScreenSnapshot(std::shared_ptr<Player> player) {
     generateScreenTexture(player, previousScreenTexture);
 }
 
-void GameMap::generateScreenTexture(Player* player, SDL_Texture* targetTexture) {
+void GameMap::generateScreenTexture(std::shared_ptr<Player> player, SDL_Texture* targetTexture) {
     generateScreenTexture(player, targetTexture, 0.0f);
 }
 
-void GameMap::generateScreenTexture(Player* player, SDL_Texture* targetTexture, float offset) { // offset determines the point of view (negative value means the player is moving left, positive right and 0.0 is centered)
+void GameMap::generateScreenTexture(std::shared_ptr<Player> player, SDL_Texture* targetTexture, float offset) { // offset determines the point of view (negative value means the player is moving left, positive right and 0.0 is centered)
     float screenWidth = Graphics::getInstance().getScreenWidth();
     float screenHeight = Graphics::getInstance().getScreenHeight();
     float fov = Graphics::getInstance().getFOV();
@@ -347,7 +347,7 @@ void GameMap::generateScreenTexture(Player* player, SDL_Texture* targetTexture, 
     SDL_SetRenderTarget(renderer, nullptr);
 }
 
-void GameMap::animateLeftRotation(Player* player) {
+void GameMap::animateLeftRotation(std::shared_ptr<Player> player) {
     int screenWidth = (int)Graphics::getInstance().getScreenWidth();
     int screenHeight = (int)Graphics::getInstance().getScreenHeight();
     int gameWidth = (int)(3 * screenWidth / 4);
@@ -381,7 +381,7 @@ void GameMap::animateLeftRotation(Player* player) {
     }
 }
 
-void GameMap::animateRightRotation(Player* player) {
+void GameMap::animateRightRotation(std::shared_ptr<Player> player) {
     int screenWidth = (int)Graphics::getInstance().getScreenWidth();
     int screenHeight = (int)Graphics::getInstance().getScreenHeight();
     int gameWidth = (int)(3 * screenWidth / 4);
@@ -415,7 +415,7 @@ void GameMap::animateRightRotation(Player* player) {
     }
 }
 
-void GameMap::animateForwardMovement(Player* player) {
+void GameMap::animateForwardMovement(std::shared_ptr<Player> player) {
     int screenWidth = (int)Graphics::getInstance().getScreenWidth();
     int screenHeight = (int)Graphics::getInstance().getScreenHeight();
     int gameWidth = (int)(3 * screenWidth / 4);
@@ -444,7 +444,7 @@ void GameMap::animateForwardMovement(Player* player) {
     }
 }
 
-void GameMap::animateBackwardMovement(Player* player) {
+void GameMap::animateBackwardMovement(std::shared_ptr<Player> player) {
     int screenWidth = (int)Graphics::getInstance().getScreenWidth();
     int screenHeight = (int)Graphics::getInstance().getScreenHeight();
     int gameWidth = (int)(3 * screenWidth / 4);
@@ -475,7 +475,7 @@ void GameMap::animateBackwardMovement(Player* player) {
     }
 }
 
-void GameMap::animateSidestepLeft(Player* player) {
+void GameMap::animateSidestepLeft(std::shared_ptr<Player> player) {
     int screenWidth = (int)Graphics::getInstance().getScreenWidth();
     int screenHeight = (int)Graphics::getInstance().getScreenHeight();
     int gameWidth = (int)(3 * screenWidth / 4);
@@ -507,7 +507,7 @@ void GameMap::animateSidestepLeft(Player* player) {
     }
 }
 
-void GameMap::animateSidestepRight(Player* player) {
+void GameMap::animateSidestepRight(std::shared_ptr<Player> player) {
     int screenWidth = (int)Graphics::getInstance().getScreenWidth();
     int screenHeight = (int)Graphics::getInstance().getScreenHeight();
     int gameWidth = (int)(3 * screenWidth / 4);
@@ -537,7 +537,7 @@ void GameMap::animateSidestepRight(Player* player) {
     }
 }
 
-void GameMap::renderVisibleArea(Player* player) {
+void GameMap::renderVisibleArea(std::shared_ptr<Player> player) {
     int screenWidth = (int)Graphics::getInstance().getScreenWidth();
     int screenHeight = (int)Graphics::getInstance().getScreenHeight();
     int gameWidth = (int)(3 * screenWidth / 4);
@@ -568,26 +568,41 @@ bool GameMap::isTextureInView(std::array<std::pair<float, float>, 4> vertexColle
     return verticesOnScreen == 0 ? false : true;
 }
 
+void GameMap::init() {
+    map = std::make_shared<std::shared_ptr<Tile[]>[]>(width);
+    for (int i = 0; i < width; i++) {
+        map[i] = std::make_shared<Tile[]>(height);
+    }
+    this->savedTiles = savedTiles;
+    loadFromVector();
+}
+
+GameMap::GameMap() {
+    previousScreenTexture = SDL_CreateTexture(Graphics::getInstance().getRenderer(), SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, (int)Graphics::getInstance().getScreenWidth(), (int)Graphics::getInstance().getScreenHeight());
+    currentScreenTexture = SDL_CreateTexture(Graphics::getInstance().getRenderer(), SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, (int)Graphics::getInstance().getScreenWidth(), (int)Graphics::getInstance().getScreenHeight());
+}
+
 GameMap::GameMap(int width, int height) {
     previousScreenTexture = SDL_CreateTexture(Graphics::getInstance().getRenderer(), SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, (int)Graphics::getInstance().getScreenWidth(), (int)Graphics::getInstance().getScreenHeight());
     currentScreenTexture = SDL_CreateTexture(Graphics::getInstance().getRenderer(), SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, (int)Graphics::getInstance().getScreenWidth(), (int)Graphics::getInstance().getScreenHeight());
     this->width = width;
     this->height = height;
     savedTiles.clear();
-    map = new Tile*[width];
+    map = std::make_shared<std::shared_ptr<Tile[]>[]>(width);
     for (int i = 0; i < width; i++) {
-        map[i] = new Tile[height];
+        map[i] = std::make_shared<Tile[]>(height);
     }
 }
 
-GameMap::GameMap(int width, int height, std::vector <Tile> savedTiles) {
+GameMap::GameMap(int width, int height, std::vector<Tile> savedTiles) {
     previousScreenTexture = SDL_CreateTexture(Graphics::getInstance().getRenderer(), SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, (int)Graphics::getInstance().getScreenWidth(), (int)Graphics::getInstance().getScreenHeight());
     currentScreenTexture = SDL_CreateTexture(Graphics::getInstance().getRenderer(), SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, (int)Graphics::getInstance().getScreenWidth(), (int)Graphics::getInstance().getScreenHeight());
     this->width = width;
     this->height = height;
-    map = new Tile * [width];
+    savedTiles.clear();
+    map = std::make_shared<std::shared_ptr<Tile[]>[]>(width);
     for (int i = 0; i < width; i++) {
-        map[i] = new Tile[height];
+        map[i] = std::make_shared<Tile[]>(height);
     }
     this->savedTiles = savedTiles;
     loadFromVector();
@@ -599,11 +614,6 @@ GameMap::~GameMap() {
 
     SDL_DestroyTexture(currentScreenTexture);
     currentScreenTexture = nullptr;
-
-    for (int i = 0; i < width; i++) {
-        delete[] map[i];
-    }
-    delete[] map;
 
     for (auto i = textures.begin(); i != textures.end(); i++) {
         SDL_DestroyTexture(i->second);

@@ -12,10 +12,6 @@ void MapObject::removeItems() {
     objectContents.clear();
 }
 
-bool MapObject::exists() {
-    return (this != nullptr);
-}
-
 std::string MapObject::getObjectType() const {
     return type;
 }

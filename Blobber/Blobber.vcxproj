@@ -175,6 +175,7 @@
     <ClCompile Include="..\MainMenu.cpp" />
     <ClCompile Include="..\MapObject.cpp" />
     <ClCompile Include="..\Graphics.cpp" />
+    <ClCompile Include="..\MapTrigger.cpp" />
     <ClCompile Include="..\Player.cpp" />
     <ClCompile Include="..\SettingsMenu.cpp" />
     <ClCompile Include="..\Tile.cpp" />
@@ -191,6 +192,7 @@
     <ClInclude Include="..\MainMenu.hpp" />
     <ClInclude Include="..\MapObject.hpp" />
     <ClInclude Include="..\Graphics.hpp" />
+    <ClInclude Include="..\MapTrigger.hpp" />
     <ClInclude Include="..\Player.hpp" />
     <ClInclude Include="..\SettingsMenu.hpp" />
     <ClInclude Include="..\Tile.hpp" />

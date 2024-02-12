@@ -29,7 +29,7 @@ void Tile::setCeilingType(const std::string& ceilingType) {
     this->ceilingType = ceilingType;
 }
 
-void Tile::setTile(const std::string& northWallType, const std::string& eastWallType, const std::string& southWallType, const std::string& westWallType, const std::string& floorType, const std::string& ceilingType, MapObject*, bool explored) {
+void Tile::setTile(const std::string& northWallType, const std::string& eastWallType, const std::string& southWallType, const std::string& westWallType, const std::string& floorType, const std::string& ceilingType, std::shared_ptr<MapObject> mapObject, std::shared_ptr<MapTrigger> mapTrigger, bool explored) {
     this->northWallType = northWallType;
     this->eastWallType = eastWallType;
     this->southWallType = southWallType;
@@ -37,60 +37,74 @@ void Tile::setTile(const std::string& northWallType, const std::string& eastWall
     this->floorType = floorType;
     this->ceilingType = ceilingType;
     this->mapObject = mapObject;
+    this->mapTrigger = mapTrigger;
     this->explored = explored;
 }
 
-void Tile::setTile(Tile* targetTile) {
-    this->northWallType = targetTile->northWallType;
-    this->eastWallType = targetTile->eastWallType;
-    this->southWallType = targetTile->southWallType;
-    this->westWallType = targetTile->westWallType;
-    this->floorType = targetTile->floorType;
-    this->ceilingType = targetTile->ceilingType;
-    this->mapObject = targetTile->mapObject;
-    this->explored = targetTile->explored;
+void Tile::setTile(Tile targetTile) {
+    this->northWallType = targetTile.northWallType;
+    this->eastWallType = targetTile.eastWallType;
+    this->southWallType = targetTile.southWallType;
+    this->westWallType = targetTile.westWallType;
+    this->floorType = targetTile.floorType;
+    this->ceilingType = targetTile.ceilingType;
+    this->mapObject = targetTile.mapObject;
+    this->mapTrigger = targetTile.mapTrigger;
+    this->explored = targetTile.explored;
 }
 
-void Tile::spawnObject(const std::string& objectID) {
-    mapObject = new MapObject(objectID);
+void Tile::placeObject(const std::string& objectID) {
+    mapObject = std::make_shared<MapObject>(objectID);
 }
 
-void Tile::deSpawnObject() {
-    delete mapObject;
+void Tile::removeObject() {
+    mapObject = nullptr;
+}
+
+void Tile::placeTrigger(TriggerType triggerType, const std::string& subject, bool triggered) {
+    mapTrigger = std::make_shared<MapTrigger>(triggerType, subject, triggered);
+}
+
+void Tile::removeTrigger() {
+    mapTrigger = nullptr;
 }
 
 bool Tile::isWalled(Direction direction) const {
     switch(direction) {
 
         case Direction::N:
-            return (this->northWallType != "");
+            return (northWallType != "");
             break;
 
         case Direction::E:
-            return (this->eastWallType != "");
+            return (eastWallType != "");
             break;
 
         case Direction::S:
-            return (this->southWallType != "");
+            return (southWallType != "");
             break;
 
         case Direction::W:
-            return (this->westWallType != "");
+            return (westWallType != "");
             break;
     }
     return true;
 }
 
 bool Tile::hasFloor() const {
-    return (this->floorType != "");
+    return (floorType != "");
 }
 
 bool Tile::hasCeiling() const {
-    return (this->ceilingType != "");
+    return (ceilingType != "");
 }
 
 bool Tile::containsObject() const {
-    return this->mapObject->exists();
+    return mapObject != nullptr;
+}
+
+bool Tile::containsTrigger() const {
+    return mapTrigger != nullptr;
 }
 
 std::string Tile::getWallType(Direction direction) const {
@@ -122,8 +136,12 @@ std::string Tile::getCeilingType() const {
     return ceilingType;
 }
 
-MapObject* Tile::getObject() const {
+std::shared_ptr<MapObject> Tile::getObject() const {
     return mapObject;
+}
+
+std::shared_ptr<MapTrigger> Tile::getTrigger() const {
+    return mapTrigger;
 }
 
 std::unordered_set <std::string> Tile::getTextures() const {
@@ -153,7 +171,10 @@ std::unordered_set <std::string> Tile::getTextures() const {
         textures.insert(ceilingType);
     }
 
-    //textures.insert(mapObject->getObjectType());
+    if (mapObject != nullptr) {
+        textures.insert(mapObject->getObjectType());
+    }
+
     return textures;
 }
 
@@ -172,7 +193,7 @@ bool Tile::isExplored() const {
     return explored;
 }
 
-Tile::Tile(const std::string& northWallType, const std::string& eastWallType, const std::string& southWallType, const std::string& westWallType, const std::string& floorType, const std::string& ceilingType, MapObject* mapObject, bool explored) {
+Tile::Tile(const std::string& northWallType, const std::string& eastWallType, const std::string& southWallType, const std::string& westWallType, const std::string& floorType, const std::string& ceilingType, std::shared_ptr<MapObject> mapObject, std::shared_ptr<MapTrigger> mapTrigger, bool explored) {
     this->northWallType = northWallType;
     this->eastWallType = eastWallType;
     this->southWallType = southWallType;
@@ -180,6 +201,7 @@ Tile::Tile(const std::string& northWallType, const std::string& eastWallType, co
     this->floorType = floorType;
     this->ceilingType = ceilingType;
     this->mapObject = mapObject;
+    this->mapTrigger = mapTrigger;
     this->explored = explored;
 }
 
@@ -191,9 +213,9 @@ Tile::Tile() {
     floorType = "";
     ceilingType = "";
     mapObject = nullptr;
+    mapTrigger = nullptr;
     explored = false;
 }
 
 Tile::~Tile() {
-    delete mapObject;
 }

@@ -10,4 +10,5 @@
 #include "GameState.hpp"
 
 void gameplay(const std::string&);
-static GameState* loadGame(const std::string&);
+static std::shared_ptr<GameState> loadGame(const std::string&);
+static void quickSave(std::shared_ptr<GameState>, const std::string&);

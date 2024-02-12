@@ -21,8 +21,8 @@ class GameState {
             ar& listOfChanges;
         }
 
-        Player* player;
-        GameMap* gameMap;
+        std::shared_ptr<Player> player;
+        std::shared_ptr<GameMap> gameMap;
         std::vector<WorldChange> listOfChanges;
 
     public:
@@ -37,7 +37,6 @@ class GameState {
         void turnPlayerRight();
         void renderPlayerView();
         void loadCurrentMap();
-        void quickSave(const std::string&);
         void addToListOfChanges(const std::string&, int, int, ChangeType, const std::string&);
         void markTileAsExplored();
         void applyChangesToWorld();

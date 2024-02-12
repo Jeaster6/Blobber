@@ -180,6 +180,7 @@
     <ClCompile Include="..\Item.cpp" />
     <ClCompile Include="..\MapEditor.cpp" />
     <ClCompile Include="..\MapObject.cpp" />
+    <ClCompile Include="..\MapTrigger.cpp" />
     <ClCompile Include="..\Player.cpp" />
     <ClCompile Include="..\SetupMap.cpp" />
     <ClCompile Include="..\Tile.cpp" />
@@ -200,6 +201,7 @@
     <ClInclude Include="..\imgui\imstb_truetype.h" />
     <ClInclude Include="..\Item.hpp" />
     <ClInclude Include="..\MapObject.hpp" />
+    <ClInclude Include="..\MapTrigger.hpp" />
     <ClInclude Include="..\Player.hpp" />
     <ClInclude Include="..\SetupMap.hpp" />
     <ClInclude Include="..\Tile.hpp" />
