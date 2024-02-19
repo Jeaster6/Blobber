@@ -35,8 +35,8 @@ class GameMap {
 
         void loadFromVector();
         void loadTextures();
-        void generateScreenTexture(std::shared_ptr<Player>, SDL_Texture*);
-        void generateScreenTexture(std::shared_ptr<Player>, SDL_Texture*, float);
+        void generateScreenTexture(const Player&, SDL_Texture*);
+        void generateScreenTexture(const Player&, SDL_Texture*, float);
         bool isTextureInView(std::array<std::pair<float, float>, 4>);
         void init();
 
@@ -50,14 +50,14 @@ class GameMap {
         void setTile(int, int, Tile);
         void setTileParameters(int, int, const std::string&, const std::string&, const std::string&, const std::string&, const std::string&, const std::string&, std::shared_ptr<MapObject>, std::shared_ptr<MapTrigger>, bool);
         void saveToVector();
-        void renderVisibleArea(std::shared_ptr<Player>);
-        void animateLeftRotation(std::shared_ptr<Player>);
-        void animateRightRotation(std::shared_ptr<Player>);
-        void animateForwardMovement(std::shared_ptr<Player>);
-        void animateBackwardMovement(std::shared_ptr<Player>);
-        void animateSidestepLeft(std::shared_ptr<Player>);
-        void animateSidestepRight(std::shared_ptr<Player>);
-        void makeScreenSnapshot(std::shared_ptr<Player>);
+        void renderVisibleArea(const Player&);
+        void animateLeftRotation(const Player&);
+        void animateRightRotation(const Player&);
+        void animateForwardMovement(const Player&);
+        void animateBackwardMovement(const Player&);
+        void animateSidestepLeft(const Player&);
+        void animateSidestepRight(const Player&);
+        void makeScreenSnapshot(const Player&);
 
         GameMap();
         GameMap(int, int);

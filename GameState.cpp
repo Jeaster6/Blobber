@@ -1,7 +1,7 @@
 #include "GameState.hpp"
 
 GameState::GameState() {
-    player = std::make_shared<Player>();
+    player = Player();
     loadCurrentMap();
     applyChangesToWorld();
 }
@@ -10,64 +10,64 @@ GameState::~GameState() {
 }
 
 void GameState::loadCurrentMap() {
-    std::ifstream ifs(getMapsDirectory() + player->getCurrentMapFileName());
+    std::ifstream ifs(getMapsDirectory() + player.getCurrentMapFileName());
     boost::archive::binary_iarchive boostArchive(ifs);
     boostArchive >> gameMap;
 }
 
 void GameState::markTileAsExplored() {
-    if (!gameMap->getTile(player->getX(), player->getY()).isExplored()) {
-        gameMap->getTile(player->getX(), player->getY()).markAsExplored();
-        addToListOfChanges(player->getCurrentMapFileName(), player->getX(), player->getY(), ChangeType::TileExplored, "Tile");
+    if (!gameMap->getTile(player.getX(), player.getY()).isExplored()) {
+        gameMap->getTile(player.getX(), player.getY()).markAsExplored();
+        addToListOfChanges(player.getCurrentMapFileName(), player.getX(), player.getY(), ChangeType::TileExplored, "Tile");
     }
 }
 
 void GameState::movePlayerForward() {
-    if (!gameMap->getTile(player->getX(), player->getY()).isWalled(player->getDirection())) {
-        player->moveForward();
+    if (!gameMap->getTile(player.getX(), player.getY()).isWalled(player.getDirection())) {
+        player.moveForward();
         gameMap->animateForwardMovement(player);
         markTileAsExplored();
     }
 }
 
 void GameState::movePlayerBackward() {
-    Direction targetDirection = player->getDirection();
+    Direction targetDirection = player.getDirection();
     targetDirection++;
     targetDirection++;
-    if (!gameMap->getTile(player->getX(), player->getY()).isWalled(targetDirection)) {
-        player->moveBackward();
+    if (!gameMap->getTile(player.getX(), player.getY()).isWalled(targetDirection)) {
+        player.moveBackward();
         gameMap->animateBackwardMovement(player);
         markTileAsExplored();
     }
 }
 
 void GameState::movePlayerLeft() {
-    Direction targetDirection = player->getDirection();
+    Direction targetDirection = player.getDirection();
     targetDirection--;
-    if (!gameMap->getTile(player->getX(), player->getY()).isWalled(targetDirection)) {
-        player->moveLeft();
+    if (!gameMap->getTile(player.getX(), player.getY()).isWalled(targetDirection)) {
+        player.moveLeft();
         gameMap->animateSidestepLeft(player);
         markTileAsExplored();
     }
 }
 
 void GameState::movePlayerRight() {
-    Direction targetDirection = player->getDirection();
+    Direction targetDirection = player.getDirection();
     targetDirection++;
-    if (!gameMap->getTile(player->getX(), player->getY()).isWalled(targetDirection)) {
-        player->moveRight();
+    if (!gameMap->getTile(player.getX(), player.getY()).isWalled(targetDirection)) {
+        player.moveRight();
         gameMap->animateSidestepRight(player);
         markTileAsExplored();
     }
 }
 
 void GameState::turnPlayerLeft() {
-    player->turnLeft();
+    player.turnLeft();
     gameMap->animateLeftRotation(player);
 }
 
 void GameState::turnPlayerRight() {
-    player->turnRight();
+    player.turnRight();
     gameMap->animateRightRotation(player);
 }
 
@@ -82,7 +82,7 @@ void GameState::addToListOfChanges(const std::string& affectedMapName, int locat
 
 void GameState::applyChangesToWorld() {
     for (WorldChange change : listOfChanges) {
-        if (change.getAffectedMapName() == player->getCurrentMapFileName() && change.getLocationX() < gameMap->getWidth() && change.getLocationY() < gameMap->getHeight()) {
+        if (change.getAffectedMapName() == player.getCurrentMapFileName() && change.getLocationX() < gameMap->getWidth() && change.getLocationY() < gameMap->getHeight()) {
             switch (change.getChangeType()) {
                 case ChangeType::AddItem:
                     break;

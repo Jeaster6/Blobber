@@ -21,7 +21,7 @@ class GameState {
             ar& listOfChanges;
         }
 
-        std::shared_ptr<Player> player;
+        Player player;
         std::shared_ptr<GameMap> gameMap;
         std::vector<WorldChange> listOfChanges;
 

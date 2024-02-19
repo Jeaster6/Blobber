@@ -74,15 +74,15 @@ void GameMap::loadTextures() {
 
 // calculates and draws textures, which are in players vision cone
 
-void GameMap::makeScreenSnapshot(std::shared_ptr<Player> player) {
+void GameMap::makeScreenSnapshot(const Player& player) {
     generateScreenTexture(player, previousScreenTexture);
 }
 
-void GameMap::generateScreenTexture(std::shared_ptr<Player> player, SDL_Texture* targetTexture) {
+void GameMap::generateScreenTexture(const Player& player, SDL_Texture* targetTexture) {
     generateScreenTexture(player, targetTexture, 0.0f);
 }
 
-void GameMap::generateScreenTexture(std::shared_ptr<Player> player, SDL_Texture* targetTexture, float offset) { // offset determines the point of view (negative value means the player is moving left, positive right and 0.0 is centered)
+void GameMap::generateScreenTexture(const Player& player, SDL_Texture* targetTexture, float offset) { // offset determines the point of view (negative value means the player is moving left, positive right and 0.0 is centered)
     float screenWidth = Graphics::getInstance().getScreenWidth();
     float screenHeight = Graphics::getInstance().getScreenHeight();
     float fov = Graphics::getInstance().getFOV();
@@ -95,9 +95,9 @@ void GameMap::generateScreenTexture(std::shared_ptr<Player> player, SDL_Texture*
     SDL_Rect targetArea = { 0, 0, 0, 0 };
     SDL_RenderClear(renderer);
 
-    Direction leftHandSide = player->getDirection();
+    Direction leftHandSide = player.getDirection();
     leftHandSide--;
-    Direction rightHandSide = player->getDirection();
+    Direction rightHandSide = player.getDirection();
     rightHandSide++;
     int viewDistance = 15;
     int distanceFromPlayer = 0;
@@ -112,27 +112,27 @@ void GameMap::generateScreenTexture(std::shared_ptr<Player> player, SDL_Texture*
 
             // rotates coordinates to be relative to the direction the player is facing
 
-            switch (player->getDirection()) {
+            switch (player.getDirection()) {
 
-            case Direction::N:
-                x = player->getX() + i;
-                y = player->getY() - j;
-                break;
+                case Direction::N:
+                    x = player.getX() + i;
+                    y = player.getY() - j;
+                    break;
 
-            case Direction::E:
-                x = player->getX() + j;
-                y = player->getY() + i;
-                break;
+                case Direction::E:
+                    x = player.getX() + j;
+                    y = player.getY() + i;
+                    break;
 
-            case Direction::S:
-                x = player->getX() - i;
-                y = player->getY() + j;
-                break;
+                case Direction::S:
+                    x = player.getX() - i;
+                    y = player.getY() + j;
+                    break;
 
-            case Direction::W:
-                x = player->getX() - j;
-                y = player->getY() - i;
-                break;
+                case Direction::W:
+                    x = player.getX() - j;
+                    y = player.getY() - i;
+                    break;
             }
 
             if (x < 0 || y < 0 || x >= width || y >= height) {
@@ -197,7 +197,7 @@ void GameMap::generateScreenTexture(std::shared_ptr<Player> player, SDL_Texture*
                     }
                 }
 
-                if (map[x][y].isWalled(player->getDirection())) {
+                if (map[x][y].isWalled(player.getDirection())) {
                     float x1 = (float)(gameWidth * 0.5 + (i - 0.5 + offset) * tileWidth * pow(fov, j + 1));
                     float x2 = (float)(x1 + tileWidth * pow(fov, j + 1));
                     float x3 = (float)(gameWidth * 0.5 + (i - 0.5 + offset) * tileWidth * pow(fov, j + 1));
@@ -211,7 +211,7 @@ void GameMap::generateScreenTexture(std::shared_ptr<Player> player, SDL_Texture*
                     std::array<std::pair<float, float>, 4> vertexCollection = { { { x1, y1 }, { x2, y2 }, { x3, y3 }, { x4, y4 } } };
 
                     if (isTextureInView(vertexCollection)) {
-                        Graphics::getInstance().renderTextureUsingVertices(textures.find(map[x][y].getWallType(player->getDirection()))->second, vertexCollection, 100);
+                        Graphics::getInstance().renderTextureUsingVertices(textures.find(map[x][y].getWallType(player.getDirection()))->second, vertexCollection, 100);
                     }
                 }
 
@@ -231,27 +231,27 @@ void GameMap::generateScreenTexture(std::shared_ptr<Player> player, SDL_Texture*
 
             // rotates coordinates to be relative to the direction the player is facing
 
-            switch (player->getDirection()) {
+            switch (player.getDirection()) {
 
-            case Direction::N:
-                x = player->getX() + i;
-                y = player->getY() - j;
-                break;
+                case Direction::N:
+                    x = player.getX() + i;
+                    y = player.getY() - j;
+                    break;
 
-            case Direction::E:
-                x = player->getX() + j;
-                y = player->getY() + i;
-                break;
+                case Direction::E:
+                    x = player.getX() + j;
+                    y = player.getY() + i;
+                    break;
 
-            case Direction::S:
-                x = player->getX() - i;
-                y = player->getY() + j;
-                break;
+                case Direction::S:
+                    x = player.getX() - i;
+                    y = player.getY() + j;
+                    break;
 
-            case Direction::W:
-                x = player->getX() - j;
-                y = player->getY() - i;
-                break;
+                case Direction::W:
+                    x = player.getX() - j;
+                    y = player.getY() - i;
+                    break;
             }
 
             if (x < 0 || y < 0 || x >= width || y >= height) {
@@ -316,7 +316,7 @@ void GameMap::generateScreenTexture(std::shared_ptr<Player> player, SDL_Texture*
                     }
                 }
 
-                if (map[x][y].isWalled(player->getDirection())) {
+                if (map[x][y].isWalled(player.getDirection())) {
                     float x1 = (float)(gameWidth * 0.5 + (i - 0.5 + offset) * tileWidth * pow(fov, j + 1));
                     float x2 = (float)(x1 + tileWidth * pow(fov, j + 1));
                     float x3 = (float)(gameWidth * 0.5 + (i - 0.5 + offset) * tileWidth * pow(fov, j + 1));
@@ -330,7 +330,7 @@ void GameMap::generateScreenTexture(std::shared_ptr<Player> player, SDL_Texture*
                     std::array<std::pair<float, float>, 4> vertexCollection = { { { x1, y1 }, { x2, y2 }, { x3, y3 }, { x4, y4 } } };
 
                     if (isTextureInView(vertexCollection)) {
-                        Graphics::getInstance().renderTextureUsingVertices(textures.find(map[x][y].getWallType(player->getDirection()))->second, vertexCollection, 100);
+                        Graphics::getInstance().renderTextureUsingVertices(textures.find(map[x][y].getWallType(player.getDirection()))->second, vertexCollection, 100);
                     }
                 }
 
@@ -348,7 +348,7 @@ void GameMap::generateScreenTexture(std::shared_ptr<Player> player, SDL_Texture*
     SDL_SetRenderTarget(renderer, nullptr);
 }
 
-void GameMap::animateLeftRotation(std::shared_ptr<Player> player) {
+void GameMap::animateLeftRotation(const Player& player) {
     int screenWidth = (int)Graphics::getInstance().getScreenWidth();
     int screenHeight = (int)Graphics::getInstance().getScreenHeight();
     int gameWidth = (int)(3 * screenWidth / 4);
@@ -382,7 +382,7 @@ void GameMap::animateLeftRotation(std::shared_ptr<Player> player) {
     }
 }
 
-void GameMap::animateRightRotation(std::shared_ptr<Player> player) {
+void GameMap::animateRightRotation(const Player& player) {
     int screenWidth = (int)Graphics::getInstance().getScreenWidth();
     int screenHeight = (int)Graphics::getInstance().getScreenHeight();
     int gameWidth = (int)(3 * screenWidth / 4);
@@ -416,7 +416,7 @@ void GameMap::animateRightRotation(std::shared_ptr<Player> player) {
     }
 }
 
-void GameMap::animateForwardMovement(std::shared_ptr<Player> player) {
+void GameMap::animateForwardMovement(const Player& player) {
     int screenWidth = (int)Graphics::getInstance().getScreenWidth();
     int screenHeight = (int)Graphics::getInstance().getScreenHeight();
     int gameWidth = (int)(3 * screenWidth / 4);
@@ -445,7 +445,7 @@ void GameMap::animateForwardMovement(std::shared_ptr<Player> player) {
     }
 }
 
-void GameMap::animateBackwardMovement(std::shared_ptr<Player> player) {
+void GameMap::animateBackwardMovement(const Player& player) {
     int screenWidth = (int)Graphics::getInstance().getScreenWidth();
     int screenHeight = (int)Graphics::getInstance().getScreenHeight();
     int gameWidth = (int)(3 * screenWidth / 4);
@@ -476,7 +476,7 @@ void GameMap::animateBackwardMovement(std::shared_ptr<Player> player) {
     }
 }
 
-void GameMap::animateSidestepLeft(std::shared_ptr<Player> player) {
+void GameMap::animateSidestepLeft(const Player& player) {
     int screenWidth = (int)Graphics::getInstance().getScreenWidth();
     int screenHeight = (int)Graphics::getInstance().getScreenHeight();
     int gameWidth = (int)(3 * screenWidth / 4);
@@ -508,7 +508,7 @@ void GameMap::animateSidestepLeft(std::shared_ptr<Player> player) {
     }
 }
 
-void GameMap::animateSidestepRight(std::shared_ptr<Player> player) {
+void GameMap::animateSidestepRight(const Player& player) {
     int screenWidth = (int)Graphics::getInstance().getScreenWidth();
     int screenHeight = (int)Graphics::getInstance().getScreenHeight();
     int gameWidth = (int)(3 * screenWidth / 4);
@@ -538,7 +538,7 @@ void GameMap::animateSidestepRight(std::shared_ptr<Player> player) {
     }
 }
 
-void GameMap::renderVisibleArea(std::shared_ptr<Player> player) {
+void GameMap::renderVisibleArea(const Player& player) {
     int screenWidth = (int)Graphics::getInstance().getScreenWidth();
     int screenHeight = (int)Graphics::getInstance().getScreenHeight();
     int gameWidth = (int)(3 * screenWidth / 4);
