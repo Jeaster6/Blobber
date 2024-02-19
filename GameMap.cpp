@@ -16,7 +16,7 @@ void GameMap::setCeilingType(int x, int y, const std::string& ceilingType) {
     map[x][y].setCeilingType(ceilingType);
 }
 
-void GameMap::setTile(int x, int y, Tile targetTile) {
+void GameMap::setTile(int x, int y, const Tile& targetTile) {
     map[x][y].setTile(targetTile);
 }
 
@@ -559,7 +559,7 @@ void GameMap::renderVisibleArea(const Player& player) {
 }
 
 // returns false, if none of the X vertex coordinates are located inside the game view
-bool GameMap::isTextureInView(std::array<std::pair<float, float>, 4> vertexCollection) {
+bool GameMap::isTextureInView(const std::array<std::pair<float, float>, 4>& vertexCollection) {
     int verticesOnScreen = 0;
     for (int i = 0; i < 4; i++) {
         if (vertexCollection[i].first >= 0 && vertexCollection[i].first <= 0.75f * Graphics::getInstance().getScreenWidth()) {
@@ -597,7 +597,7 @@ GameMap::GameMap(int width, int height) {
     }
 }
 
-GameMap::GameMap(int width, int height, std::vector<Tile> savedTiles) {
+GameMap::GameMap(int width, int height, const std::vector<Tile>& savedTiles) {
     previousScreenTexture = SDL_CreateTexture(Graphics::getInstance().getRenderer(), SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, (int)Graphics::getInstance().getScreenWidth(), (int)Graphics::getInstance().getScreenHeight());
     currentScreenTexture = SDL_CreateTexture(Graphics::getInstance().getRenderer(), SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, (int)Graphics::getInstance().getScreenWidth(), (int)Graphics::getInstance().getScreenHeight());
     this->width = width;

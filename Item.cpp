@@ -24,7 +24,7 @@ void Item::loadItemData() {
     itemsFile.close();
 }
 
-Item::Item(std::string itemID) {
+Item::Item(const std::string& itemID) {
     this->itemID = itemID;
     loadItemData();
 }

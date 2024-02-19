@@ -132,14 +132,14 @@ std::string selectMapSaveFile() {
     return outputFile;
 }
 
-void saveMap(std::string outputFile, std::shared_ptr<GameMap> gameMap) {
+void saveMap(const std::string& outputFile, std::shared_ptr<GameMap> gameMap) {
     gameMap->saveToVector();
     std::ofstream ofs(outputFile);
     boost::archive::binary_oarchive oa(ofs);
     oa << gameMap;
 }
 
-std::shared_ptr<GameMap> loadMap(std::string inputFile) {
+std::shared_ptr<GameMap> loadMap(const std::string& inputFile) {
     std::shared_ptr<GameMap> gameMap;
 
     std::ifstream ifs(getMapsDirectory() + inputFile);

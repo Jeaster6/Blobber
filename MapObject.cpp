@@ -1,10 +1,9 @@
 #include "MapObject.hpp"
 
-void MapObject::addItems(std::vector <std::string> objectContents) {
-    while (!objectContents.empty()) {
-        Item newItem(objectContents.back());
+void MapObject::addItems(const std::vector<std::string>& objectContents) {
+    for (std::string item : objectContents) {
+        Item newItem(item);
         this->objectContents.push_back(newItem);
-        objectContents.pop_back();
     }
 }
 
@@ -20,7 +19,7 @@ void MapObject::triggerObject() {
     triggered = !triggered;
 }
 
-MapObject::MapObject(std::string objectID) {
+MapObject::MapObject(const std::string& objectID) {
     triggered = false;
     this->ID = objectID;
     addItems({"item1"});

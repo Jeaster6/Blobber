@@ -23,12 +23,12 @@ class MapObject {
         bool triggered;
 
     public:
-        void addItems(std::vector <std::string>);
+        void addItems(const std::vector<std::string>&);
         void removeItems();
         void triggerObject();
         std::string getObjectType() const;
 
-        MapObject(std::string);
+        MapObject(const std::string&);
         MapObject();
         ~MapObject();
 };

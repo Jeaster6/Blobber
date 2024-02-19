@@ -21,7 +21,7 @@ class Item {
         void loadItemData();
 
     public:
-        Item(std::string);
+        Item(const std::string&);
         Item();
         ~Item();
 

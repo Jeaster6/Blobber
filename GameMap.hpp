@@ -37,7 +37,7 @@ class GameMap {
         void loadTextures();
         void generateScreenTexture(const Player&, SDL_Texture*);
         void generateScreenTexture(const Player&, SDL_Texture*, float);
-        bool isTextureInView(std::array<std::pair<float, float>, 4>);
+        bool isTextureInView(const std::array<std::pair<float, float>, 4>&);
         void init();
 
     public:
@@ -47,7 +47,7 @@ class GameMap {
         void setTileWall(int, int, Direction, const std::string&);
         void setFloorType(int, int, const std::string&);
         void setCeilingType(int, int, const std::string&);
-        void setTile(int, int, Tile);
+        void setTile(int, int, const Tile&);
         void setTileParameters(int, int, const std::string&, const std::string&, const std::string&, const std::string&, const std::string&, const std::string&, std::shared_ptr<MapObject>, std::shared_ptr<MapTrigger>, bool);
         void saveToVector();
         void renderVisibleArea(const Player&);
@@ -61,6 +61,6 @@ class GameMap {
 
         GameMap();
         GameMap(int, int);
-        GameMap(int, int, std::vector<Tile>);
+        GameMap(int, int, const std::vector<Tile>&);
         ~GameMap();
 };
