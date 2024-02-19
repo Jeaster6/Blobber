@@ -3,13 +3,10 @@
 void gameplay(const std::string& saveFile) {
     SDL_Event e;
     bool quit = false;
-    std::shared_ptr<GameState> game;
+    GameState game;
     std::string quickSaveFile = "quick.sav";
 
-    if (saveFile == "") {
-        game = std::make_shared<GameState>();
-    }
-    else {
+    if (saveFile != "") {
         game = loadGame(saveFile);
     }
 
@@ -27,27 +24,27 @@ void gameplay(const std::string& saveFile) {
                         break;
 
                     case SDLK_w:
-                        game->movePlayerForward();
+                        game.movePlayerForward();
                         break;
 
                     case SDLK_s:
-                        game->movePlayerBackward();
+                        game.movePlayerBackward();
                         break;
 
                     case SDLK_a:
-                        game->movePlayerLeft();
+                        game.movePlayerLeft();
                         break;
 
                     case SDLK_d:
-                        game->movePlayerRight();
+                        game.movePlayerRight();
                         break;
 
                     case SDLK_q:
-                        game->turnPlayerLeft();
+                        game.turnPlayerLeft();
                         break;
 
                     case SDLK_e:
-                        game->turnPlayerRight();
+                        game.turnPlayerRight();
                         break;
 
                     case SDLK_r:
@@ -60,20 +57,21 @@ void gameplay(const std::string& saveFile) {
                 }
             }
 
-            game->renderPlayerView();
+            game.renderPlayerView();
         }
     }
 }
 
-static std::shared_ptr<GameState> loadGame(const std::string& saveFile) {
-    std::shared_ptr<GameState> game;
+static GameState loadGame(const std::string& saveFile) {
+    GameState game;
     std::ifstream ifs(getSaveFileDirectory() + saveFile);
     boost::archive::binary_iarchive boostArchive(ifs);
     boostArchive >> game;
+    game.initMap();
     return game;
 }
 
-static void quickSave(std::shared_ptr<GameState> gameState, const std::string& saveFile) {
+static void quickSave(const GameState& gameState, const std::string& saveFile) {
     std::ofstream ofs(getSaveFileDirectory() + saveFile);
     boost::archive::binary_oarchive oa(ofs);
     oa << gameState;

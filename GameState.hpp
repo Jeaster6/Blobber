@@ -25,10 +25,14 @@ class GameState {
         std::shared_ptr<GameMap> gameMap;
         std::vector<WorldChange> listOfChanges;
 
+        void loadCurrentMap();
+        void applyChangesToWorld();
+
     public:
         GameState();
         ~GameState();
 
+        void initMap();
         void movePlayerForward();
         void movePlayerBackward();
         void movePlayerLeft();
@@ -36,8 +40,6 @@ class GameState {
         void turnPlayerLeft();
         void turnPlayerRight();
         void renderPlayerView();
-        void loadCurrentMap();
         void addToListOfChanges(const std::string&, int, int, ChangeType, const std::string&);
         void markTileAsExplored();
-        void applyChangesToWorld();
 };

@@ -2,11 +2,15 @@
 
 GameState::GameState() {
     player = Player();
-    loadCurrentMap();
-    applyChangesToWorld();
+    initMap();
 }
 
 GameState::~GameState() {
+}
+
+void GameState::initMap() {
+    loadCurrentMap();
+    applyChangesToWorld();
 }
 
 void GameState::loadCurrentMap() {
