@@ -154,7 +154,7 @@ void setupMap() {
     int mapHeight = 0;
     switch (readUserInput(mapWidth, mapHeight)) {
         case 1: {
-            std::shared_ptr<GameMap> gameMap(new GameMap(mapWidth, mapHeight));
+            std::shared_ptr<GameMap> gameMap(std::make_shared<GameMap>(mapWidth, mapHeight));
             runMapEditor(gameMap);
             saveMap(getMapsDirectory() + selectMapSaveFile() + ".dat", gameMap);
             break;

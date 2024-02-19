@@ -27,6 +27,7 @@ void GameMap::setTileParameters(int x, int y, const std::string& northWall, cons
 int GameMap::getHeight() const {
     return height;
 }
+
 int GameMap::getWidth() const {
     return width;
 }
@@ -580,6 +581,8 @@ void GameMap::init() {
 GameMap::GameMap() {
     previousScreenTexture = SDL_CreateTexture(Graphics::getInstance().getRenderer(), SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, (int)Graphics::getInstance().getScreenWidth(), (int)Graphics::getInstance().getScreenHeight());
     currentScreenTexture = SDL_CreateTexture(Graphics::getInstance().getRenderer(), SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, (int)Graphics::getInstance().getScreenWidth(), (int)Graphics::getInstance().getScreenHeight());
+    height = 0;
+    width = 0;
 }
 
 GameMap::GameMap(int width, int height) {
@@ -599,7 +602,7 @@ GameMap::GameMap(int width, int height, std::vector<Tile> savedTiles) {
     currentScreenTexture = SDL_CreateTexture(Graphics::getInstance().getRenderer(), SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, (int)Graphics::getInstance().getScreenWidth(), (int)Graphics::getInstance().getScreenHeight());
     this->width = width;
     this->height = height;
-    savedTiles.clear();
+    this->savedTiles.clear();
     map = std::make_shared<std::shared_ptr<Tile[]>[]>(width);
     for (int i = 0; i < width; i++) {
         map[i] = std::make_shared<Tile[]>(height);

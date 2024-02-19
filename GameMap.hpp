@@ -7,7 +7,7 @@
 #include <boost/archive/binary_oarchive.hpp>
 #include <boost/archive/binary_iarchive.hpp>
 #include <boost/serialization/vector.hpp>
-#include <boost/shared_ptr.hpp>
+#include <boost/serialization/shared_ptr.hpp>
 #include "SDL.h"
 #include "Graphics.hpp"
 #include "Direction.hpp"
