@@ -95,8 +95,8 @@ void GameState::applyChangesToWorld() {
                     break;
 
                 case ChangeType::ObjectTriggered:
-                    if (gameMap->getTile(change.getLocationX(), change.getLocationY()).getObject() != nullptr) {
-                        gameMap->getTile(change.getLocationX(), change.getLocationY()).getObject()->triggerObject();
+                    if (gameMap->getTile(change.getLocationX(), change.getLocationY()).getObject().getObjectType() != "") {
+                        gameMap->getTile(change.getLocationX(), change.getLocationY()).getObject().triggerObject();
                     }
                     break;
 

@@ -11,8 +11,22 @@ void MapObject::removeItems() {
     objectContents.clear();
 }
 
-std::string MapObject::getObjectType() const {
+const std::string& MapObject::getObjectType() const {
     return type;
+}
+
+void MapObject::setObjectData(const MapObject& otherObject) {
+    this->ID = otherObject.ID;
+    this->objectContents = otherObject.objectContents;
+    this->triggered = otherObject.triggered;
+    this->type = otherObject.type;
+}
+
+void MapObject::removeObject() {
+    triggered = false;
+    ID = "";
+    objectContents.clear();
+    type = "";
 }
 
 void MapObject::triggerObject() {

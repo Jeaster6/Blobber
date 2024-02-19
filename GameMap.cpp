@@ -20,7 +20,7 @@ void GameMap::setTile(int x, int y, const Tile& targetTile) {
     map[x][y].setTile(targetTile);
 }
 
-void GameMap::setTileParameters(int x, int y, const std::string& northWall, const std::string& eastWall, const std::string& southWall, const std::string& westWall, const std::string& floor, const std::string& ceiling, std::shared_ptr<MapObject> mapObject, std::shared_ptr<MapTrigger> mapTrigger, bool explored) {
+void GameMap::setTileParameters(int x, int y, const std::string& northWall, const std::string& eastWall, const std::string& southWall, const std::string& westWall, const std::string& floor, const std::string& ceiling, const MapObject& mapObject, const MapTrigger& mapTrigger, bool explored) {
     map[x][y].setTile(northWall, eastWall, southWall, westWall, floor, ceiling, mapObject, mapTrigger, explored);
 }
 
@@ -220,7 +220,7 @@ void GameMap::generateScreenTexture(const Player& player, SDL_Texture* targetTex
                     targetArea.y = (int)((screenHeight - tileHeight * pow(fov, j + 1)) * 0.5);
                     targetArea.w = (int)(tileWidth * pow(fov, j + 1));
                     targetArea.h = (int)(tileHeight * pow(fov, j + 1));
-                    SDL_RenderCopyEx(renderer, textures.find(map[x][y].getObject()->getObjectType())->second, nullptr, &targetArea, 0.0, nullptr, SDL_FLIP_NONE);
+                    SDL_RenderCopyEx(renderer, textures.find(map[x][y].getObject().getObjectType())->second, nullptr, &targetArea, 0.0, nullptr, SDL_FLIP_NONE);
                 }
             }
         }
@@ -339,7 +339,7 @@ void GameMap::generateScreenTexture(const Player& player, SDL_Texture* targetTex
                     targetArea.y = (int)((screenHeight - tileHeight * pow(fov, j + 1)) * 0.5);
                     targetArea.w = (int)(tileWidth * pow(fov, j + 1));
                     targetArea.h = (int)(tileHeight * pow(fov, j + 1));
-                    SDL_RenderCopyEx(renderer, textures.find(map[x][y].getObject()->getObjectType())->second, nullptr, &targetArea, 0.0, nullptr, SDL_FLIP_NONE);
+                    SDL_RenderCopyEx(renderer, textures.find(map[x][y].getObject().getObjectType())->second, nullptr, &targetArea, 0.0, nullptr, SDL_FLIP_NONE);
                 }
             }
         }

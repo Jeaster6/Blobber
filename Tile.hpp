@@ -30,19 +30,19 @@ class Tile {
         std::string westWallType;
         std::string floorType;
         std::string ceilingType;
-        std::shared_ptr<MapObject> mapObject;
-        std::shared_ptr<MapTrigger> mapTrigger;
+        MapObject mapObject;
+        MapTrigger mapTrigger;
         bool explored;
 
     public:
-        Tile(const std::string&, const std::string&, const std::string&, const std::string&, const std::string&, const std::string&, std::shared_ptr<MapObject>, std::shared_ptr<MapTrigger>, bool);
+        Tile(const std::string&, const std::string&, const std::string&, const std::string&, const std::string&, const std::string&, const MapObject&, const MapTrigger&, bool);
         Tile();
         ~Tile();
 
         void setWall(Direction, const std::string&);
         void setFloorType(const std::string&);
         void setCeilingType(const std::string&);
-        void setTile(const std::string&, const std::string&, const std::string&, const std::string&, const std::string&, const std::string&, std::shared_ptr<MapObject>, std::shared_ptr<MapTrigger>, bool);
+        void setTile(const std::string&, const std::string&, const std::string&, const std::string&, const std::string&, const std::string&, const MapObject&, const MapTrigger&, bool);
         void setTile(Tile);
         void placeObject(const std::string&);
         void removeObject();
@@ -57,10 +57,10 @@ class Tile {
         bool containsObject() const;
         bool containsTrigger() const;
         bool isFullyWalled() const;
-        std::string getWallType(Direction) const;
-        std::string getFloorType() const;
-        std::string getCeilingType() const;
-        std::shared_ptr<MapObject> getObject() const;
-        std::shared_ptr<MapTrigger> getTrigger() const;
+        const std::string& getWallType(Direction) const;
+        const std::string& getFloorType() const;
+        const std::string& getCeilingType() const;
+        MapObject& getObject();
+        MapTrigger& getTrigger();
         std::unordered_set<std::string> getTextures() const;
 };

@@ -48,7 +48,7 @@ class GameMap {
         void setFloorType(int, int, const std::string&);
         void setCeilingType(int, int, const std::string&);
         void setTile(int, int, const Tile&);
-        void setTileParameters(int, int, const std::string&, const std::string&, const std::string&, const std::string&, const std::string&, const std::string&, std::shared_ptr<MapObject>, std::shared_ptr<MapTrigger>, bool);
+        void setTileParameters(int, int, const std::string&, const std::string&, const std::string&, const std::string&, const std::string&, const std::string&, const MapObject&, const MapTrigger&, bool);
         void saveToVector();
         void renderVisibleArea(const Player&);
         void animateLeftRotation(const Player&);

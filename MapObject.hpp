@@ -26,7 +26,10 @@ class MapObject {
         void addItems(const std::vector<std::string>&);
         void removeItems();
         void triggerObject();
-        std::string getObjectType() const;
+        void setObjectData(const MapObject&);
+        void removeObject();
+
+        const std::string& getObjectType() const;
 
         MapObject(const std::string&);
         MapObject();
