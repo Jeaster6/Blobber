@@ -48,6 +48,7 @@ class Tile {
         void placeTrigger(TriggerType, const std::string&, bool);
         void removeTrigger();
         void markAsExplored();
+        void triggerObject();
 
         bool isExplored() const;
         bool isWalled(Direction) const;
@@ -59,7 +60,7 @@ class Tile {
         const std::string& getWallType(Direction) const;
         const std::string& getFloorType() const;
         const std::string& getCeilingType() const;
-        MapObject& getObject();
-        MapTrigger& getTrigger();
+        const MapObject& getObject();
+        const MapTrigger& getTrigger();
         std::unordered_set<std::string> getTextures() const;
 };

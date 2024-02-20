@@ -30,7 +30,7 @@ class Player {
 		int getX() const;
 		int getY() const;
 		Direction getDirection() const;
-        std::string getCurrentMapFileName() const;
+        const std::string& getCurrentMapFileName() const;
 
 		void turnRight();
 		void turnLeft();

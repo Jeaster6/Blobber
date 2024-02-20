@@ -50,7 +50,7 @@ Direction Player::getDirection() const {
 	return direction;
 }
 
-std::string Player::getCurrentMapFileName() const {
+const std::string& Player::getCurrentMapFileName() const {
     return currentMap;
 }
 

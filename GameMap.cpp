@@ -1,6 +1,6 @@
 #include "GameMap.hpp"
 
-Tile& GameMap::getTile(int x, int y) {
+Tile& GameMap::getTile(int x, int y) const {
     return map[x][y];
 }
 
@@ -53,7 +53,6 @@ void GameMap::loadFromVector() {
 }
 
 // get texture sets from all tiles and add them into the texture map if not already added
-
 void GameMap::loadTextures() {
     SDL_Renderer* renderer = Graphics::getInstance().getRenderer();
     SDL_Surface* surface = nullptr;
@@ -75,7 +74,6 @@ void GameMap::loadTextures() {
 }
 
 // calculates and draws textures, which are in players vision cone
-
 void GameMap::makeScreenSnapshot(const Player& player) {
     generateScreenTexture(player, previousScreenTexture);
 }
@@ -571,12 +569,25 @@ bool GameMap::isTextureInView(const std::array<std::pair<float, float>, 4>& vert
     return verticesOnScreen == 0 ? false : true;
 }
 
+void GameMap::saveToFile(const std::string& outputFile) {
+    saveToVector();
+    std::ofstream ofs(outputFile);
+    boost::archive::binary_oarchive boostArchive(ofs);
+    boostArchive << *this;
+}
+
+void GameMap::loadFromFile(const std::string& inputFile) {
+    std::ifstream ifs(getMapsDirectory() + inputFile);
+    boost::archive::binary_iarchive boostArchive(ifs);
+    boostArchive >> *this;
+}
+
+// constructs a map object based on size variables and populates it with data from savedTiles vector
 void GameMap::init() {
     map = std::make_shared<std::shared_ptr<Tile[]>[]>(width);
     for (int i = 0; i < width; i++) {
         map[i] = std::make_shared<Tile[]>(height);
     }
-    this->savedTiles = savedTiles;
     loadFromVector();
 }
 

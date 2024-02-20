@@ -48,9 +48,6 @@
     <ClCompile Include="..\Configuration.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\Player.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\imgui\imgui.cpp">
       <Filter>Imgui</Filter>
     </ClCompile>
@@ -73,6 +70,9 @@
       <Filter>Imgui</Filter>
     </ClCompile>
     <ClCompile Include="..\MapTrigger.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Player.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -104,9 +104,6 @@
     <ClInclude Include="..\Configuration.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\Player.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\imgui\imconfig.h">
       <Filter>Imgui</Filter>
     </ClInclude>
@@ -132,6 +129,9 @@
       <Filter>Imgui</Filter>
     </ClInclude>
     <ClInclude Include="..\MapTrigger.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Player.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

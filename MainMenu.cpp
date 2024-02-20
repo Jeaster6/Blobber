@@ -42,6 +42,6 @@ void openMainMenu() {
 	}
 }
 
-std::string getSavedGameFile() {
+static std::string getSavedGameFile() {
     return "quick.sav";
 }

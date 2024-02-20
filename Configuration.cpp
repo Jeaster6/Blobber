@@ -5,6 +5,12 @@ Configuration& Configuration::getInstance() {
 }
 
 Configuration::Configuration() {
+    screenWidth = 1920.0f;
+    screenHeight = 1080.0f;
+    fieldOfView = 0.65f;
+    animationDuration = 16;
+    animationFrames = 32;
+    levelOfDetail = 8;
 	loadDataFromFile();
 }
 

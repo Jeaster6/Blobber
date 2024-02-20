@@ -38,12 +38,12 @@ class GameMap {
         void generateScreenTexture(const Player&, SDL_Texture*);
         void generateScreenTexture(const Player&, SDL_Texture*, float);
         bool isTextureInView(const std::array<std::pair<float, float>, 4>&);
-        void init();
+        void init(); 
 
     public:
         int getHeight() const;
         int getWidth() const;
-        Tile& getTile(int, int);
+        Tile& getTile(int, int) const;
         void setTileWall(int, int, Direction, const std::string&);
         void setFloorType(int, int, const std::string&);
         void setCeilingType(int, int, const std::string&);
@@ -58,6 +58,8 @@ class GameMap {
         void animateSidestepLeft(const Player&);
         void animateSidestepRight(const Player&);
         void makeScreenSnapshot(const Player&);
+        void saveToFile(const std::string&);
+        void loadFromFile(const std::string&);
 
         GameMap();
         GameMap(int, int);

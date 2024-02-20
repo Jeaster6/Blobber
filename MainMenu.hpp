@@ -8,4 +8,4 @@
 #include "CurrentDirectory.hpp"
 
 void openMainMenu();
-std::string getSavedGameFile();
+static std::string getSavedGameFile();

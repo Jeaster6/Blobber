@@ -1,6 +1,6 @@
 #include "SetupMap.hpp"
 
-std::vector<std::string> readMapsFromDirectory() {
+static std::vector<std::string> readMapsFromDirectory() {
     std::vector<std::string> allFiles;
     std::vector<std::string> mapFiles;
     boost::filesystem::directory_iterator start(getMapsDirectory());
@@ -17,14 +17,14 @@ std::vector<std::string> readMapsFromDirectory() {
     return mapFiles;
 }
 
-void showExistingFiles() {
+static void showExistingFiles() {
     std::vector<std::string> files = readMapsFromDirectory();
     for (unsigned int i = 0; i < files.size(); i++) {
         std::cout << i + 1 << ": " << files[i] << "\n";
     }
 }
 
-int readUserInput(int& mapWidth, int& mapHeight) {
+static int readUserInput(int& mapWidth, int& mapHeight) {
     std::string userInput;
     bool validInput = false;
 
@@ -86,7 +86,7 @@ int readUserInput(int& mapWidth, int& mapHeight) {
     }
 }
 
-std::string selectMapForEditing() {
+static std::string selectMapForEditing() {
     std::vector<std::string> files = readMapsFromDirectory();
     int userInput = -1;
 
@@ -105,7 +105,7 @@ std::string selectMapForEditing() {
     return files[userInput - 1];
 }
 
-std::string selectMapSaveFile() {
+static std::string selectMapSaveFile() {
     std::string outputFile = "";
     bool saveFileSelected = false;
     while (!saveFileSelected) {
@@ -132,21 +132,6 @@ std::string selectMapSaveFile() {
     return outputFile;
 }
 
-void saveMap(const std::string& outputFile, GameMap gameMap) {
-    gameMap.saveToVector();
-    std::ofstream ofs(outputFile);
-    boost::archive::binary_oarchive oa(ofs);
-    oa << gameMap;
-}
-
-GameMap loadMap(const std::string& inputFile) {
-    GameMap gameMap;
-    std::ifstream ifs(getMapsDirectory() + inputFile);
-    boost::archive::binary_iarchive ia(ifs);
-    ia >> gameMap;
-    return gameMap;
-}
-
 void setupMap() {
     int mapWidth = 0;
     int mapHeight = 0;
@@ -154,14 +139,15 @@ void setupMap() {
         case 1: {
             GameMap gameMap = GameMap(mapWidth, mapHeight);
             runMapEditor(gameMap);
-            saveMap(getMapsDirectory() + selectMapSaveFile() + ".dat", gameMap);
+            gameMap.saveToFile(getMapsDirectory() + selectMapSaveFile() + ".dat");
             break;
         }
 
         case 2: {
-            GameMap gameMap = loadMap(selectMapForEditing());
+            GameMap gameMap;
+            gameMap.loadFromFile(selectMapForEditing());
             runMapEditor(gameMap);
-            saveMap(getMapsDirectory() + selectMapSaveFile() + ".dat", gameMap);
+            gameMap.saveToFile(getMapsDirectory() + selectMapSaveFile() + ".dat");
             break;
         }
 

@@ -27,12 +27,12 @@ class GameState {
 
         void loadCurrentMap();
         void applyChangesToWorld();
+        void initMap();
 
     public:
         GameState();
         ~GameState();
 
-        void initMap();
         void movePlayerForward();
         void movePlayerBackward();
         void movePlayerLeft();

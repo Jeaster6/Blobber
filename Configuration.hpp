@@ -22,12 +22,12 @@ class Configuration {
 		};
 
 		static Configuration configuration;
-		float screenWidth = 1920.0f;
-		float screenHeight = 1080.0f;
-		float fieldOfView = 0.65f;
-        int animationDuration = 16;
-        int animationFrames = 200;
-        int levelOfDetail = 8;
+		float screenWidth;
+		float screenHeight;
+		float fieldOfView;
+        int animationDuration;
+        int animationFrames;
+        int levelOfDetail;
 
 		Configuration();
 		~Configuration();

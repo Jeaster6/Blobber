@@ -136,16 +136,16 @@ const std::string& Tile::getCeilingType() const {
     return ceilingType;
 }
 
-MapObject& Tile::getObject() {
+const MapObject& Tile::getObject() {
     return mapObject;
 }
 
-MapTrigger& Tile::getTrigger() {
+const MapTrigger& Tile::getTrigger() {
     return mapTrigger;
 }
 
-std::unordered_set <std::string> Tile::getTextures() const {
-    std::unordered_set <std::string> textures;
+std::unordered_set<std::string> Tile::getTextures() const {
+    std::unordered_set<std::string> textures;
     textures.clear();
     if (northWallType != "") {
         textures.insert(northWallType);
@@ -187,6 +187,10 @@ bool Tile::isFullyWalled() const {
 
 void Tile::markAsExplored() {
     explored = true;
+}
+
+void Tile::triggerObject() {
+    mapObject.triggerObject();
 }
 
 bool Tile::isExplored() const {
