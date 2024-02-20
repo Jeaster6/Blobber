@@ -132,20 +132,18 @@ std::string selectMapSaveFile() {
     return outputFile;
 }
 
-void saveMap(const std::string& outputFile, std::shared_ptr<GameMap> gameMap) {
-    gameMap->saveToVector();
+void saveMap(const std::string& outputFile, GameMap gameMap) {
+    gameMap.saveToVector();
     std::ofstream ofs(outputFile);
     boost::archive::binary_oarchive oa(ofs);
     oa << gameMap;
 }
 
-std::shared_ptr<GameMap> loadMap(const std::string& inputFile) {
-    std::shared_ptr<GameMap> gameMap;
-
+GameMap loadMap(const std::string& inputFile) {
+    GameMap gameMap;
     std::ifstream ifs(getMapsDirectory() + inputFile);
     boost::archive::binary_iarchive ia(ifs);
     ia >> gameMap;
-
     return gameMap;
 }
 
@@ -154,14 +152,14 @@ void setupMap() {
     int mapHeight = 0;
     switch (readUserInput(mapWidth, mapHeight)) {
         case 1: {
-            std::shared_ptr<GameMap> gameMap(std::make_shared<GameMap>(mapWidth, mapHeight));
+            GameMap gameMap = GameMap(mapWidth, mapHeight);
             runMapEditor(gameMap);
             saveMap(getMapsDirectory() + selectMapSaveFile() + ".dat", gameMap);
             break;
         }
 
         case 2: {
-            std::shared_ptr<GameMap> gameMap = loadMap(selectMapForEditing());
+            GameMap gameMap = loadMap(selectMapForEditing());
             runMapEditor(gameMap);
             saveMap(getMapsDirectory() + selectMapSaveFile() + ".dat", gameMap);
             break;

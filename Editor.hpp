@@ -24,6 +24,6 @@ struct pathLeafString {
     }
 };
 
-void processMouseAction(std::shared_ptr<GameMap>, SDL_Event, int, SDL_Renderer*, SDL_Texture*, const std::string&);
-void runMapEditor(std::shared_ptr<GameMap>);
+void processMouseAction(GameMap&, SDL_Event, int, SDL_Renderer*, SDL_Texture*, const std::string&);
+void runMapEditor(GameMap&);
 std::vector<std::pair<std::string, SDL_Texture*>> loadTexturesFromDirectory(SDL_Renderer*);

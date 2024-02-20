@@ -20,16 +20,16 @@ void GameState::loadCurrentMap() {
 }
 
 void GameState::markTileAsExplored() {
-    if (!gameMap->getTile(player.getX(), player.getY()).isExplored()) {
-        gameMap->getTile(player.getX(), player.getY()).markAsExplored();
+    if (!gameMap.getTile(player.getX(), player.getY()).isExplored()) {
+        gameMap.getTile(player.getX(), player.getY()).markAsExplored();
         addToListOfChanges(player.getCurrentMapFileName(), player.getX(), player.getY(), ChangeType::TileExplored, "Tile");
     }
 }
 
 void GameState::movePlayerForward() {
-    if (!gameMap->getTile(player.getX(), player.getY()).isWalled(player.getDirection())) {
+    if (!gameMap.getTile(player.getX(), player.getY()).isWalled(player.getDirection())) {
         player.moveForward();
-        gameMap->animateForwardMovement(player);
+        gameMap.animateForwardMovement(player);
         markTileAsExplored();
     }
 }
@@ -38,9 +38,9 @@ void GameState::movePlayerBackward() {
     Direction targetDirection = player.getDirection();
     targetDirection++;
     targetDirection++;
-    if (!gameMap->getTile(player.getX(), player.getY()).isWalled(targetDirection)) {
+    if (!gameMap.getTile(player.getX(), player.getY()).isWalled(targetDirection)) {
         player.moveBackward();
-        gameMap->animateBackwardMovement(player);
+        gameMap.animateBackwardMovement(player);
         markTileAsExplored();
     }
 }
@@ -48,9 +48,9 @@ void GameState::movePlayerBackward() {
 void GameState::movePlayerLeft() {
     Direction targetDirection = player.getDirection();
     targetDirection--;
-    if (!gameMap->getTile(player.getX(), player.getY()).isWalled(targetDirection)) {
+    if (!gameMap.getTile(player.getX(), player.getY()).isWalled(targetDirection)) {
         player.moveLeft();
-        gameMap->animateSidestepLeft(player);
+        gameMap.animateSidestepLeft(player);
         markTileAsExplored();
     }
 }
@@ -58,26 +58,26 @@ void GameState::movePlayerLeft() {
 void GameState::movePlayerRight() {
     Direction targetDirection = player.getDirection();
     targetDirection++;
-    if (!gameMap->getTile(player.getX(), player.getY()).isWalled(targetDirection)) {
+    if (!gameMap.getTile(player.getX(), player.getY()).isWalled(targetDirection)) {
         player.moveRight();
-        gameMap->animateSidestepRight(player);
+        gameMap.animateSidestepRight(player);
         markTileAsExplored();
     }
 }
 
 void GameState::turnPlayerLeft() {
     player.turnLeft();
-    gameMap->animateLeftRotation(player);
+    gameMap.animateLeftRotation(player);
 }
 
 void GameState::turnPlayerRight() {
     player.turnRight();
-    gameMap->animateRightRotation(player);
+    gameMap.animateRightRotation(player);
 }
 
 void GameState::renderPlayerView() {
-    gameMap->renderVisibleArea(player);
-    gameMap->makeScreenSnapshot(player);
+    gameMap.renderVisibleArea(player);
+    gameMap.makeScreenSnapshot(player);
 }
 
 void GameState::addToListOfChanges(const std::string& affectedMapName, int locationX, int locationY, ChangeType changeType, const std::string& subject) {
@@ -86,7 +86,7 @@ void GameState::addToListOfChanges(const std::string& affectedMapName, int locat
 
 void GameState::applyChangesToWorld() {
     for (WorldChange change : listOfChanges) {
-        if (change.getAffectedMapName() == player.getCurrentMapFileName() && change.getLocationX() < gameMap->getWidth() && change.getLocationY() < gameMap->getHeight()) {
+        if (change.getAffectedMapName() == player.getCurrentMapFileName() && change.getLocationX() < gameMap.getWidth() && change.getLocationY() < gameMap.getHeight()) {
             switch (change.getChangeType()) {
                 case ChangeType::AddItem:
                     break;
@@ -95,13 +95,13 @@ void GameState::applyChangesToWorld() {
                     break;
 
                 case ChangeType::ObjectTriggered:
-                    if (gameMap->getTile(change.getLocationX(), change.getLocationY()).getObject().getObjectType() != "") {
-                        gameMap->getTile(change.getLocationX(), change.getLocationY()).getObject().triggerObject();
+                    if (gameMap.getTile(change.getLocationX(), change.getLocationY()).getObject().getObjectType() != "") {
+                        gameMap.getTile(change.getLocationX(), change.getLocationY()).getObject().triggerObject();
                     }
                     break;
 
                 case ChangeType::TileExplored:
-                    gameMap->getTile(change.getLocationX(), change.getLocationY()).markAsExplored();
+                    gameMap.getTile(change.getLocationX(), change.getLocationY()).markAsExplored();
                     break;
 
                 default:

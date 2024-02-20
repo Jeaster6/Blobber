@@ -23,7 +23,7 @@ class GameState {
         }
 
         Player player;
-        std::unique_ptr<GameMap> gameMap;
+        GameMap gameMap;
         std::vector<WorldChange> listOfChanges;
 
         void loadCurrentMap();

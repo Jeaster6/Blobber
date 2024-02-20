@@ -12,6 +12,6 @@ void showExistingFiles();
 int readUserInput(int&, int&);
 std::string selectMapForEditing();
 std::string selectMapSaveFile();
-void saveMap(const std::string&, std::shared_ptr<GameMap>);
-std::shared_ptr<GameMap> loadMap(const std::string&);
+void saveMap(const std::string&, GameMap);
+GameMap loadMap(const std::string&);
 void setupMap();
