@@ -110,3 +110,16 @@ void GameState::applyChangesToWorld() {
         }
     }
 }
+
+void GameState::loadGame(const std::string& saveFile) {
+    std::ifstream ifs(getSaveFileDirectory() + saveFile);
+    boost::archive::binary_iarchive boostArchive(ifs);
+    boostArchive >> *this;
+    this->initMap();
+}
+
+void GameState::saveGame(const std::string& saveFile) const {
+    std::ofstream ofs(getSaveFileDirectory() + saveFile);
+    boost::archive::binary_oarchive boostArchive(ofs);
+    boostArchive << *this;
+}

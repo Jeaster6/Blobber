@@ -7,7 +7,7 @@ void gameplay(const std::string& saveFile) {
     std::string quickSaveFile = "quick.sav";
 
     if (saveFile != "") {
-        game = loadGame(saveFile);
+        game.loadGame(saveFile);
     }
 
     while (!quit) {
@@ -48,11 +48,11 @@ void gameplay(const std::string& saveFile) {
                         break;
 
                     case SDLK_r:
-                        quickSave(game, quickSaveFile);
+                        game.saveGame(quickSaveFile);
                         break;
 
                     case SDLK_l:
-                        game = loadGame(quickSaveFile);
+                        game.loadGame(quickSaveFile);
                         break;
                 }
             }
@@ -60,19 +60,4 @@ void gameplay(const std::string& saveFile) {
             game.renderPlayerView();
         }
     }
-}
-
-static GameState loadGame(const std::string& saveFile) {
-    GameState game;
-    std::ifstream ifs(getSaveFileDirectory() + saveFile);
-    boost::archive::binary_iarchive boostArchive(ifs);
-    boostArchive >> game;
-    game.initMap();
-    return game;
-}
-
-static void quickSave(const GameState& gameState, const std::string& saveFile) {
-    std::ofstream ofs(getSaveFileDirectory() + saveFile);
-    boost::archive::binary_oarchive oa(ofs);
-    oa << gameState;
 }

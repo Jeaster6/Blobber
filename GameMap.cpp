@@ -33,6 +33,7 @@ int GameMap::getWidth() const {
 }
 
 void GameMap::saveToVector() {
+    savedTiles.clear();
     for (int i = 0; i < width; i++) {
         for (int j = 0; j < height; j++) {
             savedTiles.push_back(map[i][j]);
@@ -48,6 +49,7 @@ void GameMap::loadFromVector() {
         }
     }
     loadTextures();
+    savedTiles.clear();
 }
 
 // get texture sets from all tiles and add them into the texture map if not already added

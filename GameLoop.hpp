@@ -10,5 +10,3 @@
 #include "GameState.hpp"
 
 void gameplay(const std::string&);
-static GameState loadGame(const std::string&);
-static void quickSave(const GameState&, const std::string&);

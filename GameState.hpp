@@ -5,6 +5,7 @@
 #include <vector>
 #include <boost/archive/binary_oarchive.hpp>
 #include <boost/archive/binary_iarchive.hpp>
+#include <boost/serialization/unique_ptr.hpp>
 #include <boost/serialization/vector.hpp>
 #include "CurrentDirectory.hpp"
 #include "Direction.hpp"
@@ -22,7 +23,7 @@ class GameState {
         }
 
         Player player;
-        std::shared_ptr<GameMap> gameMap;
+        std::unique_ptr<GameMap> gameMap;
         std::vector<WorldChange> listOfChanges;
 
         void loadCurrentMap();
@@ -42,4 +43,6 @@ class GameState {
         void renderPlayerView();
         void addToListOfChanges(const std::string&, int, int, ChangeType, const std::string&);
         void markTileAsExplored();
+        void loadGame(const std::string&);
+        void saveGame(const std::string&) const;
 };
