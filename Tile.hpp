@@ -2,7 +2,6 @@
 
 #include <boost/archive/binary_oarchive.hpp>
 #include <boost/archive/binary_iarchive.hpp>
-#include <boost/serialization/shared_ptr.hpp>
 #include <string>
 #include <unordered_set>
 #include "MapObject.hpp"
