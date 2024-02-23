@@ -5,10 +5,10 @@ Configuration& Configuration::getInstance() {
 }
 
 Configuration::Configuration() {
-    screenWidth = 1920.0f;
-    screenHeight = 1080.0f;
+    screenWidth = 1920;
+    screenHeight = 1080;
     fieldOfView = 0.65f;
-    animationDuration = 16;
+    animationDuration = 200;
     animationFrames = 32;
     levelOfDetail = 8;
 	loadDataFromFile();
@@ -49,11 +49,11 @@ void Configuration::loadDataFromFile() {
 		switch (parameterName) {
 
 		case ScreenWidth:
-			screenWidth = std::stof(parameterValue);
+			screenWidth = (int)std::stof(parameterValue);
 			break;
 
 		case ScreenHeight:
-			screenHeight = std::stof(parameterValue);
+			screenHeight = (int)std::stof(parameterValue);
 			break;
 
 		case FieldOfView:
@@ -91,11 +91,11 @@ void Configuration::saveChangesToFile() {
 	configFile.close();
 }
 
-float Configuration::getScreenWidth() const {
+int Configuration::getScreenWidth() const {
 	return screenWidth;
 }
 
-float Configuration::getScreenHeight() const {
+int Configuration::getScreenHeight() const {
 	return screenHeight;
 }
 
@@ -115,12 +115,12 @@ int Configuration::getLevelOfDetail() const {
     return levelOfDetail;
 }
 
-void Configuration::setScreenWidth(float screenWidth) {
+void Configuration::setScreenWidth(int screenWidth) {
 	this->screenWidth = screenWidth;
 	saveChangesToFile();
 }
 
-void Configuration::setScreenHeight(float screenHeight) {
+void Configuration::setScreenHeight(int screenHeight) {
 	this->screenHeight = screenHeight;
 	saveChangesToFile();
 }

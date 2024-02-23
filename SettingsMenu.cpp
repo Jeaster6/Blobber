@@ -6,8 +6,8 @@ void renderSettingsMenu() {
 
 void openSettings() {
 	bool quit = false;
-	float screenWidth = Configuration::getInstance().getScreenWidth();
-	float screenHeight = Configuration::getInstance().getScreenHeight();
+	int screenWidth = Configuration::getInstance().getScreenWidth();
+    int screenHeight = Configuration::getInstance().getScreenHeight();
 	float fieldOfView = Configuration::getInstance().getFieldOfView();
 
 	SDL_Event userInput;

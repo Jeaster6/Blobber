@@ -26,58 +26,55 @@ void GameState::markTileAsExplored() {
     }
 }
 
-void GameState::movePlayerForward() {
+bool GameState::movePlayerForward() {
     if (!gameMap.getTile(player.getX(), player.getY()).isWalled(player.getDirection())) {
         player.moveForward();
-        gameMap.animateForwardMovement(player);
         markTileAsExplored();
+        return true;
     }
+    return false;
 }
 
-void GameState::movePlayerBackward() {
+bool GameState::movePlayerBackward() {
     Direction targetDirection = player.getDirection();
     targetDirection++;
     targetDirection++;
     if (!gameMap.getTile(player.getX(), player.getY()).isWalled(targetDirection)) {
         player.moveBackward();
-        gameMap.animateBackwardMovement(player);
         markTileAsExplored();
+        return true;
     }
+    return false;
 }
 
-void GameState::movePlayerLeft() {
+bool GameState::movePlayerLeft() {
     Direction targetDirection = player.getDirection();
     targetDirection--;
     if (!gameMap.getTile(player.getX(), player.getY()).isWalled(targetDirection)) {
         player.moveLeft();
-        gameMap.animateSidestepLeft(player);
         markTileAsExplored();
+        return true;
     }
+    return false;
 }
 
-void GameState::movePlayerRight() {
+bool GameState::movePlayerRight() {
     Direction targetDirection = player.getDirection();
     targetDirection++;
     if (!gameMap.getTile(player.getX(), player.getY()).isWalled(targetDirection)) {
         player.moveRight();
-        gameMap.animateSidestepRight(player);
         markTileAsExplored();
+        return true;
     }
+    return false;
 }
 
 void GameState::turnPlayerLeft() {
     player.turnLeft();
-    gameMap.animateLeftRotation(player);
 }
 
 void GameState::turnPlayerRight() {
     player.turnRight();
-    gameMap.animateRightRotation(player);
-}
-
-void GameState::renderPlayerView() {
-    gameMap.renderVisibleArea(player);
-    gameMap.makeScreenSnapshot(player);
 }
 
 void GameState::addToListOfChanges(const std::string& affectedMapName, int locationX, int locationY, ChangeType changeType, const std::string& subject) {
@@ -109,6 +106,14 @@ void GameState::applyChangesToWorld() {
             }
         }
     }
+}
+
+Player GameState::getPlayer() const {
+    return player;
+}
+
+GameMap GameState::getMap() const {
+    return gameMap;
 }
 
 void GameState::loadGame(const std::string& saveFile) {

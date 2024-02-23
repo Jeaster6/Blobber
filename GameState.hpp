@@ -1,7 +1,7 @@
 #pragma once
 
 #include <string>
-#include <iostream>
+#include <fstream>
 #include <vector>
 #include <boost/archive/binary_oarchive.hpp>
 #include <boost/archive/binary_iarchive.hpp>
@@ -33,13 +33,15 @@ class GameState {
         GameState();
         ~GameState();
 
-        void movePlayerForward();
-        void movePlayerBackward();
-        void movePlayerLeft();
-        void movePlayerRight();
+        Player getPlayer() const;
+        GameMap getMap() const;
+
+        bool movePlayerForward();
+        bool movePlayerBackward();
+        bool movePlayerLeft();
+        bool movePlayerRight();
         void turnPlayerLeft();
         void turnPlayerRight();
-        void renderPlayerView();
         void addToListOfChanges(const std::string&, int, int, ChangeType, const std::string&);
         void markTileAsExplored();
         void loadGame(const std::string&);

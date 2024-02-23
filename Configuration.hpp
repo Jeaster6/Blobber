@@ -22,8 +22,8 @@ class Configuration {
 		};
 
 		static Configuration configuration;
-		float screenWidth;
-		float screenHeight;
+		int screenWidth;
+		int screenHeight;
 		float fieldOfView;
         int animationDuration;
         int animationFrames;
@@ -41,15 +41,15 @@ class Configuration {
 		void operator = (const Configuration&) = delete;
 
 		static Configuration& getInstance();
-		float getScreenWidth() const;
-		float getScreenHeight() const;
+        int getScreenWidth() const;
+        int getScreenHeight() const;
 		float getFieldOfView() const;
         int getAnimationDuration() const;
         int getAnimationFrames() const;
         int getLevelOfDetail() const;
 
-		void setScreenWidth(float);
-		void setScreenHeight(float);
+		void setScreenWidth(int);
+		void setScreenHeight(int);
 		void setFieldOfView(float);
         void setAnimationDuration(int);
         void setAnimationFrames(int);
