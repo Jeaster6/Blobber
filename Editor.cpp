@@ -395,12 +395,12 @@ void processMouseAction(GameMap& gameMap, SDL_Event mouseEvent, int currentMode,
         if (firstX < gameMap.getWidth() && firstY < gameMap.getHeight() && firstX >= 0 && firstY >= 0) {
             switch (currentEvent.button.button) {
                 case SDL_BUTTON_LEFT: {
-                    gameMap.getTile(firstX, firstY).placeObject("Chest");
+                    gameMap.placeObject(firstX, firstY, "Chest");
                     break;
                 }
 
                 case SDL_BUTTON_RIGHT: {
-                    gameMap.getTile(firstX, firstY).removeObject();
+                    gameMap.removeObject(firstX, firstY);
                     break;
                 }
             }
@@ -411,12 +411,12 @@ void processMouseAction(GameMap& gameMap, SDL_Event mouseEvent, int currentMode,
         if (firstX < gameMap.getWidth() && firstY < gameMap.getHeight() && firstX >= 0 && firstY >= 0) {
             switch (currentEvent.button.button) {
                 case SDL_BUTTON_LEFT: {
-                    gameMap.getTile(firstX, firstY).placeTrigger(TriggerType::MapExit, "Map_2.dat", false);
+                    gameMap.placeTrigger(firstX, firstY, TriggerType::MapExit, "Map_2.dat", false);
                     break;
                 }
 
                 case SDL_BUTTON_RIGHT: {
-                    gameMap.getTile(firstX, firstY).removeTrigger();
+                    gameMap.removeTrigger(firstX, firstY);
                     break;
                 }
             }

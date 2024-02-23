@@ -136,11 +136,11 @@ const std::string& Tile::getCeilingType() const {
     return ceilingType;
 }
 
-const MapObject& Tile::getObject() {
+const MapObject& Tile::getObject() const {
     return mapObject;
 }
 
-const MapTrigger& Tile::getTrigger() {
+const MapTrigger& Tile::getTrigger() const {
     return mapTrigger;
 }
 

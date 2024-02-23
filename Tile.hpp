@@ -60,7 +60,7 @@ class Tile {
         const std::string& getWallType(Direction) const;
         const std::string& getFloorType() const;
         const std::string& getCeilingType() const;
-        const MapObject& getObject();
-        const MapTrigger& getTrigger();
+        const MapObject& getObject() const;
+        const MapTrigger& getTrigger() const;
         std::unordered_set<std::string> getTextures() const;
 };

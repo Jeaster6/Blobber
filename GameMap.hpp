@@ -43,7 +43,7 @@ class GameMap {
     public:
         int getHeight() const;
         int getWidth() const;
-        Tile& getTile(int, int) const;
+        const Tile& getTile(int, int) const;
         void setTileWall(int, int, Direction, const std::string&);
         void setFloorType(int, int, const std::string&);
         void setCeilingType(int, int, const std::string&);
@@ -60,6 +60,12 @@ class GameMap {
         void makeScreenSnapshot(const Player&);
         void saveToFile(const std::string&);
         void loadFromFile(const std::string&);
+        void placeObject(int, int, const std::string&);
+        void triggerObject(int, int);
+        void removeObject(int, int);
+        void placeTrigger(int, int, TriggerType, const std::string&, bool);
+        void removeTrigger(int, int);
+        void markTileAsExplored(int, int);
 
         GameMap();
         GameMap(int, int);

@@ -21,7 +21,7 @@ void GameState::loadCurrentMap() {
 
 void GameState::markTileAsExplored() {
     if (!gameMap.getTile(player.getX(), player.getY()).isExplored()) {
-        gameMap.getTile(player.getX(), player.getY()).markAsExplored();
+        gameMap.markTileAsExplored(player.getX(), player.getY());
         addToListOfChanges(player.getCurrentMapFileName(), player.getX(), player.getY(), ChangeType::TileExplored, "Tile");
     }
 }
@@ -96,12 +96,12 @@ void GameState::applyChangesToWorld() {
 
                 case ChangeType::ObjectTriggered:
                     if (gameMap.getTile(change.getLocationX(), change.getLocationY()).getObject().getObjectType() != "") {
-                        gameMap.getTile(change.getLocationX(), change.getLocationY()).triggerObject();
+                        gameMap.triggerObject(change.getLocationX(), change.getLocationY());
                     }
                     break;
 
                 case ChangeType::TileExplored:
-                    gameMap.getTile(change.getLocationX(), change.getLocationY()).markAsExplored();
+                    gameMap.markTileAsExplored(change.getLocationX(), change.getLocationY());
                     break;
 
                 default:

@@ -1,6 +1,6 @@
 #include "GameMap.hpp"
 
-Tile& GameMap::getTile(int x, int y) const {
+const Tile& GameMap::getTile(int x, int y) const {
     return map[x][y];
 }
 
@@ -580,6 +580,30 @@ void GameMap::loadFromFile(const std::string& inputFile) {
     std::ifstream ifs(getMapsDirectory() + inputFile);
     boost::archive::binary_iarchive boostArchive(ifs);
     boostArchive >> *this;
+}
+
+void GameMap::placeObject(int x, int y, const std::string& objectID) {
+    map[x][y].placeObject(objectID);
+}
+
+void GameMap::triggerObject(int x, int y) {
+    map[x][y].triggerObject();
+}
+
+void GameMap::removeObject(int x, int y) {
+    map[x][y].removeObject();
+}
+
+void GameMap::placeTrigger(int x, int y, TriggerType triggerType, const std::string& subject, bool triggered) {
+    map[x][y].placeTrigger(triggerType, subject, triggered);
+}
+
+void GameMap::removeTrigger(int x, int y) {
+    map[x][y].removeTrigger();
+}
+
+void GameMap::markTileAsExplored(int x, int y) {
+    map[x][y].markAsExplored();
 }
 
 // constructs a map object based on size variables and populates it with data from savedTiles vector
