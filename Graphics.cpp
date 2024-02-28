@@ -7,7 +7,6 @@ Graphics& Graphics::getInstance() {
 Graphics::Graphics() {
     previousScreenTexture = nullptr;
     currentScreenTexture = nullptr;
-	surface = nullptr;
     gameRenderer = nullptr;
     gameWindow = nullptr;
     screenWidth = 0;
@@ -23,8 +22,6 @@ Graphics::Graphics() {
 }
 
 Graphics::~Graphics() {
-	SDL_FreeSurface(surface);
-	surface = nullptr;
 	SDL_DestroyRenderer(gameRenderer);
 	gameRenderer = nullptr;
 	SDL_DestroyWindow(gameWindow);
@@ -49,12 +46,6 @@ void Graphics::init() {
     SDL_DestroyTexture(previousScreenTexture);
     SDL_DestroyTexture(currentScreenTexture);
 
-    for (auto i = currentMapTextures.begin(); i != currentMapTextures.end(); i++) {
-        SDL_DestroyTexture(i->second);
-        i->second = nullptr;
-    }
-    currentMapTextures.clear();
-
     screenWidth = Configuration::getInstance().getScreenWidth();
     screenHeight = Configuration::getInstance().getScreenHeight();
     gameWidth = (int)(0.75f * screenWidth);
@@ -69,8 +60,12 @@ void Graphics::init() {
     currentScreenTexture = SDL_CreateTexture(gameRenderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, screenWidth, screenHeight);
 }
 
-void Graphics::init(const GameMap& map) {
-    init();
+void Graphics::loadMapTextures(const GameMap& map) {
+    for (auto i = currentMapTextures.begin(); i != currentMapTextures.end(); i++) {
+        SDL_DestroyTexture(i->second);
+        i->second = nullptr;
+    }
+    currentMapTextures.clear();
 
     // get texture sets from all tiles and add them into the texture map if not already added
     for (int i = 0; i < map.getWidth(); i++) {
@@ -79,7 +74,7 @@ void Graphics::init(const GameMap& map) {
             for (std::string tileTexture : tileTextures) {
                 auto it = currentMapTextures.find(tileTexture);
                 if (it == currentMapTextures.end()) {
-                    surface = IMG_Load((getEnvironmentTexturesDirectory() + tileTexture + ".png").c_str());
+                    SDL_Surface* surface = IMG_Load((getEnvironmentTexturesDirectory() + tileTexture + ".png").c_str());
                     currentMapTextures.insert({ tileTexture, SDL_CreateTextureFromSurface(gameRenderer, surface) });
                     SDL_FreeSurface(surface);
                     surface = nullptr;
@@ -90,17 +85,17 @@ void Graphics::init(const GameMap& map) {
 }
 
 void Graphics::renderTexture(const std::string& textureFileName, const SDL_Rect* targetArea) {
-	surface = IMG_Load((getMenuTexturesDirectory() + textureFileName).c_str());
-    currentScreenTexture = SDL_CreateTextureFromSurface(gameRenderer, surface);
+    SDL_Surface* surface = IMG_Load((getMenuTexturesDirectory() + textureFileName).c_str());
+    SDL_Texture* texture = SDL_CreateTextureFromSurface(gameRenderer, surface);
 
 	SDL_RenderClear(gameRenderer);
-	SDL_RenderCopy(gameRenderer, currentScreenTexture, nullptr, targetArea);
+	SDL_RenderCopy(gameRenderer, texture, nullptr, targetArea);
 	SDL_RenderPresent(gameRenderer);
 
 	SDL_FreeSurface(surface);
 	surface = nullptr;
-	SDL_DestroyTexture(currentScreenTexture);
-    currentScreenTexture = nullptr;
+	SDL_DestroyTexture(texture);
+    texture = nullptr;
 }
 
 void Graphics::renderTextureUsingVertices(SDL_Texture* sourceTexture, const std::array<std::pair<float, float>, 4>& vertexCollection, int distanceFromPlayer) {

@@ -11,7 +11,7 @@ GameState::~GameState() {
 void GameState::initMap() {
     loadCurrentMap();
     applyChangesToWorld();
-    Graphics::getInstance().init(gameMap);
+    Graphics::getInstance().loadMapTextures(gameMap);
 }
 
 void GameState::loadCurrentMap() {

@@ -27,7 +27,6 @@ class Graphics {
         int levelOfDetail;
 		SDL_Window* gameWindow;
 		SDL_Renderer* gameRenderer;
-		SDL_Surface* surface;
         SDL_Texture* previousScreenTexture;
         SDL_Texture* currentScreenTexture;
         std::map<std::string, SDL_Texture*> currentMapTextures;
@@ -48,7 +47,7 @@ class Graphics {
 		static Graphics& getInstance();
 
         void init();
-        void init(const GameMap&);
+        void loadMapTextures(const GameMap&);
 		void renderTexture(const std::string&, const SDL_Rect*);
         void animateLeftRotation(const GameMap&, const Player&);
         void animateRightRotation(const GameMap&, const Player&);
