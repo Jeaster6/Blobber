@@ -29,6 +29,7 @@ class Graphics {
 		SDL_Renderer* gameRenderer;
         SDL_Texture* previousScreenTexture;
         SDL_Texture* currentScreenTexture;
+        SDL_Texture* UIOverlayTexture;
         std::map<std::string, SDL_Texture*> currentMapTextures;
 
 		Graphics();
@@ -38,7 +39,7 @@ class Graphics {
         void renderTextureUsingVertices(SDL_Texture*, const std::array<std::pair<float, float>, 4>&, int);
         bool isTextureInView(const std::array<std::pair<float, float>, 4>&);
         void renderBackground();
-        void renderSideBars();
+        void renderUIOverlay();
         int playerDistanceFromMapEdge(const GameMap&, const Player&, Direction);
 
 	public:
@@ -49,6 +50,7 @@ class Graphics {
         void init();
         void loadMapTextures(const GameMap&);
 		void renderTexture(const std::string&, const SDL_Rect*);
+        void renderUIElement(const std::string&, const SDL_Rect*);
         void animateLeftRotation(const GameMap&, const Player&);
         void animateRightRotation(const GameMap&, const Player&);
         void animateForwardMovement(const GameMap&, const Player&);

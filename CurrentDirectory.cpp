@@ -15,6 +15,10 @@ std::string getMenuTexturesDirectory() {
 	return getRootDirectory() + "Textures/Menus/";
 }
 
+std::string getButtonTexturesDirectory() {
+    return getRootDirectory() + "Textures/Buttons/";
+}
+
 std::string getObjectTexturesDirectory() {
     return getRootDirectory() + "Textures/Objects/";
 }

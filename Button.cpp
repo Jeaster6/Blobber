@@ -21,7 +21,7 @@ void Button::click() {
 }
 
 void Button::render() {
-    Graphics::getInstance().renderTexture(texture, &area);
+    Graphics::getInstance().renderUIElement(texture, &area);
 }
 
 
