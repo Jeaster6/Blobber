@@ -220,7 +220,7 @@ void runMapEditor(GameMap& gameMap) {
 	SDL_Quit();
 }
 
-void processMouseAction(GameMap& gameMap, SDL_Event mouseEvent, int currentMode, SDL_Renderer* renderer, SDL_Texture* targetTexture, const std::string& selectedTile) {
+void processMouseAction(GameMap& gameMap, const SDL_Event& mouseEvent, int currentMode, SDL_Renderer* renderer, SDL_Texture* targetTexture, const std::string& selectedTile) {
 
     int mouseCursorX = 0, mouseCursorY = 0;
     int mouseCursorOnButtonDownX = 0, mouseCursorOnButtonDownY = 0;
@@ -231,8 +231,8 @@ void processMouseAction(GameMap& gameMap, SDL_Event mouseEvent, int currentMode,
     SDL_GetMouseState(&mouseCursorOnButtonDownX, &mouseCursorOnButtonDownY);
 
     while (!mouseReleased) {
-        SDL_PollEvent(&mouseEvent);
-        if (mouseEvent.button.button == currentEvent.button.button && mouseEvent.type == SDL_MOUSEBUTTONUP) {
+        SDL_PollEvent(&currentEvent);
+        if (currentEvent.button.button == mouseEvent.button.button && currentEvent.type == SDL_MOUSEBUTTONUP) {
             mouseReleased = true;
         }
         SDL_GetMouseState(&mouseCursorX, &mouseCursorY);

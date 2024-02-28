@@ -15,8 +15,10 @@ class Button {
 
     public:
         Button();
+        Button(const std::string&, const SDL_Rect&, const std::string&, const std::function<void()>&);
         ~Button();
 
         void click();
         void render();
+        SDL_Rect getArea() const;
 };

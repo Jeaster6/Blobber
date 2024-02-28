@@ -88,7 +88,6 @@ void Graphics::renderTexture(const std::string& textureFileName, const SDL_Rect*
     SDL_Surface* surface = IMG_Load((getMenuTexturesDirectory() + textureFileName).c_str());
     SDL_Texture* texture = SDL_CreateTextureFromSurface(gameRenderer, surface);
 
-	SDL_RenderClear(gameRenderer);
 	SDL_RenderCopy(gameRenderer, texture, nullptr, targetArea);
 	SDL_RenderPresent(gameRenderer);
 
@@ -146,7 +145,6 @@ void Graphics::generateScreenTexture(const GameMap& map, const Player& player, S
 
     SDL_SetRenderTarget(gameRenderer, targetTexture);
     SDL_Rect targetArea = { 0, 0, 0, 0 };
-    SDL_RenderClear(gameRenderer);
     renderBackground();
 
     Direction leftHandSide = player.getDirection();

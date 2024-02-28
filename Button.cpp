@@ -6,6 +6,13 @@ Button::Button() {
     texture = "";
 }
 
+Button::Button(const std::string& title, const SDL_Rect& area, const std::string& texture, const std::function<void()>& action) {
+    this->title = title;
+    this->area = area;
+    this->texture = texture;
+    this->action = action;
+}
+
 Button::~Button() {
 }
 
@@ -15,4 +22,9 @@ void Button::click() {
 
 void Button::render() {
     Graphics::getInstance().renderTexture(texture, &area);
+}
+
+
+SDL_Rect Button::getArea() const {
+    return area;
 }
