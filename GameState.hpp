@@ -11,6 +11,7 @@
 #include "Player.hpp"
 #include "GameMap.hpp"
 #include "WorldChange.hpp"
+#include "Graphics.hpp"
 
 class GameState {
 
@@ -36,12 +37,13 @@ class GameState {
         Player getPlayer() const;
         GameMap getMap() const;
 
-        bool movePlayerForward();
-        bool movePlayerBackward();
-        bool movePlayerLeft();
-        bool movePlayerRight();
+        void movePlayerForward();
+        void movePlayerBackward();
+        void movePlayerLeft();
+        void movePlayerRight();
         void turnPlayerLeft();
         void turnPlayerRight();
+        void renderPlayerView();
         void addToListOfChanges(const std::string&, int, int, ChangeType, const std::string&);
         void markTileAsExplored();
         void loadGame(const std::string&);

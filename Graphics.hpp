@@ -7,10 +7,12 @@
 #include <array>
 #include <map>
 #include <unordered_set>
+#include "Direction.hpp"
+#include "GameMap.hpp"
+#include "Player.hpp"
 #include "Configuration.hpp"
 #include "SettingsMenu.hpp"
 #include "CurrentDirectory.hpp"
-#include "GameState.hpp"
 
 class Graphics {
 
@@ -32,27 +34,27 @@ class Graphics {
 
 		Graphics();
 		~Graphics();
-        void generateScreenTexture(const GameState&, SDL_Texture*);
-        void generateScreenTexture(const GameState&, SDL_Texture*, float);
+        void generateScreenTexture(const GameMap&, const Player&, SDL_Texture*);
+        void generateScreenTexture(const GameMap&, const Player&, SDL_Texture*, float);
         void renderTextureUsingVertices(SDL_Texture*, const std::array<std::pair<float, float>, 4>&, int);
         bool isTextureInView(const std::array<std::pair<float, float>, 4>&);
         void renderBackground();
         void renderSideBars();
-        int playerDistanceFromMapEdge(const GameState&, Direction);
+        int playerDistanceFromMapEdge(const GameMap&, const Player&, Direction);
 
 	public:
 		Graphics(const Graphics&) = delete;
 		void operator = (const Graphics&) = delete;
 		static Graphics& getInstance();
 
-		void init();
-        void loadMapTextures(const GameMap&);
-		void renderMenuTexture(const std::string&);
-        void animateLeftRotation(const GameState&);
-        void animateRightRotation(const GameState&);
-        void animateForwardMovement(const GameState&);
-        void animateBackwardMovement(const GameState&);
-        void animateSidestepLeft(const GameState&);
-        void animateSidestepRight(const GameState&);
-        void renderPlayerView(const GameState&);
+        void init();
+        void init(const GameMap&);
+		void renderTexture(const std::string&, const SDL_Rect*);
+        void animateLeftRotation(const GameMap&, const Player&);
+        void animateRightRotation(const GameMap&, const Player&);
+        void animateForwardMovement(const GameMap&, const Player&);
+        void animateBackwardMovement(const GameMap&, const Player&);
+        void animateSidestepLeft(const GameMap&, const Player&);
+        void animateSidestepRight(const GameMap&, const Player&);
+        void renderPlayerView(const GameMap&, const Player&);
 };

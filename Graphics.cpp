@@ -49,6 +49,12 @@ void Graphics::init() {
     SDL_DestroyTexture(previousScreenTexture);
     SDL_DestroyTexture(currentScreenTexture);
 
+    for (auto i = currentMapTextures.begin(); i != currentMapTextures.end(); i++) {
+        SDL_DestroyTexture(i->second);
+        i->second = nullptr;
+    }
+    currentMapTextures.clear();
+
     screenWidth = Configuration::getInstance().getScreenWidth();
     screenHeight = Configuration::getInstance().getScreenHeight();
     gameWidth = (int)(0.75f * screenWidth);
@@ -56,7 +62,6 @@ void Graphics::init() {
     animationFrames = Configuration::getInstance().getAnimationFrames();
     animationDuration = Configuration::getInstance().getAnimationDuration();
     levelOfDetail = Configuration::getInstance().getLevelOfDetail();
-    currentMapTextures.clear();
 
     gameWindow = SDL_CreateWindow("Blobber", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, (int)screenWidth, (int)screenHeight, SDL_WINDOW_SHOWN);
     gameRenderer = SDL_CreateRenderer(gameWindow, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
@@ -64,13 +69,32 @@ void Graphics::init() {
     currentScreenTexture = SDL_CreateTexture(gameRenderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, screenWidth, screenHeight);
 }
 
-void Graphics::renderMenuTexture(const std::string& textureFileName) {
+void Graphics::init(const GameMap& map) {
+    init();
+
+    // get texture sets from all tiles and add them into the texture map if not already added
+    for (int i = 0; i < map.getWidth(); i++) {
+        for (int j = 0; j < map.getHeight(); j++) {
+            std::unordered_set tileTextures = map.getTile(i, j).getTextures();
+            for (std::string tileTexture : tileTextures) {
+                auto it = currentMapTextures.find(tileTexture);
+                if (it == currentMapTextures.end()) {
+                    surface = IMG_Load((getEnvironmentTexturesDirectory() + tileTexture + ".png").c_str());
+                    currentMapTextures.insert({ tileTexture, SDL_CreateTextureFromSurface(gameRenderer, surface) });
+                    SDL_FreeSurface(surface);
+                    surface = nullptr;
+                }
+            }
+        }
+    }
+}
+
+void Graphics::renderTexture(const std::string& textureFileName, const SDL_Rect* targetArea) {
 	surface = IMG_Load((getMenuTexturesDirectory() + textureFileName).c_str());
     currentScreenTexture = SDL_CreateTextureFromSurface(gameRenderer, surface);
 
-	SDL_SetRenderDrawColor(gameRenderer, 0, 0, 0, 0xFF);
 	SDL_RenderClear(gameRenderer);
-	SDL_RenderCopy(gameRenderer, currentScreenTexture, nullptr, nullptr);
+	SDL_RenderCopy(gameRenderer, currentScreenTexture, nullptr, targetArea);
 	SDL_RenderPresent(gameRenderer);
 
 	SDL_FreeSurface(surface);
@@ -80,7 +104,6 @@ void Graphics::renderMenuTexture(const std::string& textureFileName) {
 }
 
 void Graphics::renderTextureUsingVertices(SDL_Texture* sourceTexture, const std::array<std::pair<float, float>, 4>& vertexCollection, int distanceFromPlayer) {
-
     std::vector<SDL_Vertex> vertices;
     std::vector<int> indexList;
 
@@ -118,11 +141,11 @@ void Graphics::renderTextureUsingVertices(SDL_Texture* sourceTexture, const std:
 	SDL_RenderGeometry(gameRenderer, sourceTexture, vertices.data(), (int)vertices.size(), indexList.data(), (int)indexList.size());
 }
 
-void Graphics::generateScreenTexture(const GameState& game, SDL_Texture* targetTexture) {
-    generateScreenTexture(game, targetTexture, 0.0f);
+void Graphics::generateScreenTexture(const GameMap& map, const Player& player, SDL_Texture* targetTexture) {
+    generateScreenTexture(map, player, targetTexture, 0.0f);
 }
 
-void Graphics::generateScreenTexture(const GameState& game, SDL_Texture* targetTexture, float offset) { // offset determines the point of view (negative value means the player is moving left, positive right and 0.0 is centered)
+void Graphics::generateScreenTexture(const GameMap& map, const Player& player, SDL_Texture* targetTexture, float offset) { // offset determines the point of view (negative value means the player is moving left, positive right and 0.0 is centered)
     int tileWidth = gameWidth;
     int tileHeight = (int)1.5f * screenHeight;
 
@@ -131,11 +154,11 @@ void Graphics::generateScreenTexture(const GameState& game, SDL_Texture* targetT
     SDL_RenderClear(gameRenderer);
     renderBackground();
 
-    Direction leftHandSide = game.getPlayer().getDirection();
+    Direction leftHandSide = player.getDirection();
     leftHandSide--;
-    Direction rightHandSide = game.getPlayer().getDirection();
+    Direction rightHandSide = player.getDirection();
     rightHandSide++;
-    int viewDistance = std::min(13, playerDistanceFromMapEdge(game, game.getPlayer().getDirection()));
+    int viewDistance = std::min(13, playerDistanceFromMapEdge(map, player, player.getDirection()));
     int distanceFromPlayer = 0;
     int x = 0;
     int y = 0;
@@ -144,42 +167,42 @@ void Graphics::generateScreenTexture(const GameState& game, SDL_Texture* targetT
 
         // calculate maximum cone of view based on view distance
 
-        for (int i = -playerDistanceFromMapEdge(game, leftHandSide); i <= (offset == 0.0f ? 0 : 1); i++) {
+        for (int i = -playerDistanceFromMapEdge(map, player, leftHandSide); i <= (offset == 0.0f ? 0 : 1); i++) {
 
             // rotates coordinates to be relative to the direction the player is facing
 
-            switch (game.getPlayer().getDirection()) {
+            switch (player.getDirection()) {
 
                 case Direction::N:
-                    x = game.getPlayer().getX() + i;
-                    y = game.getPlayer().getY() - j;
+                    x = player.getX() + i;
+                    y = player.getY() - j;
                     break;
 
                 case Direction::E:
-                    x = game.getPlayer().getX() + j;
-                    y = game.getPlayer().getY() + i;
+                    x = player.getX() + j;
+                    y = player.getY() + i;
                     break;
 
                 case Direction::S:
-                    x = game.getPlayer().getX() - i;
-                    y = game.getPlayer().getY() + j;
+                    x = player.getX() - i;
+                    y = player.getY() + j;
                     break;
 
                 case Direction::W:
-                    x = game.getPlayer().getX() - j;
-                    y = game.getPlayer().getY() - i;
+                    x = player.getX() - j;
+                    y = player.getY() - i;
                     break;
             }
 
-            if (x < 0 || y < 0 || x >= game.getMap().getWidth() || y >= game.getMap().getHeight()) {
+            if (x < 0 || y < 0 || x >= map.getWidth() || y >= map.getHeight()) {
                 continue;
             }
 
             distanceFromPlayer = (int)sqrt(i * i + j * j);
 
-            if (!game.getMap().getTile(x, y).isFullyWalled()) { // ignore tiles, which are part of the wall and therefore not accessible or observable
+            if (!map.getTile(x, y).isFullyWalled()) { // ignore tiles, which are part of the wall and therefore not accessible or observable
 
-                if (game.getMap().getTile(x, y).hasFloor()) {
+                if (map.getTile(x, y).hasFloor()) {
                     float x1 = (float)(gameWidth * 0.5 + (i - 0.5 + offset) * tileWidth * pow(fieldOfView, j + 1));
                     float x2 = (float)(x1 + tileWidth * pow(fieldOfView, j + 1));
                     float x3 = (float)(gameWidth * 0.5 + (i - 0.5 + offset) * tileWidth * pow(fieldOfView, j));
@@ -193,11 +216,11 @@ void Graphics::generateScreenTexture(const GameState& game, SDL_Texture* targetT
                     std::array<std::pair<float, float>, 4> vertexCollection = { { { x1, y1 }, { x2, y2 }, { x3, y3 }, { x4, y4 } } };
 
                     if (isTextureInView(vertexCollection)) {
-                        renderTextureUsingVertices(currentMapTextures.find(game.getMap().getTile(x, y).getFloorType())->second, vertexCollection, distanceFromPlayer);
+                        renderTextureUsingVertices(currentMapTextures.find(map.getTile(x, y).getFloorType())->second, vertexCollection, distanceFromPlayer);
                     }
                 }
 
-                if (game.getMap().getTile(x, y).hasCeiling()) {
+                if (map.getTile(x, y).hasCeiling()) {
                     float x1 = (float)(gameWidth * 0.5 + (i - 0.5 + offset) * tileWidth * pow(fieldOfView, j));
                     float x2 = (float)(x1 + tileWidth * pow(fieldOfView, j));
                     float x3 = (float)(gameWidth * 0.5 + (i - 0.5 + offset) * tileWidth * pow(fieldOfView, j + 1));
@@ -211,11 +234,11 @@ void Graphics::generateScreenTexture(const GameState& game, SDL_Texture* targetT
                     std::array<std::pair<float, float>, 4> vertexCollection = { { { x1, y1 }, { x2, y2 }, { x3, y3 }, { x4, y4 } } };
 
                     if (isTextureInView(vertexCollection)) {
-                        renderTextureUsingVertices(currentMapTextures.find(game.getMap().getTile(x, y).getCeilingType())->second, vertexCollection, distanceFromPlayer);
+                        renderTextureUsingVertices(currentMapTextures.find(map.getTile(x, y).getCeilingType())->second, vertexCollection, distanceFromPlayer);
                     }
                 }
 
-                if (game.getMap().getTile(x, y).isWalled(leftHandSide)) {
+                if (map.getTile(x, y).isWalled(leftHandSide)) {
                     float x1 = (float)(gameWidth * 0.5 + (i - 0.5 + offset) * tileWidth * pow(fieldOfView, j));
                     float x2 = (float)(gameWidth * 0.5 + (i - 0.5 + offset) * tileWidth * pow(fieldOfView, j + 1));
                     float x3 = x1;
@@ -229,11 +252,11 @@ void Graphics::generateScreenTexture(const GameState& game, SDL_Texture* targetT
                     std::array<std::pair<float, float>, 4> vertexCollection = { { { x1, y1 }, { x2, y2 }, { x3, y3 }, { x4, y4 } } };
 
                     if (isTextureInView(vertexCollection)) {
-                        renderTextureUsingVertices(currentMapTextures.find(game.getMap().getTile(x, y).getWallType(leftHandSide))->second, vertexCollection, distanceFromPlayer);
+                        renderTextureUsingVertices(currentMapTextures.find(map.getTile(x, y).getWallType(leftHandSide))->second, vertexCollection, distanceFromPlayer);
                     }
                 }
 
-                if (game.getMap().getTile(x, y).isWalled(game.getPlayer().getDirection())) {
+                if (map.getTile(x, y).isWalled(player.getDirection())) {
                     float x1 = (float)(gameWidth * 0.5 + (i - 0.5 + offset) * tileWidth * pow(fieldOfView, j + 1));
                     float x2 = (float)(x1 + tileWidth * pow(fieldOfView, j + 1));
                     float x3 = (float)(gameWidth * 0.5 + (i - 0.5 + offset) * tileWidth * pow(fieldOfView, j + 1));
@@ -247,58 +270,58 @@ void Graphics::generateScreenTexture(const GameState& game, SDL_Texture* targetT
                     std::array<std::pair<float, float>, 4> vertexCollection = { { { x1, y1 }, { x2, y2 }, { x3, y3 }, { x4, y4 } } };
 
                     if (isTextureInView(vertexCollection)) {
-                        renderTextureUsingVertices(currentMapTextures.find(game.getMap().getTile(x, y).getWallType(game.getPlayer().getDirection()))->second, vertexCollection, 100);
+                        renderTextureUsingVertices(currentMapTextures.find(map.getTile(x, y).getWallType(player.getDirection()))->second, vertexCollection, 100);
                     }
                 }
 
-                if (game.getMap().getTile(x, y).containsObject()) {
+                if (map.getTile(x, y).containsObject()) {
                     targetArea.x = (int)(gameWidth * 0.5 + (i - 0.5 + offset) * tileWidth * pow(fieldOfView, j + 1));
                     targetArea.y = (int)((screenHeight - tileHeight * pow(fieldOfView, j + 1)) * 0.5);
                     targetArea.w = (int)(tileWidth * pow(fieldOfView, j + 1));
                     targetArea.h = (int)(tileHeight * pow(fieldOfView, j + 1));
-                    SDL_RenderCopyEx(gameRenderer, currentMapTextures.find(game.getMap().getTile(x, y).getObject().getObjectType())->second, nullptr, &targetArea, 0.0, nullptr, SDL_FLIP_NONE);
+                    SDL_RenderCopyEx(gameRenderer, currentMapTextures.find(map.getTile(x, y).getObject().getObjectType())->second, nullptr, &targetArea, 0.0, nullptr, SDL_FLIP_NONE);
                 }
             }
         }
 
         // calculate maximum cone of view based on view distance
 
-        for (int i = playerDistanceFromMapEdge(game, rightHandSide); i >= (offset == 0.0f ? 0 : -1); i--) {
+        for (int i = playerDistanceFromMapEdge(map, player, rightHandSide); i >= (offset == 0.0f ? 0 : -1); i--) {
 
             // rotates coordinates to be relative to the direction the player is facing
 
-            switch (game.getPlayer().getDirection()) {
+            switch (player.getDirection()) {
 
                 case Direction::N:
-                    x = game.getPlayer().getX() + i;
-                    y = game.getPlayer().getY() - j;
+                    x = player.getX() + i;
+                    y = player.getY() - j;
                     break;
 
                 case Direction::E:
-                    x = game.getPlayer().getX() + j;
-                    y = game.getPlayer().getY() + i;
+                    x = player.getX() + j;
+                    y = player.getY() + i;
                     break;
 
                 case Direction::S:
-                    x = game.getPlayer().getX() - i;
-                    y = game.getPlayer().getY() + j;
+                    x = player.getX() - i;
+                    y = player.getY() + j;
                     break;
 
                 case Direction::W:
-                    x = game.getPlayer().getX() - j;
-                    y = game.getPlayer().getY() - i;
+                    x = player.getX() - j;
+                    y = player.getY() - i;
                     break;
             }
 
-            if (x < 0 || y < 0 || x >= game.getMap().getWidth() || y >= game.getMap().getHeight()) {
+            if (x < 0 || y < 0 || x >= map.getWidth() || y >= map.getHeight()) {
                 continue;
             }
 
             distanceFromPlayer = (int)sqrt(i * i + j * j);
 
-            if (!game.getMap().getTile(x, y).isFullyWalled()) { // ignore tiles, which are part of the wall and therefore not accessible or observable
+            if (!map.getTile(x, y).isFullyWalled()) { // ignore tiles, which are part of the wall and therefore not accessible or observable
 
-                if (game.getMap().getTile(x, y).hasFloor()) {
+                if (map.getTile(x, y).hasFloor()) {
                     float x1 = (float)(gameWidth * 0.5 + (i - 0.5 + offset) * tileWidth * pow(fieldOfView, j + 1));
                     float x2 = (float)(x1 + tileWidth * pow(fieldOfView, j + 1));
                     float x3 = (float)(gameWidth * 0.5 + (i - 0.5 + offset) * tileWidth * pow(fieldOfView, j));
@@ -312,11 +335,11 @@ void Graphics::generateScreenTexture(const GameState& game, SDL_Texture* targetT
                     std::array<std::pair<float, float>, 4> vertexCollection = { { { x1, y1 }, { x2, y2 }, { x3, y3 }, { x4, y4 } } };
 
                     if (isTextureInView(vertexCollection)) {
-                        renderTextureUsingVertices(currentMapTextures.find(game.getMap().getTile(x, y).getFloorType())->second, vertexCollection, distanceFromPlayer);
+                        renderTextureUsingVertices(currentMapTextures.find(map.getTile(x, y).getFloorType())->second, vertexCollection, distanceFromPlayer);
                     }
                 }
 
-                if (game.getMap().getTile(x, y).hasCeiling()) {
+                if (map.getTile(x, y).hasCeiling()) {
                     float x1 = (float)(gameWidth * 0.5 + (i - 0.5 + offset) * tileWidth * pow(fieldOfView, j));
                     float x2 = (float)(x1 + tileWidth * pow(fieldOfView, j));
                     float x3 = (float)(gameWidth * 0.5 + (i - 0.5 + offset) * tileWidth * pow(fieldOfView, j + 1));
@@ -330,11 +353,11 @@ void Graphics::generateScreenTexture(const GameState& game, SDL_Texture* targetT
                     std::array<std::pair<float, float>, 4> vertexCollection = { { { x1, y1 }, { x2, y2 }, { x3, y3 }, { x4, y4 } } };
 
                     if (isTextureInView(vertexCollection)) {
-                        renderTextureUsingVertices(currentMapTextures.find(game.getMap().getTile(x, y).getCeilingType())->second, vertexCollection, distanceFromPlayer);
+                        renderTextureUsingVertices(currentMapTextures.find(map.getTile(x, y).getCeilingType())->second, vertexCollection, distanceFromPlayer);
                     }
                 }
 
-                if (game.getMap().getTile(x, y).isWalled(rightHandSide)) {
+                if (map.getTile(x, y).isWalled(rightHandSide)) {
                     float x1 = (float)(gameWidth * 0.5 + (i + 0.5 + offset) * tileWidth * pow(fieldOfView, j + 1));
                     float x2 = (float)(gameWidth * 0.5 + (i + 0.5 + offset) * tileWidth * pow(fieldOfView, j));
                     float x3 = x1;
@@ -348,11 +371,11 @@ void Graphics::generateScreenTexture(const GameState& game, SDL_Texture* targetT
                     std::array<std::pair<float, float>, 4> vertexCollection = { { { x2, y2 }, { x1, y1 }, { x4, y4 }, { x3, y3 } } };
 
                     if (isTextureInView(vertexCollection)) {
-                        renderTextureUsingVertices(currentMapTextures.find(game.getMap().getTile(x, y).getWallType(rightHandSide))->second, vertexCollection, distanceFromPlayer);
+                        renderTextureUsingVertices(currentMapTextures.find(map.getTile(x, y).getWallType(rightHandSide))->second, vertexCollection, distanceFromPlayer);
                     }
                 }
 
-                if (game.getMap().getTile(x, y).isWalled(game.getPlayer().getDirection())) {
+                if (map.getTile(x, y).isWalled(player.getDirection())) {
                     float x1 = (float)(gameWidth * 0.5 + (i - 0.5 + offset) * tileWidth * pow(fieldOfView, j + 1));
                     float x2 = (float)(x1 + tileWidth * pow(fieldOfView, j + 1));
                     float x3 = (float)(gameWidth * 0.5 + (i - 0.5 + offset) * tileWidth * pow(fieldOfView, j + 1));
@@ -366,16 +389,16 @@ void Graphics::generateScreenTexture(const GameState& game, SDL_Texture* targetT
                     std::array<std::pair<float, float>, 4> vertexCollection = { { { x1, y1 }, { x2, y2 }, { x3, y3 }, { x4, y4 } } };
 
                     if (isTextureInView(vertexCollection)) {
-                        renderTextureUsingVertices(currentMapTextures.find(game.getMap().getTile(x, y).getWallType(game.getPlayer().getDirection()))->second, vertexCollection, 100);
+                        renderTextureUsingVertices(currentMapTextures.find(map.getTile(x, y).getWallType(player.getDirection()))->second, vertexCollection, 100);
                     }
                 }
 
-                if (game.getMap().getTile(x, y).containsObject()) {
+                if (map.getTile(x, y).containsObject()) {
                     targetArea.x = (int)(gameWidth * 0.5 + (i - 0.5 + offset) * tileWidth * pow(fieldOfView, j + 1));
                     targetArea.y = (int)((screenHeight - tileHeight * pow(fieldOfView, j + 1)) * 0.5);
                     targetArea.w = (int)(tileWidth * pow(fieldOfView, j + 1));
                     targetArea.h = (int)(tileHeight * pow(fieldOfView, j + 1));
-                    SDL_RenderCopyEx(gameRenderer, currentMapTextures.find(game.getMap().getTile(x, y).getObject().getObjectType())->second, nullptr, &targetArea, 0.0, nullptr, SDL_FLIP_NONE);
+                    SDL_RenderCopyEx(gameRenderer, currentMapTextures.find(map.getTile(x, y).getObject().getObjectType())->second, nullptr, &targetArea, 0.0, nullptr, SDL_FLIP_NONE);
                 }
             }
         }
@@ -384,12 +407,12 @@ void Graphics::generateScreenTexture(const GameState& game, SDL_Texture* targetT
     SDL_SetRenderTarget(gameRenderer, nullptr);
 }
 
-void Graphics::animateLeftRotation(const GameState& game) {
+void Graphics::animateLeftRotation(const GameMap& map, const Player& player) {
     SDL_Rect targetArea = { 0, 0, 0, 0 };
     SDL_Rect sourceArea = { 0, 0, 0, 0 };
     SDL_SetRenderDrawColor(gameRenderer, 0, 0, 0, 0xFF);
 
-    generateScreenTexture(game, currentScreenTexture);
+    generateScreenTexture(map, player, currentScreenTexture);
 
     for (int i = 1; i < animationFrames; i++) {
         sourceArea = { 0, 0, (gameWidth * abs(i - animationFrames)) / animationFrames, screenHeight };
@@ -407,12 +430,12 @@ void Graphics::animateLeftRotation(const GameState& game) {
     }
 }
 
-void Graphics::animateRightRotation(const GameState& game) {
+void Graphics::animateRightRotation(const GameMap& map, const Player& player) {
     SDL_Rect targetArea = { 0, 0, 0, 0 };
     SDL_Rect sourceArea = { 0, 0, 0, 0 };
     SDL_SetRenderDrawColor(gameRenderer, 0, 0, 0, 0xFF);
 
-    generateScreenTexture(game, currentScreenTexture);
+    generateScreenTexture(map, player, currentScreenTexture);
 
     for (int i = 1; i < animationFrames; i++) {
         sourceArea = { (gameWidth * i) / animationFrames, 0, (gameWidth * abs(i - animationFrames)) / animationFrames, screenHeight };
@@ -430,7 +453,7 @@ void Graphics::animateRightRotation(const GameState& game) {
     }
 }
 
-void Graphics::animateForwardMovement(const GameState& game) {
+void Graphics::animateForwardMovement(const GameMap& map, const Player& player) {
     SDL_Rect targetArea = { 0, 0, 0, 0 };
     SDL_Rect sourceArea = { 0, 0, 0, 0 };
     SDL_SetRenderDrawColor(gameRenderer, 0, 0, 0, 0xFF);
@@ -447,12 +470,12 @@ void Graphics::animateForwardMovement(const GameState& game) {
     }
 }
 
-void Graphics::animateBackwardMovement(const GameState& game) {
+void Graphics::animateBackwardMovement(const GameMap& map, const Player& player) {
     SDL_Rect targetArea = { 0, 0, 0, 0 };
     SDL_Rect sourceArea = { 0, 0, 0, 0 };
     SDL_SetRenderDrawColor(gameRenderer, 0, 0, 0, 0xFF);
 
-    generateScreenTexture(game, currentScreenTexture);
+    generateScreenTexture(map, player, currentScreenTexture);
 
     for (int i = animationFrames - 1; i > 0; i--) {
         sourceArea = { (int)((gameWidth * (1 - fieldOfView) * i) / (animationFrames * 2)), (int)((screenHeight * (1 - fieldOfView) * i) / (animationFrames * 2)), (int)(gameWidth - ((gameWidth * i * (1 - fieldOfView)) / animationFrames)), (int)(screenHeight - ((screenHeight * i * (1 - fieldOfView)) / animationFrames)) };
@@ -466,13 +489,13 @@ void Graphics::animateBackwardMovement(const GameState& game) {
     }
 }
 
-void Graphics::animateSidestepLeft(const GameState& game) {
+void Graphics::animateSidestepLeft(const GameMap& map, const Player& player) {
     SDL_Rect targetArea = { 0, 0, 0, 0 };
     SDL_Rect sourceArea = { 0, 0, 0, 0 };
     SDL_SetRenderDrawColor(gameRenderer, 0, 0, 0, 0xFF);
 
     for (int i = 1; i < animationFrames; i++) {
-        generateScreenTexture(game, currentScreenTexture, ((float) + i / animationFrames) - 1);
+        generateScreenTexture(map, player, currentScreenTexture, ((float) + i / animationFrames) - 1);
         sourceArea = { 0, 0, gameWidth, screenHeight };
         targetArea = { 0, 0, gameWidth, screenHeight };
         SDL_RenderCopyEx(gameRenderer, currentScreenTexture, &sourceArea, &targetArea, 0.0, nullptr, SDL_FLIP_NONE);
@@ -484,13 +507,13 @@ void Graphics::animateSidestepLeft(const GameState& game) {
     }
 }
 
-void Graphics::animateSidestepRight(const GameState& game) {
+void Graphics::animateSidestepRight(const GameMap& map, const Player& player) {
     SDL_Rect targetArea = { 0, 0, 0, 0 };
     SDL_Rect sourceArea = { 0, 0, 0, 0 };
     SDL_SetRenderDrawColor(gameRenderer, 0, 0, 0, 0xFF);
 
     for (int i = 1; i < animationFrames; i++) {
-        generateScreenTexture(game, currentScreenTexture, ((float) - i / animationFrames) + 1);
+        generateScreenTexture(map, player, currentScreenTexture, ((float) - i / animationFrames) + 1);
         sourceArea = { 0, 0, gameWidth, screenHeight };
         targetArea = { 0, 0, gameWidth, screenHeight };
         SDL_RenderCopyEx(gameRenderer, currentScreenTexture, &sourceArea, &targetArea, 0.0, nullptr, SDL_FLIP_NONE);
@@ -513,30 +536,11 @@ bool Graphics::isTextureInView(const std::array<std::pair<float, float>, 4>& ver
     return verticesOnScreen == 0 ? false : true;
 }
 
-void Graphics::renderPlayerView(const GameState& game) {
-    generateScreenTexture(game, previousScreenTexture);
+void Graphics::renderPlayerView(const GameMap& map, const Player& player) {
+    generateScreenTexture(map, player, previousScreenTexture);
     SDL_RenderCopy(gameRenderer, previousScreenTexture, nullptr, nullptr);
     renderSideBars();
     SDL_RenderPresent(gameRenderer); 
-}
-
-// get texture sets from all tiles and add them into the texture map if not already added
-void Graphics::loadMapTextures(const GameMap& map) {
-
-    for (int i = 0; i < map.getWidth(); i++) {
-        for (int j = 0; j < map.getHeight(); j++) {
-            std::unordered_set tileTextures = map.getTile(i, j).getTextures();
-            for (std::string tileTexture : tileTextures) {
-                auto it = currentMapTextures.find(tileTexture);
-                if (it == currentMapTextures.end()) {
-                    surface = IMG_Load((getEnvironmentTexturesDirectory() + tileTexture + ".png").c_str());
-                    currentMapTextures.insert({ tileTexture, SDL_CreateTextureFromSurface(gameRenderer, surface) });
-                    SDL_FreeSurface(surface);
-                    surface = nullptr;
-                }
-            }
-        }
-    }
 }
 
 void Graphics::renderBackground() {
@@ -553,22 +557,23 @@ void Graphics::renderSideBars() {
     SDL_RenderFillRect(gameRenderer, &targetArea);
 }
 
-int Graphics::playerDistanceFromMapEdge(const GameState& game, Direction direction) {
+int Graphics::playerDistanceFromMapEdge(const GameMap& map, const Player& player, Direction direction) {
     switch (direction) {
-        case Direction::N: {
-            return game.getPlayer().getY();
-        }
-        case Direction::E: {
-            return game.getMap().getWidth() - game.getPlayer().getX();
-        }
-        case Direction::S: {
-            return game.getMap().getHeight() - game.getPlayer().getY();
-        }
-        case Direction::W: {
-            return game.getPlayer().getX();
-        }
+
+        case Direction::N: 
+            return player.getY();
+        
+        case Direction::E: 
+            return map.getWidth() - player.getX();
+        
+        case Direction::S: 
+            return map.getHeight() - player.getY();
+        
+        case Direction::W: 
+            return player.getX();
+        
     }
-    return std::max(game.getMap().getWidth(), game.getMap().getHeight());
+    return std::max(map.getWidth(), map.getHeight());
 }
 
 Graphics Graphics::graphics;

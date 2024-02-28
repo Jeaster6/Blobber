@@ -166,6 +166,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\Blobber.cpp" />
+    <ClCompile Include="..\Button.cpp" />
     <ClCompile Include="..\Configuration.cpp" />
     <ClCompile Include="..\CurrentDirectory.cpp" />
     <ClCompile Include="..\GameLoop.cpp" />
@@ -176,12 +177,15 @@
     <ClCompile Include="..\MapObject.cpp" />
     <ClCompile Include="..\Graphics.cpp" />
     <ClCompile Include="..\MapTrigger.cpp" />
+    <ClCompile Include="..\Menu.cpp" />
     <ClCompile Include="..\Player.cpp" />
     <ClCompile Include="..\SettingsMenu.cpp" />
     <ClCompile Include="..\Tile.cpp" />
+    <ClCompile Include="..\UserInterface.cpp" />
     <ClCompile Include="..\WorldChange.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\Button.hpp" />
     <ClInclude Include="..\Configuration.hpp" />
     <ClInclude Include="..\CurrentDirectory.hpp" />
     <ClInclude Include="..\Direction.hpp" />
@@ -193,9 +197,11 @@
     <ClInclude Include="..\MapObject.hpp" />
     <ClInclude Include="..\Graphics.hpp" />
     <ClInclude Include="..\MapTrigger.hpp" />
+    <ClInclude Include="..\Menu.hpp" />
     <ClInclude Include="..\Player.hpp" />
     <ClInclude Include="..\SettingsMenu.hpp" />
     <ClInclude Include="..\Tile.hpp" />
+    <ClInclude Include="..\UserInterface.hpp" />
     <ClInclude Include="..\WorldChange.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

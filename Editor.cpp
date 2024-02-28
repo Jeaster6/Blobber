@@ -132,11 +132,16 @@ void runMapEditor(GameMap& gameMap) {
         {
             ImGui::Begin("Main menu");
 
-            ImGui::RadioButton("Basic Mode", &currentMode, 0); ImGui::SameLine();
-            ImGui::RadioButton("Wall Mode", &currentMode, 1); ImGui::SameLine();
-            ImGui::RadioButton("Floor Mode", &currentMode, 2); ImGui::SameLine();
-            ImGui::RadioButton("Ceiling Mode", &currentMode, 3); ImGui::NewLine();
-            ImGui::RadioButton("Object Mode", &currentMode, 4); ImGui::SameLine();
+            ImGui::RadioButton("Basic Mode", &currentMode, 0);
+            ImGui::SameLine();
+            ImGui::RadioButton("Wall Mode", &currentMode, 1);
+            ImGui::SameLine(); 
+            ImGui::RadioButton("Floor Mode", &currentMode, 2);
+            ImGui::SameLine();
+            ImGui::RadioButton("Ceiling Mode", &currentMode, 3);
+            ImGui::NewLine();
+            ImGui::RadioButton("Object Mode", &currentMode, 4);
+            ImGui::SameLine();
             ImGui::RadioButton("Trigger Mode", &currentMode, 5);
 
             ImGui::ColorEdit3("Background colour", (float*)&backgroundColour);

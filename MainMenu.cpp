@@ -1,16 +1,12 @@
 #include "MainMenu.hpp"
 
-void renderMainMenu() {
-	Graphics::getInstance().renderMenuTexture("Menu.png");
-}
-
 void openMainMenu() {
     Graphics::getInstance().init();
 	bool quit = false;
 	SDL_Event userInput;
 
 	while (!quit) {
-		renderMainMenu();
+        Graphics::getInstance().renderTexture("Menu.png", nullptr);
 
 		while (SDL_PollEvent(&userInput)) {
 			if (userInput.type == SDL_QUIT) {

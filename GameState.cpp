@@ -11,6 +11,7 @@ GameState::~GameState() {
 void GameState::initMap() {
     loadCurrentMap();
     applyChangesToWorld();
+    Graphics::getInstance().init(gameMap);
 }
 
 void GameState::loadCurrentMap() {
@@ -26,55 +27,57 @@ void GameState::markTileAsExplored() {
     }
 }
 
-bool GameState::movePlayerForward() {
+void GameState::movePlayerForward() {
     if (!gameMap.getTile(player.getX(), player.getY()).isWalled(player.getDirection())) {
         player.moveForward();
         markTileAsExplored();
-        return true;
+        Graphics::getInstance().animateForwardMovement(gameMap, player);
     }
-    return false;
 }
 
-bool GameState::movePlayerBackward() {
+void GameState::movePlayerBackward() {
     Direction targetDirection = player.getDirection();
     targetDirection++;
     targetDirection++;
     if (!gameMap.getTile(player.getX(), player.getY()).isWalled(targetDirection)) {
         player.moveBackward();
         markTileAsExplored();
-        return true;
+        Graphics::getInstance().animateBackwardMovement(gameMap, player);
     }
-    return false;
 }
 
-bool GameState::movePlayerLeft() {
+void GameState::movePlayerLeft() {
     Direction targetDirection = player.getDirection();
     targetDirection--;
     if (!gameMap.getTile(player.getX(), player.getY()).isWalled(targetDirection)) {
         player.moveLeft();
         markTileAsExplored();
-        return true;
+        Graphics::getInstance().animateSidestepLeft(gameMap, player);
     }
-    return false;
 }
 
-bool GameState::movePlayerRight() {
+void GameState::movePlayerRight() {
     Direction targetDirection = player.getDirection();
     targetDirection++;
     if (!gameMap.getTile(player.getX(), player.getY()).isWalled(targetDirection)) {
         player.moveRight();
         markTileAsExplored();
-        return true;
+        Graphics::getInstance().animateSidestepRight(gameMap, player);
     }
-    return false;
 }
 
 void GameState::turnPlayerLeft() {
     player.turnLeft();
+    Graphics::getInstance().animateLeftRotation(gameMap, player);
 }
 
 void GameState::turnPlayerRight() {
     player.turnRight();
+    Graphics::getInstance().animateRightRotation(gameMap, player);
+}
+
+void GameState::renderPlayerView() {
+    Graphics::getInstance().renderPlayerView(gameMap, player);
 }
 
 void GameState::addToListOfChanges(const std::string& affectedMapName, int locationX, int locationY, ChangeType changeType, const std::string& subject) {

@@ -4,14 +4,12 @@ void gameplay(const std::string& saveFile) {
     SDL_Event event;
     bool quit = false;
     GameState game;
+    UserInterface gameUI;
     std::string quickSaveFile = "quick.sav";
 
     if (saveFile != "") {
         game.loadGame(saveFile);
     }
-
-    Graphics::getInstance().init();
-    Graphics::getInstance().loadMapTextures(game.getMap());
 
     while (!quit) {
         while (SDL_PollEvent(&event) != 0) {
@@ -27,37 +25,27 @@ void gameplay(const std::string& saveFile) {
                         break;
 
                     case SDLK_w:
-                        if (game.movePlayerForward()) {
-                            Graphics::getInstance().animateForwardMovement(game);
-                        }
+                        game.movePlayerForward();
                         break;
 
                     case SDLK_s:
-                        if (game.movePlayerBackward()) {
-                            Graphics::getInstance().animateBackwardMovement(game);
-                        }
+                        game.movePlayerBackward();
                         break;
 
                     case SDLK_a:
-                        if (game.movePlayerLeft()) {
-                            Graphics::getInstance().animateSidestepLeft(game);
-                        }
+                        game.movePlayerLeft();
                         break;
 
                     case SDLK_d:
-                        if (game.movePlayerRight()) {
-                            Graphics::getInstance().animateSidestepRight(game);
-                        }
+                        game.movePlayerRight();
                         break;
 
                     case SDLK_q:
                         game.turnPlayerLeft();
-                        Graphics::getInstance().animateLeftRotation(game);
                         break;
 
                     case SDLK_e:
                         game.turnPlayerRight();
-                        Graphics::getInstance().animateRightRotation(game);
                         break;
 
                     case SDLK_r:
@@ -70,7 +58,8 @@ void gameplay(const std::string& saveFile) {
                 }
             }
 
-            Graphics::getInstance().renderPlayerView(game);
+            game.renderPlayerView();
+            gameUI.render();
         }
     }
 }
