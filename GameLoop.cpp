@@ -1,22 +1,27 @@
 #include "GameLoop.hpp"
 
-void gameplay(const std::string& saveFile) {
-    SDL_Event event;
+bool gameplay(const std::string& saveFile) {
     bool quit = false;
+    bool ALTF4 = false;
+    SDL_Event event;
     GameState game;
     UserInterface gameUI;
     std::string quickSaveFile = "quick.sav";
+
+    gameUI.addMenu("Test", { 100, 100, 1000, 1000 }, "Button.png");
+    gameUI.addButton("Test", { 0, 0, 50, 50 }, "Button.png");
 
     if (saveFile != "") {
         game.loadGame(saveFile);
     }
 
-    while (!quit) {
+    while (!quit && !ALTF4) {
         while (SDL_PollEvent(&event) != 0) {
             switch (event.type) {
 
                 case SDL_QUIT:
                     quit = true;
+                    ALTF4 = true;
                     break;
 
                 case SDL_KEYDOWN:
@@ -69,4 +74,6 @@ void gameplay(const std::string& saveFile) {
             gameUI.render();
         }
     }
+
+    return ALTF4;
 }

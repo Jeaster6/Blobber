@@ -8,6 +8,14 @@ Menu::Menu() {
     opened = false;
 }
 
+Menu::Menu(const std::string& title, const SDL_Rect& area, const std::string& texture) {
+    this->title = title;
+    this->area = area;
+    this->texture = texture;
+    buttons.clear();
+    opened = false;
+}
+
 Menu::~Menu() {
 }
 
@@ -20,9 +28,13 @@ void Menu::close() {
 }
 
 void Menu::render() const {
-    Graphics::getInstance().renderTexture(texture, &area);
+    Graphics::getInstance().renderUIElement(texture, &area);
 }
 
 bool Menu::isOpen() const {
     return opened;
+}
+
+std::string Menu::getTitle() const {
+    return title;
 }

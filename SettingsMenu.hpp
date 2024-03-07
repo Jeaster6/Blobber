@@ -5,4 +5,4 @@
 #include "Graphics.hpp"
 #include "Configuration.hpp"
 
-void openSettings();
+bool openSettings();

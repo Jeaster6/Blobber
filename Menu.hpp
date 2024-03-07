@@ -17,10 +17,12 @@ class Menu {
     
     public:
         Menu();
+        Menu(const std::string&, const SDL_Rect&, const std::string&);
         ~Menu();
 
         void open();
         void close();
         void render() const;
         bool isOpen() const;
+        std::string getTitle() const;
 };

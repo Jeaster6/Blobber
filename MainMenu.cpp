@@ -22,15 +22,21 @@ void openMainMenu() {
 						break;
 
 					case SDLK_n:
-						gameplay("");
+                        if (gameplay("")) {
+                            quit = true;
+                        }
 						break;
 
 					case SDLK_l:
-						gameplay(getSavedGameFile());
+                        if (gameplay(getSavedGameFile())) {
+                            quit = true;
+                        }
 						break;
 
 					case SDLK_s:
-						openSettings();
+                        if (openSettings()) {
+                            quit = true;
+                        }
 						break;
 				}
 			}

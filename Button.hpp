@@ -11,14 +11,13 @@ class Button {
         std::string title;
         SDL_Rect area;
         std::string texture;
-        std::function<void()> action;
 
     public:
         Button();
-        Button(const std::string&, const SDL_Rect&, const std::string&, const std::function<void()>&);
+        Button(const std::string&, const SDL_Rect&, const std::string&);
         ~Button();
 
-        void click();
-        void render();
-        SDL_Rect getArea() const;
+        bool click(int, int, int, int) const;
+        void render() const;
+        std::string getTitle() const;
 };

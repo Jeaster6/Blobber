@@ -222,43 +222,45 @@ void runMapEditor(GameMap& gameMap) {
 
 void processMouseAction(GameMap& gameMap, const SDL_Event& mouseEvent, int currentMode, SDL_Renderer* renderer, SDL_Texture* targetTexture, const std::string& selectedTile) {
 
-    int mouseCursorX = 0, mouseCursorY = 0;
-    int mouseCursorOnButtonDownX = 0, mouseCursorOnButtonDownY = 0;
+    int mouseX = 0;
+    int mouseY = 0;
+    int buttonDownX = 0;
+    int buttonDownY = 0;
     bool mouseReleased = false;
     SDL_Event currentEvent;
 
     currentEvent.button.button = mouseEvent.button.button;
-    SDL_GetMouseState(&mouseCursorOnButtonDownX, &mouseCursorOnButtonDownY);
+    SDL_GetMouseState(&buttonDownX, &buttonDownY);
 
     while (!mouseReleased) {
         SDL_PollEvent(&currentEvent);
         if (currentEvent.button.button == mouseEvent.button.button && currentEvent.type == SDL_MOUSEBUTTONUP) {
             mouseReleased = true;
         }
-        SDL_GetMouseState(&mouseCursorX, &mouseCursorY);
+        SDL_GetMouseState(&mouseX, &mouseY);
 
         // render selector box
         SDL_RenderCopy(renderer, targetTexture, nullptr, nullptr);
         SDL_RenderPresent(renderer);
         SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0xFF, 0x00);
-        SDL_Rect targetArea = { mouseCursorOnButtonDownX, mouseCursorOnButtonDownY, mouseCursorX - mouseCursorOnButtonDownX, mouseCursorY - mouseCursorOnButtonDownY };
+        SDL_Rect targetArea = { buttonDownX, buttonDownY, mouseX - buttonDownX, mouseY - buttonDownY };
         SDL_RenderFillRect(renderer, &targetArea);
         SDL_RenderPresent(renderer);
         SDL_RenderClear(renderer);
     }
 
-    if (mouseCursorOnButtonDownX > mouseCursorX) {
-        std::swap(mouseCursorOnButtonDownX, mouseCursorX);
+    if (buttonDownX > mouseX) {
+        std::swap(buttonDownX, mouseX);
     }
 
-    if (mouseCursorOnButtonDownY > mouseCursorY) {
-        std::swap(mouseCursorOnButtonDownY, mouseCursorY);
+    if (buttonDownY > mouseY) {
+        std::swap(buttonDownY, mouseY);
     }
 
-    int firstX = (mouseCursorOnButtonDownX / GRID_TILE_SIZE) - 1;
-    int firstY = (mouseCursorOnButtonDownY / GRID_TILE_SIZE) - 1;
-    int lastX = (mouseCursorX / GRID_TILE_SIZE) - 1;
-    int lastY = (mouseCursorY / GRID_TILE_SIZE) - 1;
+    int firstX = (buttonDownX / GRID_TILE_SIZE) - 1;
+    int firstY = (buttonDownY / GRID_TILE_SIZE) - 1;
+    int lastX = (mouseX / GRID_TILE_SIZE) - 1;
+    int lastY = (mouseY / GRID_TILE_SIZE) - 1;
 
     if (currentMode == 0) {
         switch (currentEvent.button.button) {

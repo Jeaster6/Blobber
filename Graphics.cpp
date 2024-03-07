@@ -106,6 +106,7 @@ void Graphics::renderUIElement(const std::string& textureFileName, const SDL_Rec
     SDL_Surface* surface = IMG_Load((getButtonTexturesDirectory() + textureFileName).c_str());
     SDL_Texture* texture = SDL_CreateTextureFromSurface(gameRenderer, surface);
 
+    SDL_SetTextureBlendMode(UIOverlayTexture, SDL_BLENDMODE_BLEND);
     SDL_SetRenderTarget(gameRenderer, UIOverlayTexture);
     SDL_RenderCopy(gameRenderer, texture, nullptr, targetArea);
     SDL_SetRenderTarget(gameRenderer, nullptr);
@@ -567,12 +568,12 @@ void Graphics::renderUIOverlay() {
     // render right sidebar with UI elements
     SDL_Rect targetArea = { gameWidth, 0, screenWidth - gameWidth, screenHeight };
     SDL_RenderFillRect(gameRenderer, &targetArea);
-    SDL_RenderCopy(gameRenderer, UIOverlayTexture, &targetArea, &targetArea);
+    SDL_RenderCopy(gameRenderer, UIOverlayTexture, nullptr, nullptr);
 
     // render top bar with UI elements
     targetArea = { 0, 0, gameWidth, screenHeight / 7 };
     SDL_RenderFillRect(gameRenderer, &targetArea);
-    SDL_RenderCopy(gameRenderer, UIOverlayTexture, &targetArea, &targetArea);
+    SDL_RenderCopy(gameRenderer, UIOverlayTexture, nullptr, nullptr);
 }
 
 int Graphics::playerDistanceFromMapEdge(const GameMap& map, const Player& player, Direction direction) {

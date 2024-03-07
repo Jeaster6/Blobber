@@ -4,20 +4,22 @@ void renderSettingsMenu() {
 	Graphics::getInstance().renderTexture("Settings.png", nullptr);
 }
 
-void openSettings() {
+bool openSettings() {
 	bool quit = false;
+    bool ALTF4 = false;
 	int screenWidth = Configuration::getInstance().getScreenWidth();
     int screenHeight = Configuration::getInstance().getScreenHeight();
 	float fieldOfView = Configuration::getInstance().getFieldOfView();
 
 	SDL_Event userInput;
 
-	while (!quit) {
+	while (!quit && !ALTF4) {
 		renderSettingsMenu();
 
 		while (SDL_PollEvent(&userInput)) {
 			if (userInput.type == SDL_QUIT) {
 				quit = true;
+                ALTF4 = true;
 			}
 
 			if (userInput.type == SDL_KEYDOWN) {
@@ -55,4 +57,6 @@ void openSettings() {
 			}
 		}
 	}
+
+    return ALTF4;
 }
