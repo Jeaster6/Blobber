@@ -1,13 +1,11 @@
 #include "Button.hpp"
 
 Button::Button() {
-    title = "";
     area = { 0, 0, 0, 0 };
     texture = "";
 }
 
-Button::Button(const std::string& title, const SDL_Rect& area, const std::string& texture) {
-    this->title = title;
+Button::Button(const SDL_Rect& area, const std::string& texture) {
     this->area = area;
     this->texture = texture;
 }
@@ -26,8 +24,4 @@ bool Button::click (int mouseX, int mouseY, int buttonDownX, int buttonDownY) co
 
 void Button::render() const {
     Graphics::getInstance().renderUIElement(texture, &area);
-}
-
-std::string Button::getTitle() const {
-    return title;
 }

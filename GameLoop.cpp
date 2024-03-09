@@ -8,9 +8,6 @@ bool gameplay(const std::string& saveFile) {
     UserInterface gameUI;
     std::string quickSaveFile = "quick.sav";
 
-    gameUI.addMenu("Test", { 100, 100, 1000, 1000 }, "Button.png");
-    gameUI.addButton("Test", { 0, 0, 50, 50 }, "Button.png");
-
     if (saveFile != "") {
         game.loadGame(saveFile);
     }
@@ -69,10 +66,10 @@ bool gameplay(const std::string& saveFile) {
                     gameUI.processMouseInput(event);
                     break;
             }
-
-            game.renderPlayerView();
-            gameUI.render();
         }
+
+        gameUI.render();
+        game.renderPlayerView();
     }
 
     return ALTF4;

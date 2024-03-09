@@ -59,7 +59,7 @@ void Graphics::init() {
     levelOfDetail = Configuration::getInstance().getLevelOfDetail();
 
     gameWindow = SDL_CreateWindow("Blobber", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, (int)screenWidth, (int)screenHeight, SDL_WINDOW_SHOWN);
-    gameRenderer = SDL_CreateRenderer(gameWindow, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+    gameRenderer = SDL_CreateRenderer(gameWindow, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC | SDL_RENDERER_TARGETTEXTURE);
     previousScreenTexture = SDL_CreateTexture(gameRenderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, screenWidth, screenHeight);
     currentScreenTexture = SDL_CreateTexture(gameRenderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, screenWidth, screenHeight);
     UIOverlayTexture = SDL_CreateTexture(gameRenderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, screenWidth, screenHeight);
@@ -159,13 +159,14 @@ void Graphics::generateScreenTexture(const GameMap& map, const Player& player, S
     generateScreenTexture(map, player, targetTexture, 0.0f);
 }
 
-void Graphics::generateScreenTexture(const GameMap& map, const Player& player, SDL_Texture* targetTexture, float offset) { // offset determines the point of view (negative value means the player is moving left, positive right and 0.0 is centered)
+// offset determines the point of view (negative value means the player is moving left, positive right and 0.0 is centered)
+void Graphics::generateScreenTexture(const GameMap& map, const Player& player, SDL_Texture* targetTexture, float offset) { 
     int tileWidth = gameWidth;
     int tileHeight = (int)1.5f * screenHeight;
 
     SDL_SetRenderTarget(gameRenderer, targetTexture);
     SDL_Rect targetArea = { 0, 0, 0, 0 };
-    renderBackground();
+    SDL_RenderClear(gameRenderer);
 
     Direction leftHandSide = player.getDirection();
     leftHandSide--;
@@ -423,7 +424,7 @@ void Graphics::generateScreenTexture(const GameMap& map, const Player& player, S
 void Graphics::animateLeftRotation(const GameMap& map, const Player& player) {
     SDL_Rect targetArea = { 0, 0, 0, 0 };
     SDL_Rect sourceArea = { 0, 0, 0, 0 };
-    SDL_SetRenderDrawColor(gameRenderer, 0, 0, 0, 0xFF);
+    SDL_SetRenderDrawColor(gameRenderer, 0, 0, 0, 0);
 
     generateScreenTexture(map, player, currentScreenTexture);
 
@@ -446,7 +447,7 @@ void Graphics::animateLeftRotation(const GameMap& map, const Player& player) {
 void Graphics::animateRightRotation(const GameMap& map, const Player& player) {
     SDL_Rect targetArea = { 0, 0, 0, 0 };
     SDL_Rect sourceArea = { 0, 0, 0, 0 };
-    SDL_SetRenderDrawColor(gameRenderer, 0, 0, 0, 0xFF);
+    SDL_SetRenderDrawColor(gameRenderer, 0, 0, 0, 0);
 
     generateScreenTexture(map, player, currentScreenTexture);
 
@@ -469,7 +470,7 @@ void Graphics::animateRightRotation(const GameMap& map, const Player& player) {
 void Graphics::animateForwardMovement(const GameMap& map, const Player& player) {
     SDL_Rect targetArea = { 0, 0, 0, 0 };
     SDL_Rect sourceArea = { 0, 0, 0, 0 };
-    SDL_SetRenderDrawColor(gameRenderer, 0, 0, 0, 0xFF);
+    SDL_SetRenderDrawColor(gameRenderer, 0, 0, 0, 0);
 
     for (int i = 1; i < animationFrames; i++) {
         sourceArea = { (int)((gameWidth * (1 - fieldOfView) * i) / (animationFrames * 2)), (int)((screenHeight * (1 - fieldOfView) * i) / (animationFrames * 2)), (int)(gameWidth - ((gameWidth * i * (1 - fieldOfView)) / animationFrames)), (int)(screenHeight - ((screenHeight * i * (1 - fieldOfView)) / animationFrames)) };
@@ -486,7 +487,7 @@ void Graphics::animateForwardMovement(const GameMap& map, const Player& player) 
 void Graphics::animateBackwardMovement(const GameMap& map, const Player& player) {
     SDL_Rect targetArea = { 0, 0, 0, 0 };
     SDL_Rect sourceArea = { 0, 0, 0, 0 };
-    SDL_SetRenderDrawColor(gameRenderer, 0, 0, 0, 0xFF);
+    SDL_SetRenderDrawColor(gameRenderer, 0, 0, 0, 0);
 
     generateScreenTexture(map, player, currentScreenTexture);
 
@@ -505,7 +506,7 @@ void Graphics::animateBackwardMovement(const GameMap& map, const Player& player)
 void Graphics::animateSidestepLeft(const GameMap& map, const Player& player) {
     SDL_Rect targetArea = { 0, 0, 0, 0 };
     SDL_Rect sourceArea = { 0, 0, 0, 0 };
-    SDL_SetRenderDrawColor(gameRenderer, 0, 0, 0, 0xFF);
+    SDL_SetRenderDrawColor(gameRenderer, 0, 0, 0, 0);
 
     for (int i = 1; i < animationFrames; i++) {
         generateScreenTexture(map, player, currentScreenTexture, ((float) + i / animationFrames) - 1);
@@ -523,7 +524,7 @@ void Graphics::animateSidestepLeft(const GameMap& map, const Player& player) {
 void Graphics::animateSidestepRight(const GameMap& map, const Player& player) {
     SDL_Rect targetArea = { 0, 0, 0, 0 };
     SDL_Rect sourceArea = { 0, 0, 0, 0 };
-    SDL_SetRenderDrawColor(gameRenderer, 0, 0, 0, 0xFF);
+    SDL_SetRenderDrawColor(gameRenderer, 0, 0, 0, 0);
 
     for (int i = 1; i < animationFrames; i++) {
         generateScreenTexture(map, player, currentScreenTexture, ((float) - i / animationFrames) + 1);
@@ -556,14 +557,8 @@ void Graphics::renderPlayerView(const GameMap& map, const Player& player) {
     SDL_RenderPresent(gameRenderer); 
 }
 
-void Graphics::renderBackground() {
-    SDL_SetRenderDrawColor(gameRenderer, 0, 0, 0, 0xFF);
-    SDL_Rect targetArea = { 0, 0, screenWidth, screenHeight };
-    SDL_RenderFillRect(gameRenderer, &targetArea);
-}
-
 void Graphics::renderUIOverlay() {
-    SDL_SetRenderDrawColor(gameRenderer, 0, 0, 0, 0xFF);
+    SDL_SetRenderDrawColor(gameRenderer, 0, 0, 0, 0);
 
     // render right sidebar with UI elements
     SDL_Rect targetArea = { gameWidth, 0, screenWidth - gameWidth, screenHeight };
@@ -593,6 +588,14 @@ int Graphics::playerDistanceFromMapEdge(const GameMap& map, const Player& player
         
     }
     return std::max(map.getWidth(), map.getHeight());
+}
+
+// resets the UIOverlayTexture
+void Graphics::clearUI() {
+    SDL_SetRenderTarget(gameRenderer, UIOverlayTexture);
+    SDL_SetRenderDrawColor(gameRenderer, 0, 0, 0, 0);
+    SDL_RenderClear(gameRenderer);
+    SDL_SetRenderTarget(gameRenderer, nullptr);
 }
 
 Graphics Graphics::graphics;

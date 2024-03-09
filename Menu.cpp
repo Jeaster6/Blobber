@@ -1,15 +1,13 @@
 #include "Menu.hpp"
 
 Menu::Menu() {
-    title = "";
     area = { 0, 0, 0, 0 };
     texture = "";
     buttons.clear();
     opened = false;
 }
 
-Menu::Menu(const std::string& title, const SDL_Rect& area, const std::string& texture) {
-    this->title = title;
+Menu::Menu(const SDL_Rect& area, const std::string& texture) {
     this->area = area;
     this->texture = texture;
     buttons.clear();
@@ -33,8 +31,4 @@ void Menu::render() const {
 
 bool Menu::isOpen() const {
     return opened;
-}
-
-std::string Menu::getTitle() const {
-    return title;
 }

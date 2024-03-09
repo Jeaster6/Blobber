@@ -9,8 +9,9 @@
 class UserInterface {
 
     private:
-        std::vector<Button> buttons;
-        std::vector<Menu> menus;
+        Button button1;
+        Button button2;
+        Menu menu1;
 
     public:
         UserInterface();
@@ -18,8 +19,4 @@ class UserInterface {
 
         void render();
         void processMouseInput(const SDL_Event&);
-        void addButton(const std::string&, const SDL_Rect&, const std::string&);
-        void removeButton(const std::string&);
-        void addMenu(const std::string&, const SDL_Rect&, const std::string&);
-        Menu getMenuByTitle(const std::string&) const;
 };

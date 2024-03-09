@@ -9,7 +9,6 @@
 class Menu {
 
     private:
-        std::string title;
         SDL_Rect area;
         std::string texture;
         std::vector<Button> buttons;
@@ -17,12 +16,11 @@ class Menu {
     
     public:
         Menu();
-        Menu(const std::string&, const SDL_Rect&, const std::string&);
+        Menu(const SDL_Rect&, const std::string&);
         ~Menu();
 
         void open();
         void close();
         void render() const;
         bool isOpen() const;
-        std::string getTitle() const;
 };
