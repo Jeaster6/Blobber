@@ -4,13 +4,9 @@ bool gameplay(const std::string& saveFile) {
     bool quit = false;
     bool ALTF4 = false;
     SDL_Event event;
-    GameState game;
+    GameState game = GameState(saveFile);
     UserInterface gameUI;
     std::string quickSaveFile = "quick.sav";
-
-    if (saveFile != "") {
-        game.loadGame(saveFile);
-    }
 
     while (!quit && !ALTF4) {
         while (SDL_PollEvent(&event) != 0) {
@@ -68,8 +64,8 @@ bool gameplay(const std::string& saveFile) {
             }
         }
 
-        gameUI.render();
         game.renderPlayerView();
+        gameUI.render();
     }
 
     return ALTF4;

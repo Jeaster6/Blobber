@@ -3,7 +3,7 @@
 UserInterface::UserInterface() {
     button1 = Button({ 0, 0, 50, 50 }, "Button.png");
     button2 = Button({ 2510, 0, 50, 50 }, "Button.png");
-    menu1 = Menu({ 250, 250, 500, 500 }, "Button.png");
+    menu1 = Menu({ 250, 250, 500, 500 }, "Menu.png");
 }
 
 UserInterface::~UserInterface() {

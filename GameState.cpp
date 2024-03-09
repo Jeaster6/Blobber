@@ -1,8 +1,11 @@
 #include "GameState.hpp"
 
 GameState::GameState() {
-    player = Player();
-    initMap();
+    loadGame("");
+}
+
+GameState::GameState(const std::string& saveFileName) {
+    loadGame(saveFileName);
 }
 
 GameState::~GameState() {
@@ -120,10 +123,13 @@ GameMap GameState::getMap() const {
 }
 
 void GameState::loadGame(const std::string& saveFile) {
-    std::ifstream ifs(getSaveFileDirectory() + saveFile);
-    boost::archive::binary_iarchive boostArchive(ifs);
-    boostArchive >> *this;
-    this->initMap();
+    if (saveFile != "") {
+        std::ifstream ifs(getSaveFileDirectory() + saveFile);
+        boost::archive::binary_iarchive boostArchive(ifs);
+        boostArchive >> *this;
+    }
+
+    initMap();
 }
 
 void GameState::saveGame(const std::string& saveFile) const {

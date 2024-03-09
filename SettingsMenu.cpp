@@ -1,7 +1,7 @@
 #include "SettingsMenu.hpp"
 
 void renderSettingsMenu() {
-	Graphics::getInstance().renderTexture("Settings.png", nullptr);
+	Graphics::getInstance().renderMainMenu("Settings.png", nullptr);
 }
 
 bool openSettings() {

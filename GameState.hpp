@@ -32,6 +32,7 @@ class GameState {
 
     public:
         GameState();
+        GameState(const std::string&);
         ~GameState();
 
         Player getPlayer() const;
