@@ -43,36 +43,45 @@ int UserInterface::processMouseInput(const SDL_Event& mouseEvent, GameState& gam
         SDL_GetMouseState(&mouseX, &mouseY);
     }
 
-    if (exitButton.click(mouseX, mouseY, buttonDownX, buttonDownY)) {
-        modal.open();
-        return 1;
+    if (modal.isOpen()) {
+        if (modal.clickYes(mouseX, mouseY, buttonDownX, buttonDownY)) {
+            modal.close();
+            return -1;
+        }
+
+        if (modal.clickNo(mouseX, mouseY, buttonDownX, buttonDownY)) {
+            modal.close();
+            return 0;
+        }
     }
 
-    if (forward.click(mouseX, mouseY, buttonDownX, buttonDownY)) {
-        game.movePlayerForward();
-    }
+    else {
+        if (exitButton.click(mouseX, mouseY, buttonDownX, buttonDownY)) {
+            modal.open();
+            return 1;
+        }
 
-    if (backward.click(mouseX, mouseY, buttonDownX, buttonDownY)) {
-        game.movePlayerBackward();
-    }
+        if (forward.click(mouseX, mouseY, buttonDownX, buttonDownY)) {
+            game.movePlayerForward();
+        }
 
-    if (left.click(mouseX, mouseY, buttonDownX, buttonDownY)) {
-        game.movePlayerLeft();
-    }
+        if (backward.click(mouseX, mouseY, buttonDownX, buttonDownY)) {
+            game.movePlayerBackward();
+        }
 
-    if (right.click(mouseX, mouseY, buttonDownX, buttonDownY)) {
-        game.movePlayerRight();
-    }
+        if (left.click(mouseX, mouseY, buttonDownX, buttonDownY)) {
+            game.movePlayerLeft();
+        }
 
-    if (modal.clickYes(mouseX, mouseY, buttonDownX, buttonDownY)) {
-        modal.close();
-        return -1;
-    }
-
-    if (modal.clickNo(mouseX, mouseY, buttonDownX, buttonDownY)) {
-        modal.close();
-        return 0;
+        if (right.click(mouseX, mouseY, buttonDownX, buttonDownY)) {
+            game.movePlayerRight();
+        }
     }
 
     return 0;
+}
+
+int UserInterface::openModalWindow() {
+    modal.open();
+    return 1;
 }

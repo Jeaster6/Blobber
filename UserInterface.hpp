@@ -23,4 +23,5 @@ class UserInterface {
 
         void render();
         int processMouseInput(const SDL_Event&, GameState&);
+        int openModalWindow();
 };

@@ -3,6 +3,7 @@
 void openMainMenu() {
     Graphics::getInstance().init();
 	bool quit = false;
+    int UIresponse = 0;
 	SDL_Event userInput;
 
 	while (!quit) {
@@ -14,7 +15,6 @@ void openMainMenu() {
 			}
 
 			if (userInput.type == SDL_KEYDOWN) {
-
 				switch (userInput.key.keysym.sym) {
 
 					case SDLK_ESCAPE:

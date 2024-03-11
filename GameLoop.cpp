@@ -23,7 +23,7 @@ bool gameplay(const std::string& saveFile) {
                         switch (event.key.keysym.sym) {
 
                             case SDLK_ESCAPE:
-                                quit = true;
+                                UIresponse = gameUI.openModalWindow();
                                 break;
 
                             case SDLK_w:
