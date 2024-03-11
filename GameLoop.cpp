@@ -3,7 +3,7 @@
 bool gameplay(const std::string& saveFile) {
     bool quit = false;
     bool ALTF4 = false;
-    int UIresponse = 0;
+    int currentUIState = 0; // used to process response from UI
     SDL_Event event;
     GameState game = GameState(saveFile);
     UserInterface gameUI;
@@ -14,56 +14,83 @@ bool gameplay(const std::string& saveFile) {
             switch (event.type) {
 
                 case SDL_QUIT:
-                    quit = true;
                     ALTF4 = true;
                     break;
 
                 case SDL_KEYDOWN:
-                    if (UIresponse == 0) {
-                        switch (event.key.keysym.sym) {
+                    switch (event.key.keysym.sym) {
 
-                            case SDLK_ESCAPE:
-                                UIresponse = gameUI.openModalWindow();
-                                break;
+                        case SDLK_ESCAPE:
+                            if (currentUIState == 0) {
+                                currentUIState = gameUI.openModalWindow();
+                            }
+                            else {
+                                currentUIState = gameUI.closeAllWindows();
+                            }
+                            break;
 
-                            case SDLK_w:
+                        case SDLK_w:
+                            if (currentUIState == 0) {
                                 game.movePlayerForward();
-                                break;
+                            }
+                            break;
 
-                            case SDLK_s:
+                        case SDLK_s:
+                            if (currentUIState == 0) {
                                 game.movePlayerBackward();
-                                break;
+                            }
+                            break;
 
-                            case SDLK_a:
+                        case SDLK_a:
+                            if (currentUIState == 0) {
                                 game.movePlayerLeft();
-                                break;
+                            }
+                            break;
 
-                            case SDLK_d:
+                        case SDLK_d:
+                            if (currentUIState == 0) {
                                 game.movePlayerRight();
-                                break;
+                            }
+                            break;
 
-                            case SDLK_q:
+                        case SDLK_q:
+                            if (currentUIState == 0) {
                                 game.turnPlayerLeft();
-                                break;
+                            }
+                            break;
 
-                            case SDLK_e:
+                        case SDLK_e:
+                            if (currentUIState == 0) {
                                 game.turnPlayerRight();
-                                break;
+                            }
+                            break;
 
-                            case SDLK_r:
+                        case SDLK_F5:
+                            if (currentUIState == 0) {
                                 game.saveGame(quickSaveFile);
-                                break;
+                            }
+                            break;
 
-                            case SDLK_l:
+                        case SDLK_F9:
+                            if (currentUIState == 0) {
                                 game.loadGame(quickSaveFile);
-                                break;
-                        }
+                                // reset UI state just in case
+                                gameUI = UserInterface();
+                                currentUIState = 0;
+                            }
+                            break;
+
+                        case SDLK_RETURN:
+                            if (currentUIState == 1) {
+                                quit = true;
+                            }
+                            break;
                     }
                     break;
 
                 case SDL_MOUSEBUTTONDOWN:
-                    UIresponse = gameUI.processMouseInput(event, game);
-                    if (UIresponse == -1) {
+                    currentUIState = gameUI.processMouseInput(event, game);
+                    if (currentUIState == -1) {
                         quit = true;
                     }
                     break;

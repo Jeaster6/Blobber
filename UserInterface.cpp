@@ -2,7 +2,7 @@
 
 UserInterface::UserInterface() {
     exitButton = Button({ 2510, 0, 50, 50 }, "Button.png");
-    modal = ModalMenu({ 250, 250, 500, 500 }, "Menu.png");
+    modal = ModalMenu({ 1130, 640, 300, 160 }, "Modal.png");
     forward = Button({ 2440, 1320, 50, 50 }, "Button.png");;
     backward = Button({ 2440, 1380, 50, 50 }, "Button.png");;
     left = Button({ 2380, 1380, 50, 50 }, "Button.png");;
@@ -84,4 +84,9 @@ int UserInterface::processMouseInput(const SDL_Event& mouseEvent, GameState& gam
 int UserInterface::openModalWindow() {
     modal.open();
     return 1;
+}
+
+int UserInterface::closeAllWindows() {
+    modal.close();
+    return 0;
 }
