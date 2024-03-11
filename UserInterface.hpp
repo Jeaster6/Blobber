@@ -4,19 +4,23 @@
 #include <iostream>
 #include <algorithm>
 #include "Button.hpp"
-#include "Menu.hpp"
+#include "ModalMenu.hpp"
+#include "GameState.hpp"
 
 class UserInterface {
 
     private:
-        Button button1;
-        Button button2;
-        Menu menu1;
+        Button exitButton;
+        ModalMenu modal;
+        Button forward;
+        Button backward;
+        Button left;
+        Button right;
 
     public:
         UserInterface();
         ~UserInterface();
 
         void render();
-        void processMouseInput(const SDL_Event&);
+        int processMouseInput(const SDL_Event&, GameState&);
 };

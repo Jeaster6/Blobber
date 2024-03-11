@@ -1,9 +1,12 @@
 #include "UserInterface.hpp"
 
 UserInterface::UserInterface() {
-    button1 = Button({ 0, 0, 50, 50 }, "Button.png");
-    button2 = Button({ 2510, 0, 50, 50 }, "Button.png");
-    menu1 = Menu({ 250, 250, 500, 500 }, "Menu.png");
+    exitButton = Button({ 2510, 0, 50, 50 }, "Button.png");
+    modal = ModalMenu({ 250, 250, 500, 500 }, "Menu.png");
+    forward = Button({ 2440, 1320, 50, 50 }, "Button.png");;
+    backward = Button({ 2440, 1380, 50, 50 }, "Button.png");;
+    left = Button({ 2380, 1380, 50, 50 }, "Button.png");;
+    right = Button({ 2500, 1380, 50, 50 }, "Button.png");;
 }
 
 UserInterface::~UserInterface() {
@@ -11,14 +14,17 @@ UserInterface::~UserInterface() {
 
 void UserInterface::render() {
     Graphics::getInstance().clearUI();
-    button1.render();
-    button2.render();
-    if (menu1.isOpen()) {
-        menu1.render();
+    exitButton.render();
+    forward.render();
+    backward.render();
+    left.render();
+    right.render();
+    if (modal.isOpen()) {
+        modal.render();
     }
 }
 
-void UserInterface::processMouseInput(const SDL_Event& mouseEvent) {
+int UserInterface::processMouseInput(const SDL_Event& mouseEvent, GameState& game) {
     int mouseX = 0;
     int mouseY = 0;
     int buttonDownX = 0;
@@ -37,11 +43,36 @@ void UserInterface::processMouseInput(const SDL_Event& mouseEvent) {
         SDL_GetMouseState(&mouseX, &mouseY);
     }
 
-    if (button1.click(mouseX, mouseY, buttonDownX, buttonDownY)) {
-        menu1.open();
+    if (exitButton.click(mouseX, mouseY, buttonDownX, buttonDownY)) {
+        modal.open();
+        return 1;
     }
 
-    if (button2.click(mouseX, mouseY, buttonDownX, buttonDownY)) {
-        menu1.close();
+    if (forward.click(mouseX, mouseY, buttonDownX, buttonDownY)) {
+        game.movePlayerForward();
     }
+
+    if (backward.click(mouseX, mouseY, buttonDownX, buttonDownY)) {
+        game.movePlayerBackward();
+    }
+
+    if (left.click(mouseX, mouseY, buttonDownX, buttonDownY)) {
+        game.movePlayerLeft();
+    }
+
+    if (right.click(mouseX, mouseY, buttonDownX, buttonDownY)) {
+        game.movePlayerRight();
+    }
+
+    if (modal.clickYes(mouseX, mouseY, buttonDownX, buttonDownY)) {
+        modal.close();
+        return -1;
+    }
+
+    if (modal.clickNo(mouseX, mouseY, buttonDownX, buttonDownY)) {
+        modal.close();
+        return 0;
+    }
+
+    return 0;
 }

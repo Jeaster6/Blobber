@@ -90,14 +90,14 @@ void Graphics::loadMapTextures(const GameMap& map) {
 }
 
 // TODO: redo main menu to render background texture with standard UI elements, as well as settings menu being a UI element
-void Graphics::renderMainMenu(const std::string& textureFileName, const SDL_Rect* targetArea) {
+void Graphics::renderMainMenu(const SDL_Rect* targetArea, const std::string& textureFileName) {
     clearUI();
-    renderUIElement(textureFileName, targetArea);
+    renderUIElement(targetArea, textureFileName);
     SDL_RenderCopy(gameRenderer, UIOverlayTexture, nullptr, targetArea);
     SDL_RenderPresent(gameRenderer);
 }
 
-void Graphics::renderUIElement(const std::string& textureFileName, const SDL_Rect* targetArea) {
+void Graphics::renderUIElement(const SDL_Rect* targetArea, const std::string& textureFileName) {
     SDL_Surface* surface = IMG_Load((getUITexturesDirectory() + textureFileName).c_str());
     SDL_Texture* texture = SDL_CreateTextureFromSurface(gameRenderer, surface);
 

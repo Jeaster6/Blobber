@@ -8,11 +8,10 @@
 
 class Menu {
 
-    private:
+    protected:
+        bool opened;
         SDL_Rect area;
         std::string texture;
-        std::vector<Button> buttons;
-        bool opened;
     
     public:
         Menu();
@@ -21,6 +20,6 @@ class Menu {
 
         void open();
         void close();
-        void render() const;
+        virtual void render() const = 0;
         bool isOpen() const;
 };

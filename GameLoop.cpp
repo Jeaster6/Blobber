@@ -3,6 +3,7 @@
 bool gameplay(const std::string& saveFile) {
     bool quit = false;
     bool ALTF4 = false;
+    int UIresponse = 0;
     SDL_Event event;
     GameState game = GameState(saveFile);
     UserInterface gameUI;
@@ -18,48 +19,53 @@ bool gameplay(const std::string& saveFile) {
                     break;
 
                 case SDL_KEYDOWN:
-                    switch (event.key.keysym.sym) {
+                    if (UIresponse == 0) {
+                        switch (event.key.keysym.sym) {
 
-                        case SDLK_ESCAPE:
-                            quit = true;
-                            break;
+                            case SDLK_ESCAPE:
+                                quit = true;
+                                break;
 
-                        case SDLK_w:
-                            game.movePlayerForward();
-                            break;
+                            case SDLK_w:
+                                game.movePlayerForward();
+                                break;
 
-                        case SDLK_s:
-                            game.movePlayerBackward();
-                            break;
+                            case SDLK_s:
+                                game.movePlayerBackward();
+                                break;
 
-                        case SDLK_a:
-                            game.movePlayerLeft();
-                            break;
+                            case SDLK_a:
+                                game.movePlayerLeft();
+                                break;
 
-                        case SDLK_d:
-                            game.movePlayerRight();
-                            break;
+                            case SDLK_d:
+                                game.movePlayerRight();
+                                break;
 
-                        case SDLK_q:
-                            game.turnPlayerLeft();
-                            break;
+                            case SDLK_q:
+                                game.turnPlayerLeft();
+                                break;
 
-                        case SDLK_e:
-                            game.turnPlayerRight();
-                            break;
+                            case SDLK_e:
+                                game.turnPlayerRight();
+                                break;
 
-                        case SDLK_r:
-                            game.saveGame(quickSaveFile);
-                            break;
+                            case SDLK_r:
+                                game.saveGame(quickSaveFile);
+                                break;
 
-                        case SDLK_l:
-                            game.loadGame(quickSaveFile);
-                            break;
+                            case SDLK_l:
+                                game.loadGame(quickSaveFile);
+                                break;
+                        }
                     }
                     break;
 
                 case SDL_MOUSEBUTTONDOWN:
-                    gameUI.processMouseInput(event);
+                    UIresponse = gameUI.processMouseInput(event, game);
+                    if (UIresponse == -1) {
+                        quit = true;
+                    }
                     break;
             }
         }

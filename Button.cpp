@@ -23,5 +23,5 @@ bool Button::click (int mouseX, int mouseY, int buttonDownX, int buttonDownY) co
 }
 
 void Button::render() const {
-    Graphics::getInstance().renderUIElement(texture, &area);
+    Graphics::getInstance().renderUIElement(&area, texture);
 }
