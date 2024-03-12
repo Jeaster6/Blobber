@@ -11,7 +11,7 @@ void MapObject::removeItems() {
     objectContents.clear();
 }
 
-const std::string& MapObject::getObjectType() const {
+const std::string& MapObject::getType() const {
     return type;
 }
 

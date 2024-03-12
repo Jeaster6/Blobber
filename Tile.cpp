@@ -100,11 +100,11 @@ bool Tile::hasCeiling() const {
 }
 
 bool Tile::containsObject() const {
-    return mapObject.getObjectType() != "";
+    return mapObject.getType() != "";
 }
 
-bool Tile::containsTrigger() const {
-    return mapTrigger.getType() != TriggerType::Null;
+bool Tile::containsActiveTrigger() const {
+    return (mapTrigger.getType() != TriggerType::Null && !mapTrigger.isTriggered());
 }
 
 const std::string& Tile::getWallType(Direction direction) const {
@@ -171,8 +171,8 @@ std::unordered_set<std::string> Tile::getTextures() const {
         textures.insert(ceilingType);
     }
 
-    if (mapObject.getObjectType() != "") {
-        textures.insert(mapObject.getObjectType());
+    if (mapObject.getType() != "") {
+        textures.insert(mapObject.getType());
     }
 
     return textures;
@@ -191,6 +191,10 @@ void Tile::markAsExplored() {
 
 void Tile::triggerObject() {
     mapObject.triggerObject();
+}
+
+void Tile::activateTrigger() {
+    mapTrigger.trigger();
 }
 
 bool Tile::isExplored() const {

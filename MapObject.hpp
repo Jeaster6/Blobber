@@ -29,7 +29,7 @@ class MapObject {
         void setObjectData(const MapObject&);
         void removeObject();
 
-        const std::string& getObjectType() const;
+        const std::string& getType() const;
 
         MapObject(const std::string&);
         MapObject();

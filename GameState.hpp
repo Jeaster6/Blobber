@@ -25,10 +25,13 @@ class GameState {
         Player player;
         GameMap gameMap;
         std::vector<WorldChange> listOfChanges;
+        bool messageDisplayed;
 
         void loadCurrentMap();
         void applyChangesToWorld();
         void initMap();
+        void markTileAsExplored();
+        void checkAndHandleTrigger();
 
     public:
         GameState();
@@ -46,8 +49,8 @@ class GameState {
         void turnPlayerRight();
         void renderPlayerView();
         void addToListOfChanges(const std::string&, int, int, ChangeType, const std::string&);
-        void markTileAsExplored();
-        bool messageDisplayed;
         void loadGame(const std::string&);
         void saveGame(const std::string&) const;
+        void closeMessage();
+        bool isMessageDisplayed() const;
 };

@@ -25,9 +25,10 @@ class MapTrigger {
         MapTrigger(TriggerType, const std::string&, bool);
         ~MapTrigger();
 
-        void activateTrigger();
+        void trigger();
         void setMapTrigger(const MapTrigger&);
         void removeTrigger();
 
         TriggerType getType() const;
+        bool isTriggered() const;
 };

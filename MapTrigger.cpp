@@ -1,6 +1,6 @@
 #include "MapTrigger.hpp"
 
-void MapTrigger::activateTrigger() {
+void MapTrigger::trigger() {
     triggered = true;
 }
 
@@ -18,6 +18,10 @@ void MapTrigger::removeTrigger() {
 
 TriggerType MapTrigger::getType() const {
     return triggerType;
+}
+
+bool MapTrigger::isTriggered() const {
+    return triggered;
 }
 
 MapTrigger::MapTrigger() {

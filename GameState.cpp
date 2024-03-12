@@ -32,15 +32,21 @@ void GameState::markTileAsExplored() {
     }
 }
 
+void GameState::checkAndHandleTrigger() {
+    if (gameMap.getTile(player.getX(), player.getY()).containsActiveTrigger()) {
+        Graphics::getInstance().displayMessage("Test message!");
+        messageDisplayed = true;
+        gameMap.activateTrigger(player.getX(), player.getY());
+        addToListOfChanges(player.getCurrentMapFileName(), player.getX(), player.getY(), ChangeType::TriggerActivated, "Tile");
+    }
+}
+
 void GameState::movePlayerForward() {
     if (!gameMap.getTile(player.getX(), player.getY()).isWalled(player.getDirection())) {
         player.moveForward();
         markTileAsExplored();
         Graphics::getInstance().animateForwardMovement(gameMap, player);
-        if (gameMap.getTile(player.getX(), player.getY()).containsTrigger()) {
-            Graphics::getInstance().displayMessage("Test message!");
-            messageDisplayed = true;
-        }
+        checkAndHandleTrigger();
     }
 }
 
@@ -52,10 +58,7 @@ void GameState::movePlayerBackward() {
         player.moveBackward();
         markTileAsExplored();
         Graphics::getInstance().animateBackwardMovement(gameMap, player);
-        if (gameMap.getTile(player.getX(), player.getY()).containsTrigger()) {
-            Graphics::getInstance().displayMessage("Test message!");
-            messageDisplayed = true;
-        }
+        checkAndHandleTrigger();
     }
 }
 
@@ -66,10 +69,7 @@ void GameState::movePlayerLeft() {
         player.moveLeft();
         markTileAsExplored();
         Graphics::getInstance().animateSidestepLeft(gameMap, player);
-        if (gameMap.getTile(player.getX(), player.getY()).containsTrigger()) {
-            Graphics::getInstance().displayMessage("Test message!");
-            messageDisplayed = true;
-        }
+        checkAndHandleTrigger();
     }
 }
 
@@ -80,10 +80,7 @@ void GameState::movePlayerRight() {
         player.moveRight();
         markTileAsExplored();
         Graphics::getInstance().animateSidestepRight(gameMap, player);
-        if (gameMap.getTile(player.getX(), player.getY()).containsTrigger()) {
-            Graphics::getInstance().displayMessage("Test message!");
-            messageDisplayed = true;
-        }
+        checkAndHandleTrigger();
     }
 }
 
@@ -116,8 +113,14 @@ void GameState::applyChangesToWorld() {
                     break;
 
                 case ChangeType::ObjectTriggered:
-                    if (gameMap.getTile(change.getLocationX(), change.getLocationY()).getObject().getObjectType() != "") {
+                    if (gameMap.getTile(change.getLocationX(), change.getLocationY()).getObject().getType() != "") {
                         gameMap.triggerObject(change.getLocationX(), change.getLocationY());
+                    }
+                    break;
+
+                case ChangeType::TriggerActivated:
+                    if (gameMap.getTile(change.getLocationX(), change.getLocationY()).getTrigger().getType() != TriggerType::Null) {
+                        gameMap.activateTrigger(change.getLocationX(), change.getLocationY());
                     }
                     break;
 
@@ -138,6 +141,14 @@ Player GameState::getPlayer() const {
 
 GameMap GameState::getMap() const {
     return gameMap;
+}
+
+void GameState::closeMessage() {
+    messageDisplayed = false;
+}
+
+bool GameState::isMessageDisplayed() const {
+    return messageDisplayed;
 }
 
 void GameState::loadGame(const std::string& saveFile) {

@@ -8,6 +8,7 @@ enum ChangeType {
     AddItem,
     RemoveItem,
     ObjectTriggered,
+    TriggerActivated,
     TileExplored
 };
 

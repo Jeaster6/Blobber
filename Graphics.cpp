@@ -314,7 +314,7 @@ void Graphics::generateScreenTexture(const GameMap& map, const Player& player, S
                     targetArea.y = (int)((screenHeight - tileHeight * pow(fieldOfView, j + 1)) * 0.5);
                     targetArea.w = (int)(tileWidth * pow(fieldOfView, j + 1));
                     targetArea.h = (int)(tileHeight * pow(fieldOfView, j + 1));
-                    SDL_RenderCopyEx(renderer, currentMapTextures.find(map.getTile(x, y).getObject().getObjectType())->second, nullptr, &targetArea, 0.0, nullptr, SDL_FLIP_NONE);
+                    SDL_RenderCopyEx(renderer, currentMapTextures.find(map.getTile(x, y).getObject().getType())->second, nullptr, &targetArea, 0.0, nullptr, SDL_FLIP_NONE);
                 }
             }
         }
@@ -433,7 +433,7 @@ void Graphics::generateScreenTexture(const GameMap& map, const Player& player, S
                     targetArea.y = (int)((screenHeight - tileHeight * pow(fieldOfView, j + 1)) * 0.5);
                     targetArea.w = (int)(tileWidth * pow(fieldOfView, j + 1));
                     targetArea.h = (int)(tileHeight * pow(fieldOfView, j + 1));
-                    SDL_RenderCopyEx(renderer, currentMapTextures.find(map.getTile(x, y).getObject().getObjectType())->second, nullptr, &targetArea, 0.0, nullptr, SDL_FLIP_NONE);
+                    SDL_RenderCopyEx(renderer, currentMapTextures.find(map.getTile(x, y).getObject().getType())->second, nullptr, &targetArea, 0.0, nullptr, SDL_FLIP_NONE);
                 }
             }
         }

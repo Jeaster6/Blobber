@@ -49,13 +49,14 @@ class Tile {
         void removeTrigger();
         void markAsExplored();
         void triggerObject();
+        void activateTrigger();
 
         bool isExplored() const;
         bool isWalled(Direction) const;
         bool hasFloor() const;
         bool hasCeiling() const;
         bool containsObject() const;
-        bool containsTrigger() const;
+        bool containsActiveTrigger() const;
         bool isFullyWalled() const;
         const std::string& getWallType(Direction) const;
         const std::string& getFloorType() const;
