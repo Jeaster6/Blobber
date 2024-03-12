@@ -60,9 +60,9 @@ void Graphics::init() {
 
     window = SDL_CreateWindow("Blobber", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, (int)screenWidth, (int)screenHeight, SDL_WINDOW_SHOWN);
     renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC | SDL_RENDERER_TARGETTEXTURE);
-    previousScreenTexture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, screenWidth, screenHeight);
-    currentScreenTexture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, screenWidth, screenHeight);
-    UIOverlayTexture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, screenWidth, screenHeight);
+    previousScreenTexture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_TARGET, screenWidth, screenHeight);
+    currentScreenTexture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_TARGET, screenWidth, screenHeight);
+    UIOverlayTexture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_TARGET, screenWidth, screenHeight);
     fontProvider.init(renderer);
 }
 
@@ -90,16 +90,11 @@ void Graphics::loadMapTextures(const GameMap& map) {
     }
 }
 
-// TODO: redo main menu to render background texture with standard UI elements, as well as settings menu being a UI element
 void Graphics::renderMainMenu(const SDL_Rect* targetArea, const std::string& textureFileName) {
+    SDL_RenderClear(renderer);
     clearUI();
     renderUIElement(targetArea, textureFileName);
     SDL_RenderCopy(renderer, UIOverlayTexture, nullptr, targetArea);
-
-    //test message
-    renderTextMessage(100, 400, "ABCDEFGHIJKLMNOPQRSTUVWXYZ abcdefghijklmnopqrstuvwxyz 1234567890", 30, 0, 0, 0);
-    renderTextMessage(100, 500, "!?.:-,\'\"+_/()#%&=|<>\\;[]{}~@$^*", 30, 0, 0, 0);
-
     SDL_RenderPresent(renderer);
 }
 
@@ -107,7 +102,6 @@ void Graphics::renderUIElement(const SDL_Rect* targetArea, const std::string& te
     SDL_Surface* surface = IMG_Load((getUITexturesDirectory() + textureFileName).c_str());
     SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, surface);
 
-    SDL_SetTextureBlendMode(UIOverlayTexture, SDL_BLENDMODE_BLEND);
     SDL_SetRenderTarget(renderer, UIOverlayTexture);
     SDL_RenderCopy(renderer, texture, nullptr, targetArea);
     SDL_SetRenderTarget(renderer, nullptr);
@@ -118,10 +112,13 @@ void Graphics::renderUIElement(const SDL_Rect* targetArea, const std::string& te
     texture = nullptr;
 }
 
-// render text message at given coordinates with a specified font size, target area width and heigh has to be the same as the generated texture, otherwise it gets streched
 void Graphics::renderTextMessage(int x, int y, const std::string& text, int fontSize, int r, int g, int b) {
     SDL_Rect targetArea = { x, y, 2560, 1440 };
-    SDL_RenderCopy(renderer, fontProvider.generateTextTexture(renderer, text, fontSize, r, g, b), nullptr, &targetArea);
+    SDL_Texture* texture = fontProvider.generateTextTexture(renderer, text, fontSize, r, g, b);
+
+    SDL_SetRenderTarget(renderer, UIOverlayTexture);
+    SDL_RenderCopy(renderer, texture, nullptr, &targetArea);
+    SDL_SetRenderTarget(renderer, nullptr);
 }
 
 void Graphics::renderTextureUsingVertices(SDL_Texture* sourceTexture, const std::array<std::pair<float, float>, 4>& vertexCollection, int distanceFromPlayer) {
@@ -570,7 +567,6 @@ void Graphics::renderUIOverlay() {
     // render right sidebar with UI elements
     SDL_Rect targetArea = { gameWidth, 0, screenWidth - gameWidth, screenHeight };
     SDL_RenderFillRect(renderer, &targetArea);
-    SDL_RenderCopy(renderer, UIOverlayTexture, nullptr, nullptr);
 
     // render top bar with UI elements
     targetArea = { 0, 0, gameWidth, screenHeight / 7 };
@@ -600,6 +596,7 @@ int Graphics::playerDistanceFromMapEdge(const GameMap& map, const Player& player
 // resets the UIOverlayTexture
 void Graphics::clearUI() {
     SDL_SetRenderTarget(renderer, UIOverlayTexture);
+    SDL_SetTextureBlendMode(UIOverlayTexture, SDL_BLENDMODE_BLEND);
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
     SDL_RenderClear(renderer);
     SDL_SetRenderTarget(renderer, nullptr);

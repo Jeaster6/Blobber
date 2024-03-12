@@ -7,8 +7,8 @@ ModalMenu::ModalMenu(const SDL_Rect& area, const std::string& texture) {
     this->area = area;
     this->texture = texture;
     opened = false;
-    yesButton = Button({ area.x + 30, area.y + area.h - 80, 50, 50 }, "Yes.png");
-    noButton = Button({ area.x + area.w - 80, area.y + area.h - 80, 50, 50 }, "No.png");
+    yesButton = Button({ area.x + 30, area.y + area.h - 80, 50, 50 }, "Yes.png", "");
+    noButton = Button({ area.x + area.w - 80, area.y + area.h - 80, 50, 50 }, "No.png", "");
 }
 
 ModalMenu::~ModalMenu() {

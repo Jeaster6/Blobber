@@ -408,7 +408,8 @@ SDL_Texture* FontProvider::generateTextTexture(SDL_Renderer* renderer, const std
                 break;
         }
 
-        targetArea = { fontSize * i, 0, fontSize, fontSize };
+        // TODO: make narrow characters render closer to each other to avoid gaps
+        targetArea = { (int)(fontSize * i * 0.8), 0, fontSize, fontSize };
 
         SDL_RenderCopy(renderer, fontTexture, &sourceArea, &targetArea);
     }
