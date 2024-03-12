@@ -95,8 +95,11 @@ void Graphics::renderMainMenu(const SDL_Rect* targetArea, const std::string& tex
     clearUI();
     renderUIElement(targetArea, textureFileName);
     SDL_RenderCopy(renderer, UIOverlayTexture, nullptr, targetArea);
-    std::string bla = "";
-    SDL_RenderCopy(renderer, fontProvider.generateTextTexture(renderer, bla, 255, 0, 0), nullptr, nullptr);
+
+    //test message
+    renderTextMessage(100, 400, "ABCDEFGHIJKLMNOPQRSTUVWXYZ abcdefghijklmnopqrstuvwxyz 1234567890", 30, 0, 0, 0);
+    renderTextMessage(100, 500, "!?.:-,\'\"+_/()#%&=|<>\\;[]{}~@$^*", 30, 0, 0, 0);
+
     SDL_RenderPresent(renderer);
 }
 
@@ -113,6 +116,12 @@ void Graphics::renderUIElement(const SDL_Rect* targetArea, const std::string& te
     surface = nullptr;
     SDL_DestroyTexture(texture);
     texture = nullptr;
+}
+
+// render text message at given coordinates with a specified font size, target area width and heigh has to be the same as the generated texture, otherwise it gets streched
+void Graphics::renderTextMessage(int x, int y, const std::string& text, int fontSize, int r, int g, int b) {
+    SDL_Rect targetArea = { x, y, 2560, 1440 };
+    SDL_RenderCopy(renderer, fontProvider.generateTextTexture(renderer, text, fontSize, r, g, b), nullptr, &targetArea);
 }
 
 void Graphics::renderTextureUsingVertices(SDL_Texture* sourceTexture, const std::array<std::pair<float, float>, 4>& vertexCollection, int distanceFromPlayer) {

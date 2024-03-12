@@ -7,14 +7,13 @@
 class FontProvider {
 
     private:
-        SDL_Texture* font;
-        SDL_Texture* text;
+        SDL_Texture* fontTexture;
+        SDL_Texture* textTexture;
 
     public:
         FontProvider();
-        FontProvider(SDL_Renderer*);
         ~FontProvider();
         
         void init(SDL_Renderer*);
-        SDL_Texture* generateTextTexture(SDL_Renderer*, std::string& const, int, int, int);
+        SDL_Texture* generateTextTexture(SDL_Renderer*, const std::string&, int, int, int, int);
 };

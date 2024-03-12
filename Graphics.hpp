@@ -52,6 +52,7 @@ class Graphics {
         void loadMapTextures(const GameMap&);
 		void renderMainMenu(const SDL_Rect*, const std::string&);
         void renderUIElement(const SDL_Rect*, const std::string&);
+        void renderTextMessage(int, int, const std::string&, int, int, int, int);
         void animateLeftRotation(const GameMap&, const Player&);
         void animateRightRotation(const GameMap&, const Player&);
         void animateForwardMovement(const GameMap&, const Player&);
