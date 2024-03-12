@@ -169,9 +169,11 @@
     <ClCompile Include="..\Button.cpp" />
     <ClCompile Include="..\Configuration.cpp" />
     <ClCompile Include="..\CurrentDirectory.cpp" />
+    <ClCompile Include="..\FontProvider.cpp" />
     <ClCompile Include="..\GameLoop.cpp" />
     <ClCompile Include="..\GameMap.cpp" />
     <ClCompile Include="..\GameState.cpp" />
+    <ClCompile Include="..\InventoryMenu.cpp" />
     <ClCompile Include="..\Item.cpp" />
     <ClCompile Include="..\MainMenu.cpp" />
     <ClCompile Include="..\MapObject.cpp" />
@@ -190,9 +192,11 @@
     <ClInclude Include="..\Configuration.hpp" />
     <ClInclude Include="..\CurrentDirectory.hpp" />
     <ClInclude Include="..\Direction.hpp" />
+    <ClInclude Include="..\FontProvider.hpp" />
     <ClInclude Include="..\GameLoop.hpp" />
     <ClInclude Include="..\GameMap.hpp" />
     <ClInclude Include="..\GameState.hpp" />
+    <ClInclude Include="..\InventoryMenu.hpp" />
     <ClInclude Include="..\Item.hpp" />
     <ClInclude Include="..\MainMenu.hpp" />
     <ClInclude Include="..\MapObject.hpp" />

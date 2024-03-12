@@ -8,8 +8,8 @@ Graphics::Graphics() {
     previousScreenTexture = nullptr;
     currentScreenTexture = nullptr;
     UIOverlayTexture = nullptr;
-    gameRenderer = nullptr;
-    gameWindow = nullptr;
+    renderer = nullptr;
+    window = nullptr;
     screenWidth = 0;
     screenHeight = 0;
     gameWidth = 0;
@@ -23,10 +23,10 @@ Graphics::Graphics() {
 }
 
 Graphics::~Graphics() {
-	SDL_DestroyRenderer(gameRenderer);
-	gameRenderer = nullptr;
-	SDL_DestroyWindow(gameWindow);
-	gameWindow = nullptr;
+	SDL_DestroyRenderer(renderer);
+	renderer = nullptr;
+	SDL_DestroyWindow(window);
+	window = nullptr;
     SDL_DestroyTexture(previousScreenTexture);
     previousScreenTexture = nullptr;
     SDL_DestroyTexture(currentScreenTexture);
@@ -44,8 +44,8 @@ Graphics::~Graphics() {
 }
 
 void Graphics::init() {
-    SDL_DestroyRenderer(gameRenderer);
-    SDL_DestroyWindow(gameWindow);
+    SDL_DestroyRenderer(renderer);
+    SDL_DestroyWindow(window);
     SDL_DestroyTexture(previousScreenTexture);
     SDL_DestroyTexture(currentScreenTexture);
     SDL_DestroyTexture(UIOverlayTexture);
@@ -58,11 +58,12 @@ void Graphics::init() {
     animationDuration = Configuration::getInstance().getAnimationDuration();
     levelOfDetail = Configuration::getInstance().getLevelOfDetail();
 
-    gameWindow = SDL_CreateWindow("Blobber", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, (int)screenWidth, (int)screenHeight, SDL_WINDOW_SHOWN);
-    gameRenderer = SDL_CreateRenderer(gameWindow, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC | SDL_RENDERER_TARGETTEXTURE);
-    previousScreenTexture = SDL_CreateTexture(gameRenderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, screenWidth, screenHeight);
-    currentScreenTexture = SDL_CreateTexture(gameRenderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, screenWidth, screenHeight);
-    UIOverlayTexture = SDL_CreateTexture(gameRenderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, screenWidth, screenHeight);
+    window = SDL_CreateWindow("Blobber", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, (int)screenWidth, (int)screenHeight, SDL_WINDOW_SHOWN);
+    renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC | SDL_RENDERER_TARGETTEXTURE);
+    previousScreenTexture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, screenWidth, screenHeight);
+    currentScreenTexture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, screenWidth, screenHeight);
+    UIOverlayTexture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, screenWidth, screenHeight);
+    fontProvider.init(renderer);
 }
 
 void Graphics::loadMapTextures(const GameMap& map) {
@@ -80,7 +81,7 @@ void Graphics::loadMapTextures(const GameMap& map) {
                 auto it = currentMapTextures.find(tileTexture);
                 if (it == currentMapTextures.end()) {
                     SDL_Surface* surface = IMG_Load((getEnvironmentTexturesDirectory() + tileTexture + ".png").c_str());
-                    currentMapTextures.insert({ tileTexture, SDL_CreateTextureFromSurface(gameRenderer, surface) });
+                    currentMapTextures.insert({ tileTexture, SDL_CreateTextureFromSurface(renderer, surface) });
                     SDL_FreeSurface(surface);
                     surface = nullptr;
                 }
@@ -93,18 +94,20 @@ void Graphics::loadMapTextures(const GameMap& map) {
 void Graphics::renderMainMenu(const SDL_Rect* targetArea, const std::string& textureFileName) {
     clearUI();
     renderUIElement(targetArea, textureFileName);
-    SDL_RenderCopy(gameRenderer, UIOverlayTexture, nullptr, targetArea);
-    SDL_RenderPresent(gameRenderer);
+    SDL_RenderCopy(renderer, UIOverlayTexture, nullptr, targetArea);
+    std::string bla = "";
+    SDL_RenderCopy(renderer, fontProvider.generateTextTexture(renderer, bla, 255, 0, 0), nullptr, nullptr);
+    SDL_RenderPresent(renderer);
 }
 
 void Graphics::renderUIElement(const SDL_Rect* targetArea, const std::string& textureFileName) {
     SDL_Surface* surface = IMG_Load((getUITexturesDirectory() + textureFileName).c_str());
-    SDL_Texture* texture = SDL_CreateTextureFromSurface(gameRenderer, surface);
+    SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, surface);
 
     SDL_SetTextureBlendMode(UIOverlayTexture, SDL_BLENDMODE_BLEND);
-    SDL_SetRenderTarget(gameRenderer, UIOverlayTexture);
-    SDL_RenderCopy(gameRenderer, texture, nullptr, targetArea);
-    SDL_SetRenderTarget(gameRenderer, nullptr);
+    SDL_SetRenderTarget(renderer, UIOverlayTexture);
+    SDL_RenderCopy(renderer, texture, nullptr, targetArea);
+    SDL_SetRenderTarget(renderer, nullptr);
 
     SDL_FreeSurface(surface);
     surface = nullptr;
@@ -147,7 +150,7 @@ void Graphics::renderTextureUsingVertices(SDL_Texture* sourceTexture, const std:
 		}
 	}
 
-	SDL_RenderGeometry(gameRenderer, sourceTexture, vertices.data(), (int)vertices.size(), indexList.data(), (int)indexList.size());
+	SDL_RenderGeometry(renderer, sourceTexture, vertices.data(), (int)vertices.size(), indexList.data(), (int)indexList.size());
 }
 
 void Graphics::generateScreenTexture(const GameMap& map, const Player& player, SDL_Texture* targetTexture) {
@@ -159,9 +162,9 @@ void Graphics::generateScreenTexture(const GameMap& map, const Player& player, S
     int tileWidth = gameWidth;
     int tileHeight = (int)1.5f * screenHeight;
 
-    SDL_SetRenderTarget(gameRenderer, targetTexture);
+    SDL_SetRenderTarget(renderer, targetTexture);
     SDL_Rect targetArea = { 0, 0, 0, 0 };
-    SDL_RenderClear(gameRenderer);
+    SDL_RenderClear(renderer);
 
     Direction leftHandSide = player.getDirection();
     leftHandSide--;
@@ -288,7 +291,7 @@ void Graphics::generateScreenTexture(const GameMap& map, const Player& player, S
                     targetArea.y = (int)((screenHeight - tileHeight * pow(fieldOfView, j + 1)) * 0.5);
                     targetArea.w = (int)(tileWidth * pow(fieldOfView, j + 1));
                     targetArea.h = (int)(tileHeight * pow(fieldOfView, j + 1));
-                    SDL_RenderCopyEx(gameRenderer, currentMapTextures.find(map.getTile(x, y).getObject().getObjectType())->second, nullptr, &targetArea, 0.0, nullptr, SDL_FLIP_NONE);
+                    SDL_RenderCopyEx(renderer, currentMapTextures.find(map.getTile(x, y).getObject().getObjectType())->second, nullptr, &targetArea, 0.0, nullptr, SDL_FLIP_NONE);
                 }
             }
         }
@@ -407,34 +410,34 @@ void Graphics::generateScreenTexture(const GameMap& map, const Player& player, S
                     targetArea.y = (int)((screenHeight - tileHeight * pow(fieldOfView, j + 1)) * 0.5);
                     targetArea.w = (int)(tileWidth * pow(fieldOfView, j + 1));
                     targetArea.h = (int)(tileHeight * pow(fieldOfView, j + 1));
-                    SDL_RenderCopyEx(gameRenderer, currentMapTextures.find(map.getTile(x, y).getObject().getObjectType())->second, nullptr, &targetArea, 0.0, nullptr, SDL_FLIP_NONE);
+                    SDL_RenderCopyEx(renderer, currentMapTextures.find(map.getTile(x, y).getObject().getObjectType())->second, nullptr, &targetArea, 0.0, nullptr, SDL_FLIP_NONE);
                 }
             }
         }
     }
 
-    SDL_SetRenderTarget(gameRenderer, nullptr);
+    SDL_SetRenderTarget(renderer, nullptr);
 }
 
 void Graphics::animateLeftRotation(const GameMap& map, const Player& player) {
     SDL_Rect targetArea = { 0, 0, 0, 0 };
     SDL_Rect sourceArea = { 0, 0, 0, 0 };
-    SDL_SetRenderDrawColor(gameRenderer, 0, 0, 0, 0);
+    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
 
     generateScreenTexture(map, player, currentScreenTexture);
 
     for (int i = 1; i < animationFrames; i++) {
         sourceArea = { 0, 0, (gameWidth * abs(i - animationFrames)) / animationFrames, screenHeight };
         targetArea = { (gameWidth * i) / animationFrames, 0, (gameWidth * abs(i - animationFrames)) / animationFrames, screenHeight };
-        SDL_RenderCopyEx(gameRenderer, previousScreenTexture, &sourceArea, &targetArea, 0.0, nullptr, SDL_FLIP_NONE);
+        SDL_RenderCopyEx(renderer, previousScreenTexture, &sourceArea, &targetArea, 0.0, nullptr, SDL_FLIP_NONE);
 
         sourceArea = { (gameWidth * abs(i - animationFrames)) / animationFrames, 0, (gameWidth * i) / animationFrames, screenHeight };
         targetArea = { 0, 0, (gameWidth * i) / animationFrames, screenHeight };
-        SDL_RenderCopyEx(gameRenderer, currentScreenTexture, &sourceArea, &targetArea, 0.0, nullptr, SDL_FLIP_NONE);
+        SDL_RenderCopyEx(renderer, currentScreenTexture, &sourceArea, &targetArea, 0.0, nullptr, SDL_FLIP_NONE);
 
         renderUIOverlay();
         
-        SDL_RenderPresent(gameRenderer);
+        SDL_RenderPresent(renderer);
         SDL_Delay(animationDuration / animationFrames);
     }
 }
@@ -442,22 +445,22 @@ void Graphics::animateLeftRotation(const GameMap& map, const Player& player) {
 void Graphics::animateRightRotation(const GameMap& map, const Player& player) {
     SDL_Rect targetArea = { 0, 0, 0, 0 };
     SDL_Rect sourceArea = { 0, 0, 0, 0 };
-    SDL_SetRenderDrawColor(gameRenderer, 0, 0, 0, 0);
+    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
 
     generateScreenTexture(map, player, currentScreenTexture);
 
     for (int i = 1; i < animationFrames; i++) {
         sourceArea = { (gameWidth * i) / animationFrames, 0, (gameWidth * abs(i - animationFrames)) / animationFrames, screenHeight };
         targetArea = { 0, 0, (gameWidth * abs(i - animationFrames)) / animationFrames, screenHeight };
-        SDL_RenderCopyEx(gameRenderer, previousScreenTexture, &sourceArea, &targetArea, 0.0, nullptr, SDL_FLIP_NONE);
+        SDL_RenderCopyEx(renderer, previousScreenTexture, &sourceArea, &targetArea, 0.0, nullptr, SDL_FLIP_NONE);
 
         sourceArea = { 0, 0, (gameWidth * i) / animationFrames, screenHeight };
         targetArea = { (gameWidth * abs(i - animationFrames)) / animationFrames, 0, (gameWidth * i) / animationFrames, screenHeight };
-        SDL_RenderCopyEx(gameRenderer, currentScreenTexture, &sourceArea, &targetArea, 0.0, nullptr, SDL_FLIP_NONE);
+        SDL_RenderCopyEx(renderer, currentScreenTexture, &sourceArea, &targetArea, 0.0, nullptr, SDL_FLIP_NONE);
 
         renderUIOverlay();
 
-        SDL_RenderPresent(gameRenderer);
+        SDL_RenderPresent(renderer);
         SDL_Delay(animationDuration / animationFrames);
     }
 }
@@ -465,16 +468,16 @@ void Graphics::animateRightRotation(const GameMap& map, const Player& player) {
 void Graphics::animateForwardMovement(const GameMap& map, const Player& player) {
     SDL_Rect targetArea = { 0, 0, 0, 0 };
     SDL_Rect sourceArea = { 0, 0, 0, 0 };
-    SDL_SetRenderDrawColor(gameRenderer, 0, 0, 0, 0);
+    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
 
     for (int i = 1; i < animationFrames; i++) {
         sourceArea = { (int)((gameWidth * (1 - fieldOfView) * i) / (animationFrames * 2)), (int)((screenHeight * (1 - fieldOfView) * i) / (animationFrames * 2)), (int)(gameWidth - ((gameWidth * i * (1 - fieldOfView)) / animationFrames)), (int)(screenHeight - ((screenHeight * i * (1 - fieldOfView)) / animationFrames)) };
         targetArea = { 0, 0, gameWidth, screenHeight };
-        SDL_RenderCopyEx(gameRenderer, previousScreenTexture, &sourceArea, &targetArea, 0.0, nullptr, SDL_FLIP_NONE);
+        SDL_RenderCopyEx(renderer, previousScreenTexture, &sourceArea, &targetArea, 0.0, nullptr, SDL_FLIP_NONE);
 
         renderUIOverlay();
 
-        SDL_RenderPresent(gameRenderer);
+        SDL_RenderPresent(renderer);
         SDL_Delay(animationDuration / animationFrames);
     }
 }
@@ -482,18 +485,18 @@ void Graphics::animateForwardMovement(const GameMap& map, const Player& player) 
 void Graphics::animateBackwardMovement(const GameMap& map, const Player& player) {
     SDL_Rect targetArea = { 0, 0, 0, 0 };
     SDL_Rect sourceArea = { 0, 0, 0, 0 };
-    SDL_SetRenderDrawColor(gameRenderer, 0, 0, 0, 0);
+    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
 
     generateScreenTexture(map, player, currentScreenTexture);
 
     for (int i = animationFrames - 1; i > 0; i--) {
         sourceArea = { (int)((gameWidth * (1 - fieldOfView) * i) / (animationFrames * 2)), (int)((screenHeight * (1 - fieldOfView) * i) / (animationFrames * 2)), (int)(gameWidth - ((gameWidth * i * (1 - fieldOfView)) / animationFrames)), (int)(screenHeight - ((screenHeight * i * (1 - fieldOfView)) / animationFrames)) };
         targetArea = { 0, 0, gameWidth, screenHeight };
-        SDL_RenderCopyEx(gameRenderer, currentScreenTexture, &sourceArea, &targetArea, 0.0, nullptr, SDL_FLIP_NONE);
+        SDL_RenderCopyEx(renderer, currentScreenTexture, &sourceArea, &targetArea, 0.0, nullptr, SDL_FLIP_NONE);
 
         renderUIOverlay();
 
-        SDL_RenderPresent(gameRenderer);
+        SDL_RenderPresent(renderer);
         SDL_Delay(animationDuration / animationFrames);
     }
 }
@@ -501,17 +504,17 @@ void Graphics::animateBackwardMovement(const GameMap& map, const Player& player)
 void Graphics::animateSidestepLeft(const GameMap& map, const Player& player) {
     SDL_Rect targetArea = { 0, 0, 0, 0 };
     SDL_Rect sourceArea = { 0, 0, 0, 0 };
-    SDL_SetRenderDrawColor(gameRenderer, 0, 0, 0, 0);
+    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
 
     for (int i = 1; i < animationFrames; i++) {
         generateScreenTexture(map, player, currentScreenTexture, ((float) + i / animationFrames) - 1);
         sourceArea = { 0, 0, gameWidth, screenHeight };
         targetArea = { 0, 0, gameWidth, screenHeight };
-        SDL_RenderCopyEx(gameRenderer, currentScreenTexture, &sourceArea, &targetArea, 0.0, nullptr, SDL_FLIP_NONE);
+        SDL_RenderCopyEx(renderer, currentScreenTexture, &sourceArea, &targetArea, 0.0, nullptr, SDL_FLIP_NONE);
 
         renderUIOverlay();
 
-        SDL_RenderPresent(gameRenderer);
+        SDL_RenderPresent(renderer);
         SDL_Delay(animationDuration / animationFrames);
     }
 }
@@ -519,17 +522,17 @@ void Graphics::animateSidestepLeft(const GameMap& map, const Player& player) {
 void Graphics::animateSidestepRight(const GameMap& map, const Player& player) {
     SDL_Rect targetArea = { 0, 0, 0, 0 };
     SDL_Rect sourceArea = { 0, 0, 0, 0 };
-    SDL_SetRenderDrawColor(gameRenderer, 0, 0, 0, 0);
+    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
 
     for (int i = 1; i < animationFrames; i++) {
         generateScreenTexture(map, player, currentScreenTexture, ((float) - i / animationFrames) + 1);
         sourceArea = { 0, 0, gameWidth, screenHeight };
         targetArea = { 0, 0, gameWidth, screenHeight };
-        SDL_RenderCopyEx(gameRenderer, currentScreenTexture, &sourceArea, &targetArea, 0.0, nullptr, SDL_FLIP_NONE);
+        SDL_RenderCopyEx(renderer, currentScreenTexture, &sourceArea, &targetArea, 0.0, nullptr, SDL_FLIP_NONE);
 
         renderUIOverlay();
 
-        SDL_RenderPresent(gameRenderer);
+        SDL_RenderPresent(renderer);
         SDL_Delay(animationDuration / animationFrames);
     }
 }
@@ -547,23 +550,23 @@ bool Graphics::isTextureInView(const std::array<std::pair<float, float>, 4>& ver
 
 void Graphics::renderPlayerView(const GameMap& map, const Player& player) {
     generateScreenTexture(map, player, previousScreenTexture);
-    SDL_RenderCopy(gameRenderer, previousScreenTexture, nullptr, nullptr);
+    SDL_RenderCopy(renderer, previousScreenTexture, nullptr, nullptr);
     renderUIOverlay();
-    SDL_RenderPresent(gameRenderer); 
+    SDL_RenderPresent(renderer); 
 }
 
 void Graphics::renderUIOverlay() {
-    SDL_SetRenderDrawColor(gameRenderer, 0, 0, 0, 0);
+    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
 
     // render right sidebar with UI elements
     SDL_Rect targetArea = { gameWidth, 0, screenWidth - gameWidth, screenHeight };
-    SDL_RenderFillRect(gameRenderer, &targetArea);
-    SDL_RenderCopy(gameRenderer, UIOverlayTexture, nullptr, nullptr);
+    SDL_RenderFillRect(renderer, &targetArea);
+    SDL_RenderCopy(renderer, UIOverlayTexture, nullptr, nullptr);
 
     // render top bar with UI elements
     targetArea = { 0, 0, gameWidth, screenHeight / 7 };
-    SDL_RenderFillRect(gameRenderer, &targetArea);
-    SDL_RenderCopy(gameRenderer, UIOverlayTexture, nullptr, nullptr);
+    SDL_RenderFillRect(renderer, &targetArea);
+    SDL_RenderCopy(renderer, UIOverlayTexture, nullptr, nullptr);
 }
 
 int Graphics::playerDistanceFromMapEdge(const GameMap& map, const Player& player, Direction direction) {
@@ -587,10 +590,10 @@ int Graphics::playerDistanceFromMapEdge(const GameMap& map, const Player& player
 
 // resets the UIOverlayTexture
 void Graphics::clearUI() {
-    SDL_SetRenderTarget(gameRenderer, UIOverlayTexture);
-    SDL_SetRenderDrawColor(gameRenderer, 0, 0, 0, 0);
-    SDL_RenderClear(gameRenderer);
-    SDL_SetRenderTarget(gameRenderer, nullptr);
+    SDL_SetRenderTarget(renderer, UIOverlayTexture);
+    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
+    SDL_RenderClear(renderer);
+    SDL_SetRenderTarget(renderer, nullptr);
 }
 
 Graphics Graphics::graphics;

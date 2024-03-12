@@ -65,6 +65,15 @@ bool gameplay(const std::string& saveFile) {
                             }
                             break;
 
+                        case SDLK_i:
+                            if (currentUIState == 0) {
+                                currentUIState = gameUI.openInventoryWindow();
+                            }
+                            else if (currentUIState == 2) {
+                                currentUIState = gameUI.closeAllWindows();
+                            }
+                            break;
+
                         case SDLK_F5:
                             if (currentUIState == 0) {
                                 game.saveGame(quickSaveFile);

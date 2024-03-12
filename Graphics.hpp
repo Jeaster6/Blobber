@@ -7,6 +7,7 @@
 #include <array>
 #include <map>
 #include <unordered_set>
+#include "FontProvider.hpp"
 #include "Direction.hpp"
 #include "GameMap.hpp"
 #include "Player.hpp"
@@ -25,11 +26,12 @@ class Graphics {
         int animationFrames;
         int animationDuration;
         int levelOfDetail;
-		SDL_Window* gameWindow;
-		SDL_Renderer* gameRenderer;
+		SDL_Window* window;
+		SDL_Renderer* renderer;
         SDL_Texture* previousScreenTexture;
         SDL_Texture* currentScreenTexture;
         SDL_Texture* UIOverlayTexture;
+        FontProvider fontProvider;
         std::map<std::string, SDL_Texture*> currentMapTextures;
 
 		Graphics();
