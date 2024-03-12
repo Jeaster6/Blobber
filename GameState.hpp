@@ -47,6 +47,7 @@ class GameState {
         void renderPlayerView();
         void addToListOfChanges(const std::string&, int, int, ChangeType, const std::string&);
         void markTileAsExplored();
+        bool messageDisplayed;
         void loadGame(const std::string&);
         void saveGame(const std::string&) const;
 };

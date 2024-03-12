@@ -53,6 +53,7 @@ class Graphics {
 		void renderMainMenu(const SDL_Rect*, const std::string&); // TODO: redo main menu to render background texture with standard UI elements, as well as settings menu being a UI element
         void renderUIElement(const SDL_Rect*, const std::string&);
         void renderTextMessage(int, int, const std::string&, int, int, int, int); // render text message at given coordinates with a specified font size, target area width and heigh has to be the same as the generated texture, otherwise it gets streched
+        void displayMessage(const std::string&);
         void animateLeftRotation(const GameMap&, const Player&);
         void animateRightRotation(const GameMap&, const Player&);
         void animateForwardMovement(const GameMap&, const Player&);

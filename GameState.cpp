@@ -1,10 +1,12 @@
 #include "GameState.hpp"
 
 GameState::GameState() {
+    messageDisplayed = false;
     loadGame("");
 }
 
 GameState::GameState(const std::string& saveFileName) {
+    messageDisplayed = false;
     loadGame(saveFileName);
 }
 
@@ -35,6 +37,10 @@ void GameState::movePlayerForward() {
         player.moveForward();
         markTileAsExplored();
         Graphics::getInstance().animateForwardMovement(gameMap, player);
+        if (gameMap.getTile(player.getX(), player.getY()).containsTrigger()) {
+            Graphics::getInstance().displayMessage("Test message!");
+            messageDisplayed = true;
+        }
     }
 }
 
@@ -46,6 +52,10 @@ void GameState::movePlayerBackward() {
         player.moveBackward();
         markTileAsExplored();
         Graphics::getInstance().animateBackwardMovement(gameMap, player);
+        if (gameMap.getTile(player.getX(), player.getY()).containsTrigger()) {
+            Graphics::getInstance().displayMessage("Test message!");
+            messageDisplayed = true;
+        }
     }
 }
 
@@ -56,6 +66,10 @@ void GameState::movePlayerLeft() {
         player.moveLeft();
         markTileAsExplored();
         Graphics::getInstance().animateSidestepLeft(gameMap, player);
+        if (gameMap.getTile(player.getX(), player.getY()).containsTrigger()) {
+            Graphics::getInstance().displayMessage("Test message!");
+            messageDisplayed = true;
+        }
     }
 }
 
@@ -66,6 +80,10 @@ void GameState::movePlayerRight() {
         player.moveRight();
         markTileAsExplored();
         Graphics::getInstance().animateSidestepRight(gameMap, player);
+        if (gameMap.getTile(player.getX(), player.getY()).containsTrigger()) {
+            Graphics::getInstance().displayMessage("Test message!");
+            messageDisplayed = true;
+        }
     }
 }
 

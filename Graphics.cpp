@@ -121,6 +121,23 @@ void Graphics::renderTextMessage(int x, int y, const std::string& text, int font
     SDL_SetRenderTarget(renderer, nullptr);
 }
 
+void Graphics::displayMessage(const std::string& message) {
+    SDL_SetRenderTarget(renderer, UIOverlayTexture);
+
+    // display message frame
+    SDL_Rect targetArea = { (gameWidth / 2) - 290, 990, 580, 220 };
+    SDL_SetRenderDrawColor(renderer, 25, 25, 25, 255);
+    SDL_RenderFillRect(renderer, &targetArea);
+
+    targetArea = { (gameWidth / 2) - 280, 1000, 560, 200 };
+    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+    SDL_RenderFillRect(renderer, &targetArea);
+    //display message
+    renderTextMessage((gameWidth / 2) - 255, 1025, message, 30, 255, 255, 0);
+
+    SDL_SetRenderTarget(renderer, nullptr);
+}
+
 void Graphics::renderTextureUsingVertices(SDL_Texture* sourceTexture, const std::array<std::pair<float, float>, 4>& vertexCollection, int distanceFromPlayer) {
     std::vector<SDL_Vertex> vertices;
     std::vector<int> indexList;

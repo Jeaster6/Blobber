@@ -108,6 +108,14 @@ bool gameplay(const std::string& saveFile) {
 
         game.renderPlayerView();
         gameUI.render();
+
+        while (game.messageDisplayed && event.key.keysym.sym != SDLK_RETURN && event.key.keysym.sym != SDLK_ESCAPE && ALTF4 == false) {
+            SDL_PollEvent(&event);
+            if (event.type == SDL_QUIT) {
+                ALTF4 = true;
+            }
+        }
+        game.messageDisplayed = false;
     }
 
     return ALTF4;
