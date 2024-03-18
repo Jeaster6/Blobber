@@ -201,10 +201,12 @@ void Tile::addItemToObject(const std::string& itemID) {
     mapObject.addItems({ itemID });
 }
 
+// used when running the game to preserve item order
 void Tile::removeItemFromObject(int itemIndex) {
     mapObject.removeItem(itemIndex);
 }
 
+// used when restoring world changes
 void Tile::removeItemFromObject(const std::string& itemID) {
     mapObject.removeItem(itemID);
 }

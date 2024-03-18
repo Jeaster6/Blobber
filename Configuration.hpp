@@ -48,8 +48,8 @@ class Configuration {
         int getAnimationFrames() const;
         int getLevelOfDetail() const;
 
-		void setScreenWidth(int);
-		void setScreenHeight(int);
+        void setScreenWidth(int);
+        void setScreenHeight(int);
 		void setFieldOfView(float);
         void setAnimationDuration(int);
         void setAnimationFrames(int);

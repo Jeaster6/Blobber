@@ -118,7 +118,7 @@ bool gameplay(const std::string& saveFile) {
         gameUI.render(game);
 
         // handle input in case there's a message on the screen
-        while (game.isMessageDisplayed() && event.key.keysym.sym != SDLK_RETURN && event.key.keysym.sym != SDLK_ESCAPE && ALTF4 == false) {
+        while (game.isMessageDisplayed() && event.key.keysym.sym != SDLK_RETURN && event.key.keysym.sym != SDLK_SPACE && event.key.keysym.sym != SDLK_ESCAPE && ALTF4 == false) {
             SDL_PollEvent(&event);
             if (event.type == SDL_QUIT) {
                 ALTF4 = true;
