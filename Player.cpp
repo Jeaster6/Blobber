@@ -5,13 +5,20 @@ Player::Player() {
 	positionY = 0;
 	direction = Direction::S;
     currentMap = "Map_1.dat";
+    partyInventory.clear();
+    partyInventory.push_back(Item("item1"));
+    partyInventory.push_back(Item("item2"));
+    partyInventory.push_back(Item("item4"));
+    partyInventory.push_back(Item("item4"));
+    partyInventory.push_back(Item("item5"));
 }
 
-Player::Player(int positionX, int positionY, Direction direction, const std::string& currentMap) {
+Player::Player(int positionX, int positionY, Direction direction, const std::string& currentMap, const std::vector<Item>& partyInventory) {
 	this->positionX = positionX;
 	this->positionY = positionY;
 	this->direction = direction;
     this->currentMap = currentMap;
+    this->partyInventory = partyInventory;
 }
 
 Player::~Player() {
@@ -50,7 +57,7 @@ Direction Player::getDirection() const {
 	return direction;
 }
 
-const std::string& Player::getCurrentMapFileName() const {
+std::string Player::getCurrentMapFileName() const {
     return currentMap;
 }
 
@@ -89,4 +96,16 @@ void Player::teleportToCoordinates(int positionX, int positionY, const std::stri
 	this->positionX = positionX;
 	this->positionY = positionY;
     this->currentMap = targetMap;
+}
+
+std::vector<Item> Player::getPartyInventory() const {
+    return partyInventory;
+}
+
+void Player::addToPartyInventory(const std::string& itemID) {
+    partyInventory.push_back(Item(itemID));
+}
+
+void Player::removeFromPartyInventory(int itemIndex) {
+    partyInventory.erase(partyInventory.begin() + itemIndex);
 }

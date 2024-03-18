@@ -5,8 +5,8 @@
 #include <boost/archive/binary_iarchive.hpp>
 
 enum ChangeType {
-    AddItem,
-    RemoveItem,
+    ItemAddedToObject,
+    ItemRemovedFromObject,
     ObjectTriggered,
     TriggerActivated,
     TileExplored

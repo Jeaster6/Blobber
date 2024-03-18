@@ -12,24 +12,26 @@ class MapObject {
         friend class boost::serialization::access;
         template<class Archive> void serialize(Archive& ar, const unsigned int version) {
             ar& ID;
-            ar& objectContents;
+            ar& contents;
             ar& triggered;
             ar& type;
         }
 
         std::string ID;
-        std::vector<Item> objectContents;
+        std::vector<Item> contents;
         std::string type;
         bool triggered;
 
     public:
         void addItems(const std::vector<std::string>&);
-        void removeItems();
+        void removeItem(int);
+        void removeItem(const std::string&);
         void triggerObject();
         void setObjectData(const MapObject&);
         void removeObject();
 
-        const std::string& getType() const;
+        std::string getType() const;
+        std::vector<Item> getContents() const;
 
         MapObject(const std::string&);
         MapObject();

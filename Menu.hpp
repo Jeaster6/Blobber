@@ -20,6 +20,5 @@ class Menu {
 
         void open();
         void close();
-        virtual void render() const = 0;
         bool isOpen() const;
 };

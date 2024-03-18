@@ -1,8 +1,12 @@
 #pragma once
 
+#include <string>
+#include <vector>
 #include <boost/archive/binary_oarchive.hpp>
 #include <boost/archive/binary_iarchive.hpp>
+#include <boost/serialization/vector.hpp>
 #include "Direction.hpp"
+#include "Item.hpp"
 
 class Player {
 
@@ -13,24 +17,26 @@ class Player {
             ar& positionY;
             ar& direction;
             ar& currentMap;
+            ar& partyInventory;
         }
 
 		int positionX;
 		int positionY;
 		Direction direction;
         std::string currentMap;
+        std::vector<Item> partyInventory;
 
 		void moveInDirection(Direction);
 
 	public:
 		Player();
-		Player(int, int, Direction, const std::string&);
+		Player(int, int, Direction, const std::string&, const std::vector<Item>&);
 		~Player();
 
 		int getX() const;
 		int getY() const;
 		Direction getDirection() const;
-        const std::string& getCurrentMapFileName() const;
+        std::string getCurrentMapFileName() const;
 
 		void turnRight();
 		void turnLeft();
@@ -39,4 +45,7 @@ class Player {
 		void moveRight();
 		void moveLeft();
 		void teleportToCoordinates(int, int, const std::string&);
+        std::vector<Item> getPartyInventory() const;
+        void addToPartyInventory(const std::string&);
+        void removeFromPartyInventory(int);
 };

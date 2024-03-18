@@ -114,7 +114,7 @@ void runMapEditor(GameMap& gameMap) {
                     SDL_RenderFillRect(renderer, &targetArea);
                 }
 
-                if (currentMode == 5 && gameMap.getTile(i, j).containsTrigger()) {
+                if (currentMode == 5 && gameMap.getTile(i, j).containsActiveTrigger()) {
                     SDL_SetRenderDrawColor(renderer, 0x00, 0x66, 0x66, 0xFF);
                     targetArea = { (i + 1) * GRID_TILE_SIZE + TILE_SIZE / 4, (j + 1) * GRID_TILE_SIZE + TILE_SIZE / 4, TILE_SIZE / 2, TILE_SIZE / 2 };
                     SDL_RenderFillRect(renderer, &targetArea);

@@ -13,7 +13,7 @@ UserInterface::UserInterface() {
 UserInterface::~UserInterface() {
 }
 
-void UserInterface::render() {
+void UserInterface::render(const GameState& game) {
     Graphics::getInstance().clearUI();
     exitButton.render();
     forward.render();
@@ -24,8 +24,28 @@ void UserInterface::render() {
     if (modal.isOpen()) {
         modal.render();
     }
+
     if (inventory.isOpen()) {
-        inventory.render();
+        std::vector<Item> partyInventory = game.getPlayer().getPartyInventory();
+        std::vector<Item> objectContents;
+        std::vector<std::string> partyInventoryItemNames;
+        std::vector<std::string> objectContentsItemNames;
+
+        if (inventory.getMode() == Mode::Looting) {
+            if (game.isTileInFrontOfPlayerFree()) {
+                objectContents = game.getTileInFrontOfPlayer().getObject().getContents();
+            }
+
+            for (Item item : objectContents) {
+                objectContentsItemNames.push_back(item.getName());
+            }
+        }
+
+        for (Item item : partyInventory) {
+            partyInventoryItemNames.push_back(item.getName());
+        }
+
+        inventory.render(partyInventoryItemNames, objectContentsItemNames);
     }
 }
 
@@ -60,6 +80,42 @@ int UserInterface::processMouseInput(const SDL_Event& mouseEvent, GameState& gam
         }
     }
 
+    // TODO: add party inventory code here
+    if (inventory.isOpen()) {
+        if (inventory.getMode() == Mode::Looting) {
+            int playerInventorySize = (int)game.getPlayer().getPartyInventory().size();
+            int objectContentsSize = (int)game.getTileInFrontOfPlayer().getObject().getContents().size();
+
+            for (int i = 0; i < playerInventorySize; i++) {
+                if (inventory.clickButton(i, mouseX, mouseY, buttonDownX, buttonDownY)) {
+                    std::string itemID = game.getPlayer().getPartyInventory()[i].getID();
+                    int x = 0;
+                    int y = 0;
+                    game.getCoordinatesOfTileInFrontOfPlayer(x, y);
+                    game.removeItemFromPartyInventory(i);
+                    game.addItemToObject(x, y, itemID);
+                    game.addToListOfChanges(game.getPlayer().getCurrentMapFileName(), x, y, ChangeType::ItemAddedToObject, itemID);
+                    return 2;
+                }
+            }
+
+            for (int i = 0; i < objectContentsSize; i++) {
+                if (inventory.clickButton(i + playerInventorySize, mouseX, mouseY, buttonDownX, buttonDownY)) {
+                    std::string itemID = game.getTileInFrontOfPlayer().getObject().getContents()[i].getID();
+                    int x = 0;
+                    int y = 0;
+                    game.getCoordinatesOfTileInFrontOfPlayer(x, y);
+                    game.removeItemFromObject(x, y, i);
+                    game.addToListOfChanges(game.getPlayer().getCurrentMapFileName(), x, y, ChangeType::ItemRemovedFromObject, itemID);
+                    game.addItemToPartyInventory(itemID);
+                    return 2;
+                }
+            }
+        }
+
+        return 2;
+    }
+
     else {
         if (exitButton.click(mouseX, mouseY, buttonDownX, buttonDownY)) {
             modal.open();
@@ -91,8 +147,8 @@ int UserInterface::openModalWindow() {
     return 1;
 }
 
-int UserInterface::openInventoryWindow() {
-    inventory.open();
+int UserInterface::openInventoryWindow(Mode mode) {
+    inventory.open(mode);
     return 2;
 }
 

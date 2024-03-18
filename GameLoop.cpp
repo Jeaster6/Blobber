@@ -67,7 +67,7 @@ bool gameplay(const std::string& saveFile) {
 
                         case SDLK_i:
                             if (currentUIState == 0) {
-                                currentUIState = gameUI.openInventoryWindow();
+                                currentUIState = gameUI.openInventoryWindow(Mode::Party);
                             }
                             else if (currentUIState == 2) {
                                 currentUIState = gameUI.closeAllWindows();
@@ -89,6 +89,14 @@ bool gameplay(const std::string& saveFile) {
                             }
                             break;
 
+                        case SDLK_SPACE:
+                            if (currentUIState == 0 && game.isTileInFrontOfPlayerFree()) {
+                                if (game.getTileInFrontOfPlayer().containsObject()) {
+                                    currentUIState = gameUI.openInventoryWindow(Mode::Looting);
+                                }
+                            }
+                            break;
+
                         case SDLK_RETURN:
                             if (currentUIState == 1) {
                                 quit = true;
@@ -107,7 +115,7 @@ bool gameplay(const std::string& saveFile) {
         }
 
         game.renderPlayerView();
-        gameUI.render();
+        gameUI.render(game);
 
         // handle input in case there's a message on the screen
         while (game.isMessageDisplayed() && event.key.keysym.sym != SDLK_RETURN && event.key.keysym.sym != SDLK_ESCAPE && ALTF4 == false) {

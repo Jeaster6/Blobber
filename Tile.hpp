@@ -50,6 +50,9 @@ class Tile {
         void markAsExplored();
         void triggerObject();
         void activateTrigger();
+        void addItemToObject(const std::string&);
+        void removeItemFromObject(int);
+        void removeItemFromObject(const std::string&);
 
         bool isExplored() const;
         bool isWalled(Direction) const;
@@ -58,10 +61,10 @@ class Tile {
         bool containsObject() const;
         bool containsActiveTrigger() const;
         bool isFullyWalled() const;
-        const std::string& getWallType(Direction) const;
-        const std::string& getFloorType() const;
-        const std::string& getCeilingType() const;
-        const MapObject& getObject() const;
-        const MapTrigger& getTrigger() const;
+        std::string getWallType(Direction) const;
+        std::string getFloorType() const;
+        std::string getCeilingType() const;
+        MapObject getObject() const;
+        MapTrigger getTrigger() const;
         std::unordered_set<std::string> getTextures() const;
 };

@@ -24,9 +24,9 @@ class UserInterface {
         UserInterface();
         ~UserInterface();
 
-        void render();
+        void render(const GameState&);
         int processMouseInput(const SDL_Event&, GameState&);
         int openModalWindow();
-        int openInventoryWindow();
+        int openInventoryWindow(Mode mode);
         int closeAllWindows();
 };

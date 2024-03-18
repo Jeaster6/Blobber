@@ -92,6 +92,18 @@ void GameMap::markTileAsExplored(int x, int y) {
     map[x][y].markAsExplored();
 }
 
+void GameMap::addItemToObject(int x, int y, const std::string& itemID) {
+    map[x][y].addItemToObject(itemID);
+}
+
+void GameMap::removeItemFromObject(int x, int y, int itemIndex) {
+    map[x][y].removeItemFromObject(itemIndex);
+}
+
+void GameMap::removeItemFromObject(int x, int y, const std::string& itemID) {
+    map[x][y].removeItemFromObject(itemID);
+}
+
 // constructs a map object based on size variables and populates it with data from savedTiles vector
 void GameMap::init() {
     map = std::make_shared<std::shared_ptr<Tile[]>[]>(width);

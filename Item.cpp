@@ -1,7 +1,19 @@
 #include "Item.hpp"
 
-void Item::loadItemData() {
+Item::Item(const std::string& itemID) {
+    this->ID = itemID;
+    loadItemData();
+}
 
+Item::Item() {
+    ID = "";
+    name = "";
+}
+
+Item::~Item() {
+}
+
+void Item::loadItemData() {
     std::ifstream itemsFile(getDataDirectory() + "Items.csv");
 
     std::vector <std::string> row;
@@ -15,24 +27,17 @@ void Item::loadItemData() {
             row.push_back(word);
         }
 
-        if (row[0] == itemID) {
-            itemName = row[1];
+        if (row[0] == ID) {
+            name = row[1];
             break;
         }
     }
-
-    itemsFile.close();
 }
 
-Item::Item(const std::string& itemID) {
-    this->itemID = itemID;
-    loadItemData();
+std::string Item::getID() const {
+    return ID;
 }
 
-Item::Item() {
-    itemID = "";
-    itemName = "";
-}
-
-Item::~Item() {
+std::string Item::getName() const {
+    return name;
 }

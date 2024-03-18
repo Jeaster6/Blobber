@@ -10,6 +10,7 @@
 #include "Direction.hpp"
 #include "Player.hpp"
 #include "GameMap.hpp"
+#include "Tile.hpp"
 #include "WorldChange.hpp"
 #include "Graphics.hpp"
 
@@ -53,4 +54,11 @@ class GameState {
         void saveGame(const std::string&) const;
         void closeMessage();
         bool isMessageDisplayed() const;
+        void addItemToPartyInventory(const std::string&);
+        void removeItemFromPartyInventory(int);
+        void addItemToObject(int, int, const std::string&);
+        void removeItemFromObject(int, int, int);
+        bool isTileInFrontOfPlayerFree() const;
+        Tile getTileInFrontOfPlayer() const;
+        void getCoordinatesOfTileInFrontOfPlayer(int&, int&);
 };

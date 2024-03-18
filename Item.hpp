@@ -12,11 +12,12 @@ class Item {
     private:
         friend class boost::serialization::access;
         template<class Archive> void serialize(Archive& ar, const unsigned int version) {
-            ar& itemID;
+            ar& ID;
+            loadItemData();
         }
 
-        std::string itemID;
-        std::string itemName;
+        std::string ID;
+        std::string name;
 
         void loadItemData();
 
@@ -25,4 +26,6 @@ class Item {
         Item();
         ~Item();
 
+        std::string getID() const;
+        std::string getName() const;
 };

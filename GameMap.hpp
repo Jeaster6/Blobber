@@ -49,6 +49,9 @@ class GameMap {
         void activateTrigger(int, int);
         void removeTrigger(int, int);
         void markTileAsExplored(int, int);
+        void addItemToObject(int, int, const std::string&);
+        void removeItemFromObject(int, int, int);
+        void removeItemFromObject(int, int, const std::string&);
 
         GameMap();
         GameMap(int, int);

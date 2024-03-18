@@ -2,22 +2,34 @@
 
 void MapObject::addItems(const std::vector<std::string>& objectContents) {
     for (std::string item : objectContents) {
-        Item newItem(item);
-        this->objectContents.push_back(newItem);
+        this->contents.push_back(Item(item));
     }
 }
 
-void MapObject::removeItems() {
-    objectContents.clear();
+void MapObject::removeItem(int itemIndex) {
+    contents.erase(contents.begin() + itemIndex);
 }
 
-const std::string& MapObject::getType() const {
+void MapObject::removeItem(const std::string& itemID) {
+    for (int i = 0; i < contents.size(); i++) {
+        if (contents[i].getID() == itemID) {
+            contents.erase(contents.begin() + i);
+            break;
+        }
+    }
+}
+
+std::string MapObject::getType() const {
     return type;
+}
+
+std::vector<Item> MapObject::getContents() const {
+    return contents;
 }
 
 void MapObject::setObjectData(const MapObject& otherObject) {
     this->ID = otherObject.ID;
-    this->objectContents = otherObject.objectContents;
+    this->contents = otherObject.contents;
     this->triggered = otherObject.triggered;
     this->type = otherObject.type;
 }
@@ -25,7 +37,7 @@ void MapObject::setObjectData(const MapObject& otherObject) {
 void MapObject::removeObject() {
     triggered = false;
     ID = "";
-    objectContents.clear();
+    contents.clear();
     type = "";
 }
 
@@ -36,14 +48,14 @@ void MapObject::triggerObject() {
 MapObject::MapObject(const std::string& objectID) {
     triggered = false;
     this->ID = objectID;
-    addItems({"item1"});
+    addItems({ "item1", "item3" });
     type = "Object";
 }
 
 MapObject::MapObject() {
     triggered = false;
     ID = "";
-    objectContents.clear();
+    contents.clear();
     type = "";
 }
 

@@ -107,7 +107,7 @@ bool Tile::containsActiveTrigger() const {
     return (mapTrigger.getType() != TriggerType::Null && !mapTrigger.isTriggered());
 }
 
-const std::string& Tile::getWallType(Direction direction) const {
+std::string Tile::getWallType(Direction direction) const {
     switch (direction) {
 
         case Direction::N:
@@ -128,19 +128,19 @@ const std::string& Tile::getWallType(Direction direction) const {
     }
 } 
 
-const std::string& Tile::getFloorType() const {
+std::string Tile::getFloorType() const {
     return floorType;
 }
 
-const std::string& Tile::getCeilingType() const {
+std::string Tile::getCeilingType() const {
     return ceilingType;
 }
 
-const MapObject& Tile::getObject() const {
+MapObject Tile::getObject() const {
     return mapObject;
 }
 
-const MapTrigger& Tile::getTrigger() const {
+MapTrigger Tile::getTrigger() const {
     return mapTrigger;
 }
 
@@ -195,6 +195,18 @@ void Tile::triggerObject() {
 
 void Tile::activateTrigger() {
     mapTrigger.trigger();
+}
+
+void Tile::addItemToObject(const std::string& itemID) {
+    mapObject.addItems({ itemID });
+}
+
+void Tile::removeItemFromObject(int itemIndex) {
+    mapObject.removeItem(itemIndex);
+}
+
+void Tile::removeItemFromObject(const std::string& itemID) {
+    mapObject.removeItem(itemID);
 }
 
 bool Tile::isExplored() const {
