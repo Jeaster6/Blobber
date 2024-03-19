@@ -3,6 +3,7 @@
 bool gameplay(const std::string& saveFile) {
     bool quit = false;
     bool ALTF4 = false;
+    bool keyDown = false;
     int currentUIState = 0; // used to process response from UI
     SDL_Event event;
     GameState game = GameState(saveFile);
@@ -21,11 +22,14 @@ bool gameplay(const std::string& saveFile) {
                     switch (event.key.keysym.sym) {
 
                         case SDLK_ESCAPE:
-                            if (currentUIState == 0) {
-                                currentUIState = gameUI.openModalWindow();
-                            }
-                            else {
-                                currentUIState = gameUI.closeAllWindows();
+                            if (!keyDown) {
+                                if (currentUIState == 0) {
+                                    currentUIState = gameUI.openModalWindow();
+                                }
+                                else {
+                                    currentUIState = gameUI.closeAllWindows();
+                                }
+                                keyDown = true;
                             }
                             break;
 
@@ -66,26 +70,35 @@ bool gameplay(const std::string& saveFile) {
                             break;
 
                         case SDLK_i:
-                            if (currentUIState == 0) {
-                                currentUIState = gameUI.openInventoryWindow(Mode::Party);
-                            }
-                            else if (currentUIState == 2) {
-                                currentUIState = gameUI.closeAllWindows();
+                            if (!keyDown) {
+                                if (currentUIState == 0) {
+                                    currentUIState = gameUI.openInventoryWindow(Mode::Party);
+                                }
+                                else if (currentUIState == 2) {
+                                    currentUIState = gameUI.closeAllWindows();
+                                }
+                                keyDown = true;
                             }
                             break;
 
                         case SDLK_F5:
-                            if (currentUIState == 0) {
-                                game.saveGame(quickSaveFile);
+                            if (!keyDown) {
+                                if (currentUIState == 0) {
+                                    game.saveGame(quickSaveFile);
+                                }
+                                keyDown = true;
                             }
                             break;
 
                         case SDLK_F9:
-                            if (currentUIState == 0) {
-                                game.loadGame(quickSaveFile);
-                                // reset UI state just in case
-                                gameUI = UserInterface();
-                                currentUIState = 0;
+                            if (!keyDown) {
+                                if (currentUIState == 0) {
+                                    game.loadGame(quickSaveFile);
+                                    // reset UI state just in case
+                                    gameUI = UserInterface();
+                                    currentUIState = 0;
+                                }
+                                keyDown = true;
                             }
                             break;
 
@@ -103,6 +116,11 @@ bool gameplay(const std::string& saveFile) {
                             }
                             break;
                     }
+                    break;
+
+                // used to prevent triggering certain events repeatedly, when button is held down - doesn't apply to movement
+                case SDL_KEYUP:
+                    keyDown = false;
                     break;
 
                 case SDL_MOUSEBUTTONDOWN:
