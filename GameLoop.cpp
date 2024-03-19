@@ -116,6 +116,7 @@ bool gameplay(const std::string& saveFile) {
                             }
                             break;
                     }
+                    SDL_FlushEvent(SDL_KEYDOWN);
                     break;
 
                 // used to prevent triggering certain events repeatedly, when button is held down - doesn't apply to movement

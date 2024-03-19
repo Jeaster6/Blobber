@@ -48,7 +48,7 @@ void MapObject::triggerObject() {
 MapObject::MapObject(const std::string& objectID) {
     triggered = false;
     this->ID = objectID;
-    addItems({ "item1", "item3" });
+    contents.clear();
     type = "Object";
 }
 

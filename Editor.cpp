@@ -403,6 +403,9 @@ void processMouseAction(GameMap& gameMap, const SDL_Event& mouseEvent, int curre
             switch (currentEvent.button.button) {
                 case SDL_BUTTON_LEFT: {
                     gameMap.placeObject(firstX, firstY, "Chest");
+                    gameMap.addItemToObject(firstX, firstY, "item1");
+                    gameMap.addItemToObject(firstX, firstY, "item2");
+                    gameMap.addItemToObject(firstX, firstY, "item3");
                     break;
                 }
 
