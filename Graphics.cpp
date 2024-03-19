@@ -492,9 +492,18 @@ void Graphics::animateForwardMovement(const GameMap& map, const Player& player) 
     SDL_Rect targetArea = { 0, 0, 0, 0 };
     SDL_Rect sourceArea = { 0, 0, 0, 0 };
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
+    int velocity = 0;
+    float distance = 0;
 
     for (int i = 1; i < animationFrames; i++) {
-        sourceArea = { (int)((gameWidth * (1 - fieldOfView) * i) / (animationFrames * 2)), (int)((screenHeight * (1 - fieldOfView) * i) / (animationFrames * 2)), (int)(gameWidth - ((gameWidth * i * (1 - fieldOfView)) / animationFrames)), (int)(screenHeight - ((screenHeight * i * (1 - fieldOfView)) / animationFrames)) };
+        if (i <= animationFrames / 2) {
+            velocity = i;
+        }
+        else velocity = animationFrames - i;
+
+        distance = distance + (float)velocity / ((float)animationFrames / 4);
+
+        sourceArea = { (int)((gameWidth * (1 - fieldOfView) * distance) / (animationFrames * 2)), (int)((screenHeight * (1 - fieldOfView) * distance) / (animationFrames * 2)), (int)(gameWidth - ((gameWidth * distance * (1 - fieldOfView)) / animationFrames)), (int)(screenHeight - ((screenHeight * distance * (1 - fieldOfView)) / animationFrames)) };
         targetArea = { 0, 0, gameWidth, screenHeight };
         SDL_RenderCopyEx(renderer, previousScreenTexture, &sourceArea, &targetArea, 0.0, nullptr, SDL_FLIP_NONE);
 
@@ -509,11 +518,20 @@ void Graphics::animateBackwardMovement(const GameMap& map, const Player& player)
     SDL_Rect targetArea = { 0, 0, 0, 0 };
     SDL_Rect sourceArea = { 0, 0, 0, 0 };
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
+    int velocity = 0;
+    float distance = (float)animationFrames;
 
     generateScreenTexture(map, player, currentScreenTexture);
 
-    for (int i = animationFrames - 1; i > 0; i--) {
-        sourceArea = { (int)((gameWidth * (1 - fieldOfView) * i) / (animationFrames * 2)), (int)((screenHeight * (1 - fieldOfView) * i) / (animationFrames * 2)), (int)(gameWidth - ((gameWidth * i * (1 - fieldOfView)) / animationFrames)), (int)(screenHeight - ((screenHeight * i * (1 - fieldOfView)) / animationFrames)) };
+    for (int i = 1; i < animationFrames; i++) {
+        if (i <= animationFrames / 2) {
+            velocity = i;
+        }
+        else velocity = animationFrames - i;
+
+        distance = distance - (float)velocity / ((float)animationFrames / 4);
+
+        sourceArea = { (int)((gameWidth * (1 - fieldOfView) * distance) / (animationFrames * 2)), (int)((screenHeight * (1 - fieldOfView) * distance) / (animationFrames * 2)), (int)(gameWidth - ((gameWidth * distance * (1 - fieldOfView)) / animationFrames)), (int)(screenHeight - ((screenHeight * distance * (1 - fieldOfView)) / animationFrames)) };
         targetArea = { 0, 0, gameWidth, screenHeight };
         SDL_RenderCopyEx(renderer, currentScreenTexture, &sourceArea, &targetArea, 0.0, nullptr, SDL_FLIP_NONE);
 
@@ -528,9 +546,18 @@ void Graphics::animateSidestepLeft(const GameMap& map, const Player& player) {
     SDL_Rect targetArea = { 0, 0, 0, 0 };
     SDL_Rect sourceArea = { 0, 0, 0, 0 };
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
+    int velocity = 0;
+    float distance = 0;
 
     for (int i = 1; i < animationFrames; i++) {
-        generateScreenTexture(map, player, currentScreenTexture, ((float) + i / animationFrames) - 1);
+        if (i <= animationFrames / 2) {
+            velocity = i;
+        }
+        else velocity = animationFrames - i;
+
+        distance = distance + (float)velocity / ((float)animationFrames / 4);
+
+        generateScreenTexture(map, player, currentScreenTexture, ((float) + distance / animationFrames) - 1);
         sourceArea = { 0, 0, gameWidth, screenHeight };
         targetArea = { 0, 0, gameWidth, screenHeight };
         SDL_RenderCopyEx(renderer, currentScreenTexture, &sourceArea, &targetArea, 0.0, nullptr, SDL_FLIP_NONE);
@@ -546,9 +573,18 @@ void Graphics::animateSidestepRight(const GameMap& map, const Player& player) {
     SDL_Rect targetArea = { 0, 0, 0, 0 };
     SDL_Rect sourceArea = { 0, 0, 0, 0 };
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
+    int velocity = 0;
+    float distance = 0;
 
     for (int i = 1; i < animationFrames; i++) {
-        generateScreenTexture(map, player, currentScreenTexture, ((float) - i / animationFrames) + 1);
+        if (i <= animationFrames / 2) {
+            velocity = i;
+        }
+        else velocity = animationFrames - i;
+
+        distance = distance + (float)velocity / ((float)animationFrames / 4);
+
+        generateScreenTexture(map, player, currentScreenTexture, ((float) - distance / animationFrames) + 1);
         sourceArea = { 0, 0, gameWidth, screenHeight };
         targetArea = { 0, 0, gameWidth, screenHeight };
         SDL_RenderCopyEx(renderer, currentScreenTexture, &sourceArea, &targetArea, 0.0, nullptr, SDL_FLIP_NONE);
@@ -561,7 +597,7 @@ void Graphics::animateSidestepRight(const GameMap& map, const Player& player) {
 }
 
 // returns false, if none of the X vertex coordinates are located inside the game view
-bool Graphics::isTextureInView(const std::array<std::pair<float, float>, 4>& vertexCollection) {
+bool Graphics::isTextureInView(const std::array<std::pair<float, float>, 4>& vertexCollection) const {
     int verticesOnScreen = 0;
     for (int i = 0; i < 4; i++) {
         if (vertexCollection[i].first >= 0 && vertexCollection[i].first <= gameWidth) {

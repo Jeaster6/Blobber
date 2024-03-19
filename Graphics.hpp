@@ -39,7 +39,7 @@ class Graphics {
         void generateScreenTexture(const GameMap&, const Player&, SDL_Texture*);
         void generateScreenTexture(const GameMap&, const Player&, SDL_Texture*, float);
         void renderTextureUsingVertices(SDL_Texture*, const std::array<std::pair<float, float>, 4>&, int);
-        bool isTextureInView(const std::array<std::pair<float, float>, 4>&);
+        bool isTextureInView(const std::array<std::pair<float, float>, 4>&) const;
         void renderUIOverlay();
         int playerDistanceFromMapEdge(const GameMap&, const Player&, Direction);
 

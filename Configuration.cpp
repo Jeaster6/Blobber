@@ -8,7 +8,7 @@ Configuration::Configuration() {
     screenWidth = 1920;
     screenHeight = 1080;
     fieldOfView = 0.65f;
-    animationDuration = 200;
+    animationDuration = 300;
     animationFrames = 32;
     levelOfDetail = 8;
 	loadDataFromFile();
