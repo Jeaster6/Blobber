@@ -34,10 +34,23 @@ void GameState::markTileAsExplored() {
 
 void GameState::checkAndHandleTrigger() {
     if (gameMap.getTile(player.getX(), player.getY()).containsActiveTrigger()) {
-        Graphics::getInstance().displayMessage("Test message!");
-        messageDisplayed = true;
-        gameMap.activateTrigger(player.getX(), player.getY());
-        addToListOfChanges(player.getCurrentMapFileName(), player.getX(), player.getY(), ChangeType::TriggerActivated, "Tile");
+        switch (gameMap.getTile(player.getX(), player.getY()).getTrigger().getType()) {
+
+            case TriggerType::DisplayMessage:
+                Graphics::getInstance().displayMessage(gameMap.getTile(player.getX(), player.getY()).getTrigger().getSubject());
+                messageDisplayed = true;
+                gameMap.activateTrigger(player.getX(), player.getY());
+                addToListOfChanges(player.getCurrentMapFileName(), player.getX(), player.getY(), ChangeType::TriggerActivated, "Tile");
+                break;
+
+            case TriggerType::MapExit:
+                player.teleportToCoordinates(0, 0, gameMap.getTile(player.getX(), player.getY()).getTrigger().getSubject());
+                initMap();
+                break;
+
+            case TriggerType::Null:
+                break;
+        }
     }
 }
 

@@ -24,6 +24,10 @@ bool MapTrigger::isTriggered() const {
     return triggered;
 }
 
+std::string MapTrigger::getSubject() const {
+    return subject;
+}
+
 MapTrigger::MapTrigger() {
     triggerType = TriggerType::Null;
     subject = "";

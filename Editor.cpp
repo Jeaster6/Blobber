@@ -11,6 +11,7 @@ void runMapEditor(GameMap& gameMap) {
     SDL_Event event;
 
     bool quit = false;
+    static char mapName[128] = "";
     int currentMode = 0;
     std::vector<std::pair<std::string, SDL_Texture*>> textures = loadTexturesFromDirectory(renderer);
     std::pair<std::string, SDL_Texture*> selectedTile;
@@ -47,7 +48,7 @@ void runMapEditor(GameMap& gameMap) {
             }
 
             else if (event.type == SDL_MOUSEBUTTONDOWN) {
-                processMouseAction(gameMap, event, currentMode, renderer, targetTexture, selectedTile.first);
+                processMouseAction(gameMap, event, currentMode, mapName, renderer, targetTexture, selectedTile.first);
             }
         }
 
@@ -115,9 +116,19 @@ void runMapEditor(GameMap& gameMap) {
                 }
 
                 if (currentMode == 5 && gameMap.getTile(i, j).containsActiveTrigger()) {
-                    SDL_SetRenderDrawColor(renderer, 0x00, 0x66, 0x66, 0xFF);
-                    targetArea = { (i + 1) * GRID_TILE_SIZE + TILE_SIZE / 4, (j + 1) * GRID_TILE_SIZE + TILE_SIZE / 4, TILE_SIZE / 2, TILE_SIZE / 2 };
-                    SDL_RenderFillRect(renderer, &targetArea);
+                    if (gameMap.getTile(i, j).getTrigger().getType() == TriggerType::DisplayMessage) {
+                        SDL_SetRenderDrawColor(renderer, 0x00, 0x66, 0x66, 0xFF);
+                        targetArea = { (i + 1) * GRID_TILE_SIZE + TILE_SIZE / 4, (j + 1) * GRID_TILE_SIZE + TILE_SIZE / 4, TILE_SIZE / 2, TILE_SIZE / 2 };
+                        SDL_RenderFillRect(renderer, &targetArea);
+                    }
+                }
+
+                if (currentMode == 6 && gameMap.getTile(i, j).containsActiveTrigger()) {
+                    if (gameMap.getTile(i, j).getTrigger().getType() == TriggerType::MapExit) {
+                        SDL_SetRenderDrawColor(renderer, 0x00, 0x66, 0x66, 0xFF);
+                        targetArea = { (i + 1) * GRID_TILE_SIZE + TILE_SIZE / 4, (j + 1) * GRID_TILE_SIZE + TILE_SIZE / 4, TILE_SIZE / 2, TILE_SIZE / 2 };
+                        SDL_RenderFillRect(renderer, &targetArea);
+                    }
                 }
             }
         }
@@ -143,6 +154,12 @@ void runMapEditor(GameMap& gameMap) {
             ImGui::RadioButton("Object Mode", &currentMode, 4);
             ImGui::SameLine();
             ImGui::RadioButton("Trigger Mode", &currentMode, 5);
+            ImGui::SameLine();
+            ImGui::RadioButton("Map Exit Mode", &currentMode, 6);
+
+            if (currentMode == 6) {
+                ImGui::InputText("Map Name", mapName, IM_ARRAYSIZE(mapName));
+            }
 
             ImGui::ColorEdit3("Background colour", (float*)&backgroundColour);
             ImGui::Checkbox("Show Second Window", &show_demo_window);
@@ -220,7 +237,7 @@ void runMapEditor(GameMap& gameMap) {
 	SDL_Quit();
 }
 
-void processMouseAction(GameMap& gameMap, const SDL_Event& mouseEvent, int currentMode, SDL_Renderer* renderer, SDL_Texture* targetTexture, const std::string& selectedTile) {
+void processMouseAction(GameMap& gameMap, const SDL_Event& mouseEvent, int currentMode, const std::string& mapName, SDL_Renderer* renderer, SDL_Texture* targetTexture, const std::string& selectedTile) {
 
     int mouseX = 0;
     int mouseY = 0;
@@ -421,7 +438,23 @@ void processMouseAction(GameMap& gameMap, const SDL_Event& mouseEvent, int curre
         if (firstX < gameMap.getWidth() && firstY < gameMap.getHeight() && firstX >= 0 && firstY >= 0) {
             switch (currentEvent.button.button) {
                 case SDL_BUTTON_LEFT: {
-                    gameMap.placeTrigger(firstX, firstY, TriggerType::MapExit, "Map_2.dat", false);
+                    gameMap.placeTrigger(firstX, firstY, TriggerType::DisplayMessage, "Test message!!!", false);
+                    break;
+                }
+
+                case SDL_BUTTON_RIGHT: {
+                    gameMap.removeTrigger(firstX, firstY);
+                    break;
+                }
+            }
+        }
+    }
+
+    if (currentMode == 6) {
+        if (firstX < gameMap.getWidth() && firstY < gameMap.getHeight() && firstX >= 0 && firstY >= 0) {
+            switch (currentEvent.button.button) {
+                case SDL_BUTTON_LEFT: {
+                    gameMap.placeTrigger(firstX, firstY, TriggerType::MapExit, mapName, false);
                     break;
                 }
 

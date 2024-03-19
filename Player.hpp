@@ -37,6 +37,7 @@ class Player {
 		int getY() const;
 		Direction getDirection() const;
         std::string getCurrentMapFileName() const;
+        std::vector<Item> getPartyInventory() const;
 
 		void turnRight();
 		void turnLeft();
@@ -45,7 +46,6 @@ class Player {
 		void moveRight();
 		void moveLeft();
 		void teleportToCoordinates(int, int, const std::string&);
-        std::vector<Item> getPartyInventory() const;
         void addToPartyInventory(const std::string&);
         void removeFromPartyInventory(int);
 };

@@ -4,7 +4,7 @@
 #include <boost/archive/binary_oarchive.hpp>
 #include <boost/archive/binary_iarchive.hpp>
 
-enum TriggerType { Null, MapExit };
+enum TriggerType { Null, MapExit, DisplayMessage };
 
 class MapTrigger {
 
@@ -30,5 +30,6 @@ class MapTrigger {
         void removeTrigger();
 
         TriggerType getType() const;
+        std::string getSubject() const;
         bool isTriggered() const;
 };
