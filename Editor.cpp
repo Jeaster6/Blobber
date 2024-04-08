@@ -11,7 +11,10 @@ void runMapEditor(GameMap& gameMap) {
     SDL_Event event;
 
     bool quit = false;
-    static char mapName[128] = "";
+    std::vector<std::string> mapList = readMapsFromDirectory();
+    static const char* mapName = NULL;
+    int destinationX = 0;
+    int destinationY = 0;
     int currentMode = 0;
     std::vector<std::pair<std::string, SDL_Texture*>> textures = loadTexturesFromDirectory(renderer);
     std::pair<std::string, SDL_Texture*> selectedTile;
@@ -48,7 +51,7 @@ void runMapEditor(GameMap& gameMap) {
             }
 
             else if (event.type == SDL_MOUSEBUTTONDOWN) {
-                processMouseAction(gameMap, event, currentMode, mapName, renderer, targetTexture, selectedTile.first);
+                processMouseAction(gameMap, event, currentMode, mapName, destinationX, destinationY, renderer, targetTexture, selectedTile.first);
             }
         }
 
@@ -158,7 +161,20 @@ void runMapEditor(GameMap& gameMap) {
             ImGui::RadioButton("Map Exit Mode", &currentMode, 6);
 
             if (currentMode == 6) {
-                ImGui::InputText("Map Name", mapName, IM_ARRAYSIZE(mapName));
+                if (ImGui::BeginCombo("Map", mapName)) // The second parameter is the label previewed before opening the combo.
+                {
+                    for (int i = 0; i < mapList.size(); i++) {
+                        bool is_selected = (mapName == mapList[i].c_str()); // You can store your selection however you want, outside or inside your objects
+                        if (ImGui::Selectable(mapList[i].c_str(), is_selected))
+                            mapName = mapList[i].c_str();
+                            if (is_selected)
+                                ImGui::SetItemDefaultFocus();   // You may set the initial focus when opening the combo (scrolling + for keyboard navigation support)
+                    }
+                    ImGui::EndCombo();
+                }
+
+                ImGui::InputInt("DestinationX", &destinationX);
+                ImGui::InputInt("DestinationY", &destinationY);
             }
 
             ImGui::ColorEdit3("Background colour", (float*)&backgroundColour);
@@ -237,7 +253,7 @@ void runMapEditor(GameMap& gameMap) {
 	SDL_Quit();
 }
 
-void processMouseAction(GameMap& gameMap, const SDL_Event& mouseEvent, int currentMode, const std::string& mapName, SDL_Renderer* renderer, SDL_Texture* targetTexture, const std::string& selectedTile) {
+void processMouseAction(GameMap& gameMap, const SDL_Event& mouseEvent, int currentMode, const std::string& mapName, int destinationX, int destinationY, SDL_Renderer* renderer, SDL_Texture* targetTexture, const std::string& selectedTile) {
 
     int mouseX = 0;
     int mouseY = 0;
@@ -454,7 +470,7 @@ void processMouseAction(GameMap& gameMap, const SDL_Event& mouseEvent, int curre
         if (firstX < gameMap.getWidth() && firstY < gameMap.getHeight() && firstX >= 0 && firstY >= 0) {
             switch (currentEvent.button.button) {
                 case SDL_BUTTON_LEFT: {
-                    gameMap.placeTrigger(firstX, firstY, TriggerType::MapExit, mapName, false);
+                    gameMap.placeTrigger(firstX, firstY, TriggerType::MapExit, mapName, destinationX, destinationY, false);
                     break;
                 }
 

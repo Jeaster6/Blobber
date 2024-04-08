@@ -30,3 +30,20 @@ std::string getDataDirectory() {
 std::string getSaveFileDirectory() {
     return getRootDirectory() + "Save/";
 }
+
+std::vector<std::string> readMapsFromDirectory() {
+    std::vector<std::string> allFiles;
+    std::vector<std::string> mapFiles;
+    boost::filesystem::directory_iterator start(getMapsDirectory());
+    boost::filesystem::directory_iterator end;
+    transform(start, end, back_inserter(allFiles), pathLeafString());
+
+    mapFiles.clear();
+    for (unsigned int i = 0; i < allFiles.size(); i++) {
+        if (allFiles[i].substr(allFiles[i].length() - 4) == ".dat") {
+            mapFiles.push_back(allFiles[i]);
+        }
+    }
+
+    return mapFiles;
+}

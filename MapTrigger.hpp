@@ -14,15 +14,21 @@ class MapTrigger {
             ar& triggerType;
             ar& subject;
             ar& triggered;
+            ar& destinationX;
+            ar& destinationY;
         }
 
+    protected:
         TriggerType triggerType;
         std::string subject;
         bool triggered;
+        int destinationX;
+        int destinationY;
 
     public:
         MapTrigger();
         MapTrigger(TriggerType, const std::string&, bool);
+        MapTrigger(TriggerType, const std::string&, int, int, bool);
         ~MapTrigger();
 
         void trigger();
@@ -32,4 +38,6 @@ class MapTrigger {
         TriggerType getType() const;
         std::string getSubject() const;
         bool isTriggered() const;
+        int getX() const;
+        int getY() const;
 };

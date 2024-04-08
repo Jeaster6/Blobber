@@ -44,7 +44,7 @@ void GameState::checkAndHandleTrigger() {
                 break;
 
             case TriggerType::MapExit:
-                player.teleportToCoordinates(0, 0, gameMap.getTile(player.getX(), player.getY()).getTrigger().getSubject());
+                player.teleportToCoordinates(gameMap.getTile(player.getX(), player.getY()).getTrigger().getX(), gameMap.getTile(player.getX(), player.getY()).getTrigger().getY(), gameMap.getTile(player.getX(), player.getY()).getTrigger().getSubject());
                 initMap();
                 break;
 

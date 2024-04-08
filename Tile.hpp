@@ -46,6 +46,7 @@ class Tile {
         void placeObject(const std::string&);
         void removeObject();
         void placeTrigger(TriggerType, const std::string&, bool);
+        void placeTrigger(TriggerType, const std::string&, int, int, bool);
         void removeTrigger();
         void markAsExplored();
         void triggerObject();

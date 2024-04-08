@@ -80,6 +80,10 @@ void GameMap::placeTrigger(int x, int y, TriggerType triggerType, const std::str
     map[x][y].placeTrigger(triggerType, subject, triggered);
 }
 
+void GameMap::placeTrigger(int x, int y, TriggerType triggerType, const std::string& subject, int destinationX, int destinationY, bool triggered) {
+    map[x][y].placeTrigger(triggerType, subject, destinationX, destinationY, triggered);
+}
+
 void GameMap::activateTrigger(int x, int y) {
     map[x][y].activateTrigger();
 }

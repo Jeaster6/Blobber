@@ -18,12 +18,6 @@ const int GRID_TILE_SIZE=40;
 const int TILE_SIZE=(int)(GRID_TILE_SIZE*0.96);
 const int WALL_THICKNESS=(int)(GRID_TILE_SIZE*0.16);
 
-struct pathLeafString {
-    std::string operator() (const boost::filesystem::directory_entry& entry) const {
-        return entry.path().leaf().string();
-    }
-};
-
-void processMouseAction(GameMap&, const SDL_Event&, int, const std::string&, SDL_Renderer*, SDL_Texture*, const std::string&);
+void processMouseAction(GameMap&, const SDL_Event&, int, const std::string&, int, int, SDL_Renderer*, SDL_Texture*, const std::string&);
 void runMapEditor(GameMap&);
 std::vector<std::pair<std::string, SDL_Texture*>> loadTexturesFromDirectory(SDL_Renderer*);

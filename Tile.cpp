@@ -65,6 +65,10 @@ void Tile::placeTrigger(TriggerType triggerType, const std::string& subject, boo
     mapTrigger = MapTrigger(triggerType, subject, triggered);
 }
 
+void Tile::placeTrigger(TriggerType triggerType, const std::string& subject, int x, int y, bool triggered) {
+    mapTrigger = MapTrigger(triggerType, subject, x, y, triggered);
+}
+
 void Tile::removeTrigger() {
     mapTrigger.removeTrigger();
 }
