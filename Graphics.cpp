@@ -58,7 +58,7 @@ void Graphics::init() {
     animationDuration = Configuration::getInstance().getAnimationDuration();
     levelOfDetail = Configuration::getInstance().getLevelOfDetail();
 
-    window = SDL_CreateWindow("Blobber", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, (int)screenWidth, (int)screenHeight, SDL_WINDOW_SHOWN);
+    window = SDL_CreateWindow("Blobber", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, screenWidth, screenHeight, SDL_WINDOW_SHOWN);
     renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC | SDL_RENDERER_TARGETTEXTURE);
     previousScreenTexture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_TARGET, screenWidth, screenHeight);
     currentScreenTexture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_TARGET, screenWidth, screenHeight);
@@ -113,7 +113,7 @@ void Graphics::renderUIElement(const SDL_Rect* targetArea, const std::string& te
 }
 
 void Graphics::renderTextMessage(int x, int y, const std::string& text, int fontSize, int r, int g, int b) {
-    SDL_Rect targetArea = { x, y, 2560, 1440 };
+    SDL_Rect targetArea = { x, y, screenWidth, screenHeight };
     SDL_Texture* texture = fontProvider.generateTextTexture(renderer, text, fontSize, r, g, b);
 
     SDL_SetRenderTarget(renderer, UIOverlayTexture);
