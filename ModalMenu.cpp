@@ -4,7 +4,7 @@ ModalMenu::ModalMenu() {
 }
 
 ModalMenu::ModalMenu(const SDL_Rect& area, const std::string& texture) {
-    this->area = area;
+    this->area = Graphics::getInstance().scaleTargetArea(area);
     this->texture = texture;
     opened = false;
     yesButton = Button({ area.x + 30, area.y + area.h - 80, 50, 50 }, "Yes.png", "");

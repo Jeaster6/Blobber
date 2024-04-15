@@ -5,7 +5,7 @@ InventoryMenu::InventoryMenu() {
 }
 
 InventoryMenu::InventoryMenu(const SDL_Rect& area, const std::string& texture) {
-    this->area = area;
+    this->area = Graphics::getInstance().scaleTargetArea(area);
     this->texture = texture;
     opened = false;
     mode = Mode::Party;

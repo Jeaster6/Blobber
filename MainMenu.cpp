@@ -7,7 +7,7 @@ void openMainMenu() {
 	SDL_Event userInput;
 
 	while (!quit) {
-        Graphics::getInstance().renderMainMenu(nullptr, "Menu.png");
+        Graphics::getInstance().renderMainMenu("Menu.png");
 
 		while (SDL_PollEvent(&userInput)) {
 			if (userInput.type == SDL_QUIT) {

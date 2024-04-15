@@ -7,7 +7,7 @@ Button::Button() {
 }
 
 Button::Button(const SDL_Rect& area, const std::string& texture, const std::string& label) {
-    this->area = area;
+    this->area = Graphics::getInstance().scaleTargetArea(area);
     this->texture = texture;
     this->label = label;
 }

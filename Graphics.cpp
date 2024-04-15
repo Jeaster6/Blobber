@@ -90,11 +90,11 @@ void Graphics::loadMapTextures(const GameMap& map) {
     }
 }
 
-void Graphics::renderMainMenu(const SDL_Rect* targetArea, const std::string& textureFileName) {
+void Graphics::renderMainMenu(const std::string& textureFileName) {
     SDL_RenderClear(renderer);
     clearUI();
-    renderUIElement(targetArea, textureFileName);
-    SDL_RenderCopy(renderer, UIOverlayTexture, nullptr, targetArea);
+    renderUIElement(nullptr, textureFileName);
+    SDL_RenderCopy(renderer, UIOverlayTexture, nullptr, nullptr);
     SDL_RenderPresent(renderer);
 }
 
@@ -113,7 +113,7 @@ void Graphics::renderUIElement(const SDL_Rect* targetArea, const std::string& te
 }
 
 void Graphics::renderTextMessage(int x, int y, const std::string& text, int fontSize, int r, int g, int b) {
-    SDL_Rect targetArea = { x, y, screenWidth, screenHeight };
+    SDL_Rect targetArea = scaleTargetArea({ x, y, screenWidth, screenHeight });
     SDL_Texture* texture = fontProvider.generateTextTexture(renderer, text, fontSize, r, g, b);
 
     SDL_SetRenderTarget(renderer, UIOverlayTexture);
@@ -125,15 +125,15 @@ void Graphics::displayMessage(const std::string& message) {
     SDL_SetRenderTarget(renderer, UIOverlayTexture);
 
     // display message frame
-    SDL_Rect targetArea = { (gameWidth / 2) - 290, 990, 580, 220 };
+    SDL_Rect targetArea = scaleTargetArea({ (1920 / 2) - 290, 990, 580, 220 });
     SDL_SetRenderDrawColor(renderer, 25, 25, 25, 255);
     SDL_RenderFillRect(renderer, &targetArea);
 
-    targetArea = { (gameWidth / 2) - 280, 1000, 560, 200 };
+    targetArea = scaleTargetArea({ (1920 / 2) - 280, 1000, 560, 200 });
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
     SDL_RenderFillRect(renderer, &targetArea);
     //display message
-    renderTextMessage((gameWidth / 2) - 255, 1025, message, 30, 255, 255, 0);
+    renderTextMessage((1920 / 2) - 255, 1025, message, 30, 255, 255, 0);
 
     SDL_SetRenderTarget(renderer, nullptr);
 }
@@ -174,6 +174,15 @@ void Graphics::renderTextureUsingVertices(SDL_Texture* sourceTexture, const std:
 	}
 
 	SDL_RenderGeometry(renderer, sourceTexture, vertices.data(), (int)vertices.size(), indexList.data(), (int)indexList.size());
+}
+
+SDL_Rect Graphics::scaleTargetArea(const SDL_Rect targetArea) {
+    SDL_Rect modifiedArea = { 0, 0, 0, 0 };
+    modifiedArea.x = targetArea.x * screenWidth / 2560;
+    modifiedArea.y = targetArea.y * screenHeight / 1440;
+    modifiedArea.w = targetArea.w * screenWidth / 2560;
+    modifiedArea.h = targetArea.h * screenHeight / 1440;
+    return modifiedArea;
 }
 
 void Graphics::generateScreenTexture(const GameMap& map, const Player& player, SDL_Texture* targetTexture) {
