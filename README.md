@@ -18,21 +18,15 @@ Here're some of the project's barely functioning features:
 
 <h2>Installation Steps:</h2>
 
-<p>1. Requires Boost.Filesystem and Boost.Serialization libraries (not included in project)</p>
+<p>1. Requires Boost.Filesystem and Boost.Serialization libraries (not included in project) - download zip</p>
 
 ```
 https://www.boost.org/releases/latest/
 ```
-<p>2. Extract the files and run bootstrap script in terminal
-
-```
-bootstrap.bat
-```
-<p>3. Run the installation script
+<p>2. Extract the files and run bootstrap.bat script
     
-```
-b2 install --prefix=/path/to/install/directory
-```
+<p>3. Run the b2.exe installer
+    
 <p>4. Create new user environment variable named "Boost" pointing to the library directory</p>
 
 <p>5. Download project from GitHub</p>
