@@ -203,10 +203,6 @@
     <ClInclude Include="..\Source\Player.hpp" />
     <ClInclude Include="..\Source\SetupMap.hpp" />
     <ClInclude Include="..\Source\Tile.hpp" />
-    <ClInclude Include="resource.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <ResourceCompile Include="Map Editor.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
