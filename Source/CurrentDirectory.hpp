@@ -9,7 +9,7 @@
 
 struct pathLeafString {
     std::string operator() (const boost::filesystem::directory_entry& entry) const {
-        return entry.path().leaf().string();
+        return entry.path().filename().string();
     }
 };
 
