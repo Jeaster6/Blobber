@@ -11,8 +11,9 @@ Here're some of the project's barely functioning features:
 *   ASWD + QE movement
 *   Quick Save (F5) and Quick Load (F9) supported
 *   Transition between multiple maps
-*   Font parser which is used to display text messages
-*   Basic inventory screen allowing the player to stash/take items from chest (purple square placehorlder)
+*   Font parser which is used to display triggered text messages
+*   Some menues include buttons, main menu is still controlled by keys
+*   Basic inventory screen allowing the player to stash/take items from chest (purple square placeholder which can be interacted with by pressing spacebar)
 *   Includes separate Map Editor (powered by imgui) project which allows creation and editing of new maps
 
 <h2>Installation Steps:</h2>
