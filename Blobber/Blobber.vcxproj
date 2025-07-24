@@ -149,7 +149,7 @@ xcopy "$(ProjectDir)..\Maps" "$(OutDir)Maps" /Y /S /I
 xcopy "$(ProjectDir)..\Data" "$(OutDir)Data" /Y /S /I
 xcopy "$(ProjectDir)..\Libraries\sdl\SDL2\lib\$(Platform)\SDL2.dll" "$(OutDir)" /Y
 xcopy "$(ProjectDir)..\Libraries\sdl\SDL2_image\lib\$(Platform)\SDL2_image.dll" "$(OutDir)" /Y
-mkdir "$(OutDir)Save"</Command>
+if not exist "$(OutDir)Save" mkdir "$(OutDir)Save"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -177,7 +177,7 @@ xcopy "$(ProjectDir)..\Maps" "$(OutDir)Maps" /Y /S /I
 xcopy "$(ProjectDir)..\Data" "$(OutDir)Data" /Y /S /I
 xcopy "$(ProjectDir)..\Libraries\sdl\SDL2\lib\$(Platform)\SDL2.dll" "$(OutDir)" /Y
 xcopy "$(ProjectDir)..\Libraries\sdl\SDL2_image\lib\$(Platform)\SDL2_image.dll" "$(OutDir)" /Y
-mkdir "$(OutDir)Save"</Command>
+if not exist "$(OutDir)Save" mkdir "$(OutDir)Save"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
