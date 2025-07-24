@@ -15,133 +15,133 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\Blobber.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\CurrentDirectory.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\GameLoop.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\GameMap.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Item.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\MapObject.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Tile.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\MainMenu.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Graphics.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\SettingsMenu.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Configuration.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Player.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\GameState.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\WorldChange.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\MapTrigger.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\UserInterface.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Menu.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Button.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\ModalMenu.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\InventoryMenu.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\FontProvider.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
+    <ClInclude Include="..\Source\GameLoop.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\GameMap.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\GameState.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Graphics.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\InventoryMenu.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Item.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\MainMenu.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\MapObject.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\MapTrigger.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Menu.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\ModalMenu.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Player.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\SettingsMenu.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Tile.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\UserInterface.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\WorldChange.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Button.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Configuration.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\CurrentDirectory.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Direction.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\FontProvider.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\CurrentDirectory.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\GameLoop.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\GameMap.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Item.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\MapObject.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Tile.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\MainMenu.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Graphics.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\SettingsMenu.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Configuration.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Player.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Direction.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\GameState.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\WorldChange.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\MapTrigger.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\UserInterface.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Button.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Menu.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\ModalMenu.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\InventoryMenu.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\FontProvider.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
+    <ClCompile Include="..\Source\GameState.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\Graphics.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\InventoryMenu.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\Item.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\MainMenu.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\MapObject.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\MapTrigger.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\Menu.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\ModalMenu.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\Player.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\SettingsMenu.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\Tile.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\UserInterface.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\WorldChange.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\Blobber.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\Button.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\Configuration.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\CurrentDirectory.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\FontProvider.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\GameLoop.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\GameMap.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

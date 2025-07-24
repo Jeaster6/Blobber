@@ -134,14 +134,14 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>..\imgui;%Boost%;%SDL2_image%\include;%SDL2_DIR%\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\Libraries\imgui;%Boost%;..\Libraries\sdl\SDL2_image\include;..\Libraries\sdl\SDL2\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2_image.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>%Boost%\stage\lib;%SDL2_image%\lib\x64;%SDL2_DIR%\lib\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>%Boost%\stage\lib;..\Libraries\sdl\SDL2_image\lib\x64;..\Libraries\sdl\SDL2\lib\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -152,7 +152,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>..\imgui;%Boost%;%SDL2_image%\include;%SDL2_DIR%\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\Libraries\imgui;%Boost%;..\Libraries\sdl\SDL2_image\include;..\Libraries\sdl\SDL2\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
@@ -161,48 +161,52 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2_image.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>%Boost%\stage\lib;%SDL2_image%\lib\x64;%SDL2_DIR%\lib\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>%Boost%\stage\lib;..\Libraries\sdl\SDL2_image\lib\x64;..\Libraries\sdl\SDL2\lib\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\Configuration.cpp" />
-    <ClCompile Include="..\CurrentDirectory.cpp" />
-    <ClCompile Include="..\Editor.cpp" />
-    <ClCompile Include="..\GameMap.cpp" />
-    <ClCompile Include="..\imgui\imgui.cpp" />
-    <ClCompile Include="..\imgui\imgui_demo.cpp" />
-    <ClCompile Include="..\imgui\imgui_draw.cpp" />
-    <ClCompile Include="..\imgui\imgui_impl_sdl2.cpp" />
-    <ClCompile Include="..\imgui\imgui_impl_sdlrenderer2.cpp" />
-    <ClCompile Include="..\imgui\imgui_tables.cpp" />
-    <ClCompile Include="..\imgui\imgui_widgets.cpp" />
-    <ClCompile Include="..\Item.cpp" />
-    <ClCompile Include="..\MapEditor.cpp" />
-    <ClCompile Include="..\MapObject.cpp" />
-    <ClCompile Include="..\MapTrigger.cpp" />
-    <ClCompile Include="..\Player.cpp" />
-    <ClCompile Include="..\SetupMap.cpp" />
-    <ClCompile Include="..\Tile.cpp" />
+    <ClCompile Include="..\Libraries\imgui\imgui.cpp" />
+    <ClCompile Include="..\Libraries\imgui\imgui_demo.cpp" />
+    <ClCompile Include="..\Libraries\imgui\imgui_draw.cpp" />
+    <ClCompile Include="..\Libraries\imgui\imgui_impl_sdl2.cpp" />
+    <ClCompile Include="..\Libraries\imgui\imgui_impl_sdlrenderer2.cpp" />
+    <ClCompile Include="..\Libraries\imgui\imgui_tables.cpp" />
+    <ClCompile Include="..\Libraries\imgui\imgui_widgets.cpp" />
+    <ClCompile Include="..\Source\Configuration.cpp" />
+    <ClCompile Include="..\Source\CurrentDirectory.cpp" />
+    <ClCompile Include="..\Source\Editor.cpp" />
+    <ClCompile Include="..\Source\GameMap.cpp" />
+    <ClCompile Include="..\Source\Item.cpp" />
+    <ClCompile Include="..\Source\MapEditor.cpp" />
+    <ClCompile Include="..\Source\MapObject.cpp" />
+    <ClCompile Include="..\Source\MapTrigger.cpp" />
+    <ClCompile Include="..\Source\Player.cpp" />
+    <ClCompile Include="..\Source\SetupMap.cpp" />
+    <ClCompile Include="..\Source\Tile.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\Configuration.hpp" />
-    <ClInclude Include="..\CurrentDirectory.hpp" />
-    <ClInclude Include="..\Editor.hpp" />
-    <ClInclude Include="..\GameMap.hpp" />
-    <ClInclude Include="..\imgui\imconfig.h" />
-    <ClInclude Include="..\imgui\imgui.h" />
-    <ClInclude Include="..\imgui\imgui_impl_sdl2.h" />
-    <ClInclude Include="..\imgui\imgui_impl_sdlrenderer2.h" />
-    <ClInclude Include="..\imgui\imgui_internal.h" />
-    <ClInclude Include="..\imgui\imstb_rectpack.h" />
-    <ClInclude Include="..\imgui\imstb_textedit.h" />
-    <ClInclude Include="..\imgui\imstb_truetype.h" />
-    <ClInclude Include="..\Item.hpp" />
-    <ClInclude Include="..\MapObject.hpp" />
-    <ClInclude Include="..\MapTrigger.hpp" />
-    <ClInclude Include="..\Player.hpp" />
-    <ClInclude Include="..\SetupMap.hpp" />
-    <ClInclude Include="..\Tile.hpp" />
+    <ClInclude Include="..\Libraries\imgui\imconfig.h" />
+    <ClInclude Include="..\Libraries\imgui\imgui.h" />
+    <ClInclude Include="..\Libraries\imgui\imgui_impl_sdl2.h" />
+    <ClInclude Include="..\Libraries\imgui\imgui_impl_sdlrenderer2.h" />
+    <ClInclude Include="..\Libraries\imgui\imgui_internal.h" />
+    <ClInclude Include="..\Libraries\imgui\imstb_rectpack.h" />
+    <ClInclude Include="..\Libraries\imgui\imstb_textedit.h" />
+    <ClInclude Include="..\Libraries\imgui\imstb_truetype.h" />
+    <ClInclude Include="..\Source\Configuration.hpp" />
+    <ClInclude Include="..\Source\CurrentDirectory.hpp" />
+    <ClInclude Include="..\Source\Editor.hpp" />
+    <ClInclude Include="..\Source\GameMap.hpp" />
+    <ClInclude Include="..\Source\Item.hpp" />
+    <ClInclude Include="..\Source\MapObject.hpp" />
+    <ClInclude Include="..\Source\MapTrigger.hpp" />
+    <ClInclude Include="..\Source\Player.hpp" />
+    <ClInclude Include="..\Source\SetupMap.hpp" />
+    <ClInclude Include="..\Source\Tile.hpp" />
+    <ClInclude Include="resource.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Map Editor.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

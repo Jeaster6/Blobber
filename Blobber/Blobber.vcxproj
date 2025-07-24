@@ -134,15 +134,23 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>%Boost%;%SDL2_image%\include;%SDL2_DIR%\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>%Boost%;..\Libraries\sdl\SDL2_image\include;..\Libraries\sdl\SDL2\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>%Boost%\stage\lib;%SDL2_image%\lib\x64;%SDL2_DIR%\lib\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>%Boost%\stage\lib;..\Libraries\sdl\SDL2_image\lib\x64;..\Libraries\sdl\SDL2\lib\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2_image.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PostBuildEvent>
+      <Command>xcopy "$(ProjectDir)..\Textures" "$(OutDir)Textures" /Y /S /I
+xcopy "$(ProjectDir)..\Maps" "$(OutDir)Maps" /Y /S /I
+xcopy "$(ProjectDir)..\Data" "$(OutDir)Data" /Y /S /I
+xcopy "$(ProjectDir)..\Libraries\sdl\SDL2\lib\$(Platform)\SDL2.dll" "$(OutDir)" /Y
+xcopy "$(ProjectDir)..\Libraries\sdl\SDL2_image\lib\$(Platform)\SDL2_image.dll" "$(OutDir)" /Y
+mkdir "$(OutDir)Save"</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -152,7 +160,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>%Boost%;%SDL2_image%\include;%SDL2_DIR%\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>%Boost%;..\Libraries\sdl\SDL2_image\include;..\Libraries\sdl\SDL2\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
@@ -160,55 +168,63 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>%Boost%\stage\lib;%SDL2_image%\lib\x64;%SDL2_DIR%\lib\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>%Boost%\stage\lib;..\Libraries\sdl\SDL2_image\lib\x64;..\Libraries\sdl\SDL2\lib\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2_image.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PostBuildEvent>
+      <Command>xcopy "$(ProjectDir)..\Textures" "$(OutDir)Textures" /Y /S /I
+xcopy "$(ProjectDir)..\Maps" "$(OutDir)Maps" /Y /S /I
+xcopy "$(ProjectDir)..\Data" "$(OutDir)Data" /Y /S /I
+xcopy "$(ProjectDir)..\Libraries\sdl\SDL2\lib\$(Platform)\SDL2.dll" "$(OutDir)" /Y
+xcopy "$(ProjectDir)..\Libraries\sdl\SDL2_image\lib\$(Platform)\SDL2_image.dll" "$(OutDir)" /Y
+mkdir "$(OutDir)Save"</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\Blobber.cpp" />
-    <ClCompile Include="..\Button.cpp" />
-    <ClCompile Include="..\Configuration.cpp" />
-    <ClCompile Include="..\CurrentDirectory.cpp" />
-    <ClCompile Include="..\FontProvider.cpp" />
-    <ClCompile Include="..\GameLoop.cpp" />
-    <ClCompile Include="..\GameMap.cpp" />
-    <ClCompile Include="..\GameState.cpp" />
-    <ClCompile Include="..\InventoryMenu.cpp" />
-    <ClCompile Include="..\Item.cpp" />
-    <ClCompile Include="..\MainMenu.cpp" />
-    <ClCompile Include="..\MapObject.cpp" />
-    <ClCompile Include="..\Graphics.cpp" />
-    <ClCompile Include="..\MapTrigger.cpp" />
-    <ClCompile Include="..\Menu.cpp" />
-    <ClCompile Include="..\ModalMenu.cpp" />
-    <ClCompile Include="..\Player.cpp" />
-    <ClCompile Include="..\SettingsMenu.cpp" />
-    <ClCompile Include="..\Tile.cpp" />
-    <ClCompile Include="..\UserInterface.cpp" />
-    <ClCompile Include="..\WorldChange.cpp" />
+    <ClInclude Include="..\Source\Button.hpp" />
+    <ClInclude Include="..\Source\Configuration.hpp" />
+    <ClInclude Include="..\Source\CurrentDirectory.hpp" />
+    <ClInclude Include="..\Source\Direction.hpp" />
+    <ClInclude Include="..\Source\FontProvider.hpp" />
+    <ClInclude Include="..\Source\GameLoop.hpp" />
+    <ClInclude Include="..\Source\GameMap.hpp" />
+    <ClInclude Include="..\Source\GameState.hpp" />
+    <ClInclude Include="..\Source\Graphics.hpp" />
+    <ClInclude Include="..\Source\InventoryMenu.hpp" />
+    <ClInclude Include="..\Source\Item.hpp" />
+    <ClInclude Include="..\Source\MainMenu.hpp" />
+    <ClInclude Include="..\Source\MapObject.hpp" />
+    <ClInclude Include="..\Source\MapTrigger.hpp" />
+    <ClInclude Include="..\Source\Menu.hpp" />
+    <ClInclude Include="..\Source\ModalMenu.hpp" />
+    <ClInclude Include="..\Source\Player.hpp" />
+    <ClInclude Include="..\Source\SettingsMenu.hpp" />
+    <ClInclude Include="..\Source\Tile.hpp" />
+    <ClInclude Include="..\Source\UserInterface.hpp" />
+    <ClInclude Include="..\Source\WorldChange.hpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\Button.hpp" />
-    <ClInclude Include="..\Configuration.hpp" />
-    <ClInclude Include="..\CurrentDirectory.hpp" />
-    <ClInclude Include="..\Direction.hpp" />
-    <ClInclude Include="..\FontProvider.hpp" />
-    <ClInclude Include="..\GameLoop.hpp" />
-    <ClInclude Include="..\GameMap.hpp" />
-    <ClInclude Include="..\GameState.hpp" />
-    <ClInclude Include="..\InventoryMenu.hpp" />
-    <ClInclude Include="..\Item.hpp" />
-    <ClInclude Include="..\MainMenu.hpp" />
-    <ClInclude Include="..\MapObject.hpp" />
-    <ClInclude Include="..\Graphics.hpp" />
-    <ClInclude Include="..\MapTrigger.hpp" />
-    <ClInclude Include="..\Menu.hpp" />
-    <ClInclude Include="..\ModalMenu.hpp" />
-    <ClInclude Include="..\Player.hpp" />
-    <ClInclude Include="..\SettingsMenu.hpp" />
-    <ClInclude Include="..\Tile.hpp" />
-    <ClInclude Include="..\UserInterface.hpp" />
-    <ClInclude Include="..\WorldChange.hpp" />
+    <ClCompile Include="..\Source\Blobber.cpp" />
+    <ClCompile Include="..\Source\Button.cpp" />
+    <ClCompile Include="..\Source\Configuration.cpp" />
+    <ClCompile Include="..\Source\CurrentDirectory.cpp" />
+    <ClCompile Include="..\Source\FontProvider.cpp" />
+    <ClCompile Include="..\Source\GameLoop.cpp" />
+    <ClCompile Include="..\Source\GameMap.cpp" />
+    <ClCompile Include="..\Source\GameState.cpp" />
+    <ClCompile Include="..\Source\Graphics.cpp" />
+    <ClCompile Include="..\Source\InventoryMenu.cpp" />
+    <ClCompile Include="..\Source\Item.cpp" />
+    <ClCompile Include="..\Source\MainMenu.cpp" />
+    <ClCompile Include="..\Source\MapObject.cpp" />
+    <ClCompile Include="..\Source\MapTrigger.cpp" />
+    <ClCompile Include="..\Source\Menu.cpp" />
+    <ClCompile Include="..\Source\ModalMenu.cpp" />
+    <ClCompile Include="..\Source\Player.cpp" />
+    <ClCompile Include="..\Source\SettingsMenu.cpp" />
+    <ClCompile Include="..\Source\Tile.cpp" />
+    <ClCompile Include="..\Source\UserInterface.cpp" />
+    <ClCompile Include="..\Source\WorldChange.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

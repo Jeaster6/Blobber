@@ -13,120 +13,128 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="Imgui">
-      <UniqueIdentifier>{6c99a13c-7699-4d84-b486-3b0060cd970d}</UniqueIdentifier>
+    <Filter Include="imgui">
+      <UniqueIdentifier>{bcc74447-8649-4ea6-bc2c-2a0b2bbc85f8}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\CurrentDirectory.cpp">
+    <ClCompile Include="..\Source\SetupMap.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\Editor.cpp">
+    <ClCompile Include="..\Source\Tile.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\GameMap.cpp">
+    <ClCompile Include="..\Source\Configuration.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\Item.cpp">
+    <ClCompile Include="..\Source\CurrentDirectory.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\MapEditor.cpp">
+    <ClCompile Include="..\Source\Editor.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\MapObject.cpp">
+    <ClCompile Include="..\Source\GameMap.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\SetupMap.cpp">
+    <ClCompile Include="..\Source\Item.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\Tile.cpp">
+    <ClCompile Include="..\Source\MapEditor.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\Configuration.cpp">
+    <ClCompile Include="..\Source\MapObject.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\imgui\imgui.cpp">
-      <Filter>Imgui</Filter>
-    </ClCompile>
-    <ClCompile Include="..\imgui\imgui_demo.cpp">
-      <Filter>Imgui</Filter>
-    </ClCompile>
-    <ClCompile Include="..\imgui\imgui_draw.cpp">
-      <Filter>Imgui</Filter>
-    </ClCompile>
-    <ClCompile Include="..\imgui\imgui_tables.cpp">
-      <Filter>Imgui</Filter>
-    </ClCompile>
-    <ClCompile Include="..\imgui\imgui_widgets.cpp">
-      <Filter>Imgui</Filter>
-    </ClCompile>
-    <ClCompile Include="..\imgui\imgui_impl_sdl2.cpp">
-      <Filter>Imgui</Filter>
-    </ClCompile>
-    <ClCompile Include="..\imgui\imgui_impl_sdlrenderer2.cpp">
-      <Filter>Imgui</Filter>
-    </ClCompile>
-    <ClCompile Include="..\MapTrigger.cpp">
+    <ClCompile Include="..\Source\MapTrigger.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\Player.cpp">
+    <ClCompile Include="..\Source\Player.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Libraries\imgui\imgui_demo.cpp">
+      <Filter>imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Libraries\imgui\imgui_draw.cpp">
+      <Filter>imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Libraries\imgui\imgui_impl_sdl2.cpp">
+      <Filter>imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Libraries\imgui\imgui_impl_sdlrenderer2.cpp">
+      <Filter>imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Libraries\imgui\imgui_tables.cpp">
+      <Filter>imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Libraries\imgui\imgui_widgets.cpp">
+      <Filter>imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Libraries\imgui\imgui.cpp">
+      <Filter>imgui</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\CurrentDirectory.hpp">
+    <ClInclude Include="..\Source\Tile.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\Editor.hpp">
+    <ClInclude Include="..\Source\Configuration.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\GameMap.hpp">
+    <ClInclude Include="..\Source\CurrentDirectory.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\Item.hpp">
+    <ClInclude Include="..\Source\Editor.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\MapObject.hpp">
+    <ClInclude Include="..\Source\GameMap.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\SetupMap.hpp">
+    <ClInclude Include="..\Source\Item.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\Tile.hpp">
+    <ClInclude Include="..\Source\MapObject.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\Configuration.hpp">
+    <ClInclude Include="..\Source\MapTrigger.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\imgui\imconfig.h">
-      <Filter>Imgui</Filter>
-    </ClInclude>
-    <ClInclude Include="..\imgui\imgui.h">
-      <Filter>Imgui</Filter>
-    </ClInclude>
-    <ClInclude Include="..\imgui\imgui_internal.h">
-      <Filter>Imgui</Filter>
-    </ClInclude>
-    <ClInclude Include="..\imgui\imstb_rectpack.h">
-      <Filter>Imgui</Filter>
-    </ClInclude>
-    <ClInclude Include="..\imgui\imstb_textedit.h">
-      <Filter>Imgui</Filter>
-    </ClInclude>
-    <ClInclude Include="..\imgui\imstb_truetype.h">
-      <Filter>Imgui</Filter>
-    </ClInclude>
-    <ClInclude Include="..\imgui\imgui_impl_sdl2.h">
-      <Filter>Imgui</Filter>
-    </ClInclude>
-    <ClInclude Include="..\imgui\imgui_impl_sdlrenderer2.h">
-      <Filter>Imgui</Filter>
-    </ClInclude>
-    <ClInclude Include="..\MapTrigger.hpp">
+    <ClInclude Include="..\Source\Player.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\Player.hpp">
+    <ClInclude Include="..\Source\SetupMap.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Libraries\imgui\imgui_impl_sdl2.h">
+      <Filter>imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Libraries\imgui\imgui_impl_sdlrenderer2.h">
+      <Filter>imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Libraries\imgui\imgui_internal.h">
+      <Filter>imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Libraries\imgui\imstb_rectpack.h">
+      <Filter>imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Libraries\imgui\imstb_textedit.h">
+      <Filter>imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Libraries\imgui\imstb_truetype.h">
+      <Filter>imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Libraries\imgui\imconfig.h">
+      <Filter>imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Libraries\imgui\imgui.h">
+      <Filter>imgui</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Map Editor.rc">
+      <Filter>Resource Files</Filter>
+    </ResourceCompile>
   </ItemGroup>
 </Project>
